@@ -63,7 +63,7 @@ export default function AdminLayout() {
                                         exit={{ opacity: 0, x: -10 }}
                                         className="flex flex-col overflow-hidden"
                                     >
-                                        <span className="text-sm font-black tracking-tighter text-white whitespace-nowrap">DENTAL EXPRESSION</span>
+                                        <span translate="no" className="text-sm font-black tracking-tighter text-white whitespace-nowrap">Dental Expression</span>
                                         <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest whitespace-nowrap">{user?.user_metadata?.full_name || 'Dra. Nataly Vargas'}</span>
                                     </motion.div>
                                 )}
