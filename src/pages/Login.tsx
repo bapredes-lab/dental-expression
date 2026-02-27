@@ -61,7 +61,7 @@ export default function Login() {
 
                     <div className="text-center space-y-1">
                         <h1 className="text-4xl font-black text-white tracking-tighter">
-                            DENTAL <span className="text-emerald-400">EXPRESS</span>
+                            DENTAL <span className="text-emerald-400">EXPRESSION</span>
                         </h1>
                         <p className="text-emerald-100/60 font-medium tracking-[0.2em] uppercase text-xs">
                             Dra. Nataly Vargas
