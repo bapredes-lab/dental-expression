@@ -14,7 +14,8 @@ import {
     X,
     Bell,
     Settings,
-    Star
+    Star,
+    Video
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -22,6 +23,7 @@ const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Fichas de Pacientes', href: '/admin/patients', icon: Users },
     { name: 'Agenda Digital', href: '/admin/agenda', icon: Calendar },
+    { name: 'Teleconsultas', href: '/admin/teleconsultas', icon: Video },
     { name: 'Galería Médica', href: '/admin/media', icon: ImageIcon },
     { name: 'Planes de Tratamiento', href: '/admin/treatments', icon: FileText },
     { name: 'Pagos y Recaudos', href: '/admin/payments', icon: DollarSign },

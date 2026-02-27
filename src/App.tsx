@@ -13,13 +13,28 @@ import PaymentsAdmin from './pages/admin/payments/Payments'
 import BeforeAfterTool from './pages/admin/before-after/Simulador'
 import ReviewsList from './pages/admin/reviews/List'
 
+import Landing from './pages/public/Landing'
+import AgendarConsulta from './pages/public/AgendarConsulta'
+import PagarConsulta from './pages/public/PagarConsulta'
+import ConfirmacionConsulta from './pages/public/ConfirmacionConsulta'
+import SalaVideollamada from './pages/public/SalaVideollamada'
+
+import TeleconsultationsList from './pages/admin/teleconsultations/List'
+import TeleconsultationRoom from './pages/admin/teleconsultations/VideoCall'
+
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<LoginPage />} />
-          <Route path="/login" element={<Navigate to="/" replace />} />
+          {/* Public Routes */}
+          <Route path="/" element={<Landing />} />
+          <Route path="/agendar" element={<AgendarConsulta />} />
+          <Route path="/pagar/:consultaId" element={<PagarConsulta />} />
+          <Route path="/confirmacion/:consultaId" element={<ConfirmacionConsulta />} />
+          <Route path="/consulta/:consultaId" element={<SalaVideollamada />} />
+
+          <Route path="/login" element={<LoginPage />} />
 
           <Route
             path="/admin"
@@ -39,6 +54,8 @@ function App() {
             <Route path="payments" element={<PaymentsAdmin />} />
             <Route path="reviews" element={<ReviewsList />} />
             <Route path="before-after" element={<BeforeAfterTool />} />
+            <Route path="teleconsultas" element={<TeleconsultationsList />} />
+            <Route path="teleconsultas/:consultaId" element={<TeleconsultationRoom />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
