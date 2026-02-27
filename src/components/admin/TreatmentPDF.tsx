@@ -123,7 +123,7 @@ export const TreatmentPlanPDF = ({ patient, diagnosis, procedures, totalCost }: 
                 <View style={styles.logoSection}>
                     <Image src="/logo.jpg" style={styles.logo} />
                     <View>
-                        <Text style={styles.title}>DENTAL EXPRESS</Text>
+                        <Text style={styles.title}>DENTAL EXPRESSION</Text>
                         <Text style={styles.subtitle}>Especialistas en Sonrisas</Text>
                     </View>
                 </View>

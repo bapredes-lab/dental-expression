@@ -65,6 +65,7 @@ const Tooth = ({ id, status = 'healthy', onSelect, isSelected }: ToothProps) => 
 
 export default function SmartOdontogram() {
     const [selectedTooth, setSelectedTooth] = useState<number | null>(null);
+    const [isExecuting, setIsExecuting] = useState(false);
 
     // Fake data representing pieces with AI detected issues
     const aiFindings = [
@@ -72,6 +73,14 @@ export default function SmartOdontogram() {
         { id: 24, issue: 'Sensibilidad reportada', urgency: 'medium' },
         { id: 46, issue: 'Posible necesidad de endodoncia', urgency: 'high' },
     ];
+
+    const handleExecutePlan = () => {
+        setIsExecuting(true);
+        setTimeout(() => {
+            setIsExecuting(false);
+            alert("✅ PLAN DE IA EJECUTADO: Presupuesto generado, tratamiento añadido al historial y agenda notificada.");
+        }, 1500);
+    };
 
     const teethUpper = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
     const teethLower = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
@@ -159,10 +168,14 @@ export default function SmartOdontogram() {
 
                         <div className="space-y-4">
                             {aiFindings.map((finding) => (
-                                <div key={finding.id} className="bg-white/5 border border-white/10 p-4 rounded-2xl hover:bg-white/10 transition-all cursor-pointer group">
+                                <div
+                                    key={finding.id}
+                                    onClick={() => setSelectedTooth(finding.id)}
+                                    className={`bg-white/5 border ${selectedTooth === finding.id ? 'border-emerald-500 bg-white/10' : 'border-white/10'} p-4 rounded-2xl hover:bg-white/10 transition-all cursor-pointer group`}
+                                >
                                     <div className="flex items-center justify-between mb-2">
-                                        <span className="text-xs font-black text-[#059669] bg-emerald-400/10 px-2 py-0.5 rounded-md">PIEZA {finding.id}</span>
-                                        {finding.urgency === 'high' && <ShieldAlert className="w-4 h-4 text-red-400" />}
+                                        <span className={`text-xs font-black px-2 py-0.5 rounded-md ${selectedTooth === finding.id ? 'bg-emerald-500 text-white' : 'text-[#059669] bg-emerald-400/10'}`}>PIEZA {finding.id}</span>
+                                        {finding.urgency === 'high' && <ShieldAlert className="w-4 h-4 text-red-400 animate-pulse" />}
                                     </div>
                                     <p className="text-sm font-bold text-slate-200">{finding.issue}</p>
                                     <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
@@ -172,8 +185,13 @@ export default function SmartOdontogram() {
                             ))}
                         </div>
 
-                        <Button className="w-full mt-8 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl h-12 shadow-xl shadow-emerald-500/20 flex items-center gap-2 group">
-                            EJECUTAR PLAN DE IA <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                        <Button
+                            onClick={handleExecutePlan}
+                            disabled={isExecuting}
+                            className="w-full mt-8 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl h-12 shadow-xl shadow-emerald-500/20 flex items-center gap-2 group"
+                        >
+                            {isExecuting ? 'EJECUTANDO DIAGNÓSTICO...' : 'EJECUTAR PLAN DE IA'}
+                            {!isExecuting && <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />}
                         </Button>
                     </div>
                 </motion.div>
