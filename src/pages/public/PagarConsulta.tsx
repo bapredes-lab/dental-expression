@@ -8,7 +8,9 @@ import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
 // Inicializar Stripe
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '')
+const PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || '';
+console.log("=== STRIPE PUBLISHABLE KEY IN FRONTEND ===", PUBLISHABLE_KEY);
+const stripePromise = loadStripe(PUBLISHABLE_KEY)
 
 function CheckoutForm({ consultaId }: { consultaId: string }) {
     const stripe = useStripe()
@@ -146,6 +148,17 @@ export default function PagarConsulta() {
             }
         }
     }
+
+    // DEBUG ALERT (Borrar después)
+    useEffect(() => {
+        if (clientSecret) {
+            console.log("CLIENT SECRET:", clientSecret);
+            console.log("PUB KEY:", import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
+            if (!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY) {
+                alert("¡ERROR! VITE_STRIPE_PUBLISHABLE_KEY IS EMPTY IN FRONTEND");
+            }
+        }
+    }, [clientSecret]);
 
     return (
         <div className="min-h-screen bg-[#052c46] py-12 px-6">
