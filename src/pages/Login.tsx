@@ -140,7 +140,7 @@ export default function Login() {
 
                     <div className="mt-8 pt-6 border-t border-white/5 text-center">
                         <p className="text-slate-400 text-[10px] uppercase tracking-widest font-bold">
-                            Dental Expression v2.0 <span className="text-emerald-500/50 mx-2">|</span> Powered by AntiGravity Elite
+                            Dental Expression v2.0 <span className="text-emerald-500/50 mx-2">|</span> <span className="text-[#059669]">Desarrollado por Zynaia • Software a la Medida</span>
                         </p>
                     </div>
                 </div>

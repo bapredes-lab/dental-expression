@@ -104,6 +104,7 @@ export default function AdminLayout() {
                                 <div className="flex-1 min-w-0">
                                     <p className="text-xs font-bold text-white truncate">{user?.user_metadata?.full_name || 'Dra. Nataly Vargas'}</p>
                                     <p className="text-[9px] font-black text-emerald-400 uppercase tracking-tighter">Director Clínico</p>
+                                    <p className="text-[10px] text-slate-400 mt-1">Powered by Zynaia</p>
                                 </div>
                             )}
                             {sidebarOpen && (
@@ -163,6 +164,11 @@ export default function AdminLayout() {
                             <Outlet />
                         </motion.div>
                     </AnimatePresence>
+                </div>
+
+                {/* Zynaia Watermark */}
+                <div className="fixed bottom-4 right-6 pointer-events-none opacity-20 z-10">
+                    <p className="text-xs font-bold text-slate-500 tracking-widest uppercase">© Zynaia 2026</p>
                 </div>
             </main>
         </div>
