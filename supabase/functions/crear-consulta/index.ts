@@ -98,18 +98,25 @@ serve(async (req) => {
         console.log("Token Doctor creado.")
 
         // 4. Crear PaymentIntent en Stripe
+        const stripeKey = Deno.env.get("STRIPE_SECRET_KEY") || "";
+        console.log(`=> USANDO STRIPE KEY: ${stripeKey.substring(0, 7)}...${stripeKey.substring(stripeKey.length - 4)}`)
+
         console.log("Iniciando llamada a Stripe...")
         const stripeRes = await fetch("https://api.stripe.com/v1/payment_intents", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${Deno.env.get("STRIPE_SECRET_KEY")}`,
+                "Authorization": `Bearer ${stripeKey}`,
                 "Content-Type": "application/x-www-form-urlencoded"
             },
             body: new URLSearchParams({
                 amount: String(Math.round(precio * 100)),
                 currency: "usd",
-                "metadata[paciente_email]": paciente_email,
-                "metadata[fecha_hora]": fecha_hora,
+                automatic_payment_methods: JSON.stringify({ enabled: true }),
+                description: `Teleconsulta: ${paciente_nombre}`,
+                metadata: {
+                    paciente_email,
+                    fecha_hora
+                }
             })
         })
 
@@ -144,6 +151,7 @@ serve(async (req) => {
             daily_token_paciente: pacienteToken.token,
             daily_token_doctor: doctorToken.token,
             stripe_payment_intent_id: paymentIntent.id,
+            stripe_payment_intent_client_secret: paymentIntent.client_secret,
             estado: "pendiente"
         }).select().single()
 
