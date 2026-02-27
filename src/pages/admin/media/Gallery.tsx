@@ -15,7 +15,6 @@ export default function MediaGallery() {
 
     const handleUpload = (files: File[]) => {
         // Implement Supabase Storage Upload here
-        console.log('Got files to upload:', files)
         alert(`Se seleccionaron ${files.length} archivos para subir. La conexión a Supabase se hará con las credenciales activas.`)
     }
 

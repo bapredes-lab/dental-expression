@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { Plus } from 'lucide-react'
 import { Button } from '../../../components/ui/button'
+import { supabase } from '@/lib/supabase'
 
 // Festivos fijos (no trasladables) y algunos movibles para 2024-2025
 const colombianHolidays = [
@@ -30,7 +31,6 @@ const colombianHolidays = [
     // 2025
     { title: 'Año Nuevo', date: '2025-01-01', display: 'background', color: '#ffb3b3' },
     { title: 'Día de los Reyes Magos', date: '2025-01-06', display: 'background', color: '#ffb3b3' },
-    // ... (Other holidays for 2025 would go here)
 ]
 
 export default function AgendaView() {
@@ -41,8 +41,38 @@ export default function AgendaView() {
     }, [])
 
     const fetchAppointments = async () => {
-        // Para el MVP, usaremos eventos de prueba si no hay conexión real.
-        // Agregaríamos aquí el llamado a Supabase
+        if (import.meta.env.VITE_SUPABASE_URL !== "") {
+            const { data, error } = await supabase
+                .from('appointments')
+                .select(`
+                    id,
+                    date,
+                    time,
+                    type,
+                    status,
+                    patients ( name )
+                `)
+
+            if (!error && data) {
+                const formattedEvents = data.map((appt: any) => {
+                    const startDateTime = `${appt.date}T${appt.time}`
+                    // Set a default 1-hour duration for the appointment
+                    const endDateTime = new Date(new Date(startDateTime).getTime() + 60 * 60 * 1000).toISOString().split('.')[0]
+                    const patientName = appt.patients?.name || 'Paciente'
+                    return {
+                        id: appt.id,
+                        title: `${patientName} - ${appt.type}`,
+                        start: startDateTime,
+                        end: endDateTime,
+                        backgroundColor: appt.status === 'confirmed' ? '#059669' : '#0F4C75'
+                    }
+                })
+                setEvents([...colombianHolidays, ...formattedEvents])
+                return
+            }
+        }
+
+        // Mock Fallback
         const mockAppointments = [
             { title: 'Valoración: Juan P.', start: new Date().toISOString().split('T')[0] + 'T09:00:00', end: new Date().toISOString().split('T')[0] + 'T10:00:00', backgroundColor: '#0F4C75' },
             { title: 'Revaloración: María G.', start: new Date().toISOString().split('T')[0] + 'T14:00:00', end: new Date().toISOString().split('T')[0] + 'T14:30:00', backgroundColor: '#059669' }
@@ -56,7 +86,7 @@ export default function AgendaView() {
 
     const handleEventClick = (clickInfo: any) => {
         if (clickInfo.event.display !== 'background') {
-            alert("Cita: " + clickInfo.event.title + "\nLink: https://dentlink.co/placeholder")
+            alert("Cita: " + clickInfo.event.title + "\nModulo en construcción: Edición de Citas")
         }
     }
 
