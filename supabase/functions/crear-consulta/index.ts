@@ -30,9 +30,13 @@ serve(async (req) => {
                 }
             })
         })
-        const dailyRoom = await dailyRes.json()
 
-        if (dailyRoom.error) throw new Error(`Daily Room Error: ${dailyRoom.info}`)
+        if (!dailyRes.ok) {
+            const errorText = await dailyRes.text()
+            throw new Error(`Daily.co Room Error (${dailyRes.status}): ${errorText}`)
+        }
+
+        const dailyRoom = await dailyRes.json()
 
         // 2. Crear token de paciente (acceso limitado, sin controles de admin)
         const tokenRes = await fetch(`https://api.daily.co/v1/meeting-tokens`, {
@@ -51,6 +55,10 @@ serve(async (req) => {
                 }
             })
         })
+        if (!tokenRes.ok) {
+            const errorText = await tokenRes.text()
+            throw new Error(`Daily.co Patient Token Error (${tokenRes.status}): ${errorText}`)
+        }
         const pacienteToken = await tokenRes.json()
 
         // 3. Crear token de doctora (is_owner: true, controles completos)
@@ -68,6 +76,10 @@ serve(async (req) => {
                 }
             })
         })
+        if (!tokenDoctorRes.ok) {
+            const errorText = await tokenDoctorRes.text()
+            throw new Error(`Daily.co Doctor Token Error (${tokenDoctorRes.status}): ${errorText}`)
+        }
         const doctorToken = await tokenDoctorRes.json()
 
         // 4. Crear PaymentIntent en Stripe
@@ -84,9 +96,13 @@ serve(async (req) => {
                 "metadata[fecha_hora]": fecha_hora,
             })
         })
-        const paymentIntent = await stripeRes.json()
 
-        if (paymentIntent.error) throw new Error(`Stripe Error: ${paymentIntent.error.message}`)
+        if (!stripeRes.ok) {
+            const errorText = await stripeRes.text()
+            throw new Error(`Stripe API Error (${stripeRes.status}): ${errorText}`)
+        }
+
+        const paymentIntent = await stripeRes.json()
 
         // 5. Guardar en Supabase
         const supabase = createClient(
@@ -117,6 +133,7 @@ serve(async (req) => {
         }), { headers: { ...corsHeaders, "Content-Type": "application/json" } })
 
     } catch (error: any) {
+        console.error("EDGE FUNCTION ERROR:", error.message, error)
         return new Response(JSON.stringify({ error: error.message }), {
             status: 500,
             headers: { ...corsHeaders, "Content-Type": "application/json" }
