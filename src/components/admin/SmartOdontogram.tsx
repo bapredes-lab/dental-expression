@@ -69,24 +69,33 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
     const [selectedTooth, setSelectedTooth] = useState<number | null>(null);
     const [toothStates, setToothStates] = useState<Record<number, string>>({});
     const [isSaving, setIsSaving] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [aiResult, setAiResult] = useState<AIResult | null>(null);
 
     useEffect(() => {
         if (patientId) {
             fetchOdontogram();
+        } else {
+            // Si estamos en el Dashboard sin un paciente, por defecto no mostramos spinner infinito
+            setLoading(false);
         }
     }, [patientId]);
 
     const fetchOdontogram = async () => {
+        if (!patientId) return;
         setLoading(true);
         try {
-            const { data } = await supabase
+            const { data, error } = await supabase
                 .from('patient_odontograms')
                 .select('tooth_data, ai_analysis')
                 .eq('patient_id', patientId)
                 .single();
+
+            // Si hay un error que no sea que no existe el registro, lo logeamos
+            if (error && error.code !== 'PGRST116') {
+                console.error("Error fetching odontogram:", error);
+            }
 
             if (data) {
                 if (data.tooth_data) setToothStates(data.tooth_data);
@@ -99,7 +108,7 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
                 }
             }
         } catch (error) {
-            console.log("No record found.");
+            console.log("No record found or connection error.");
         } finally {
             setLoading(false);
         }
@@ -155,7 +164,12 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
     const teethUpper = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
     const teethLower = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
 
-    if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-[#0F4C75]" /></div>;
+    if (loading) return (
+        <div className="flex flex-col items-center justify-center p-20 gap-4">
+            <Loader2 className="animate-spin text-[#0F4C75] w-8 h-8" />
+            <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Cargando Odontograma...</p>
+        </div>
+    );
 
     return (
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
