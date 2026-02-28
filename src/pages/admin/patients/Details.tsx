@@ -42,15 +42,18 @@ export default function PatientDetails() {
             if (pError) throw pError;
             setPatient(patientData);
 
-            // 2. Historial de citas
-            const { data: apptsData, error: aError } = await supabase
-                .from('appointments')
-                .select('*')
-                .eq('patient_id', id)
-                .order('date', { ascending: false });
+            // 2. Historial de citas (Buscando en la tabla 'consultas' por email o nombre)
+            // Nota: Intentamos por email primero, que es más preciso.
+            if (patientData.email) {
+                const { data: apptsData, error: aError } = await supabase
+                    .from('consultas')
+                    .select('*')
+                    .eq('paciente_email', patientData.email)
+                    .order('fecha_hora', { ascending: false });
 
-            if (aError) throw aError;
-            setAppointments(apptsData || []);
+                if (aError) console.error("Error historial consultas:", aError);
+                setAppointments(apptsData || []);
+            }
 
         } catch (error) {
             console.error("Error al cargar paciente:", error);
@@ -90,7 +93,7 @@ export default function PatientDetails() {
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div className="h-20 w-20 rounded-[2rem] bg-gradient-to-br from-[#052c46] to-[#0A3D62] flex items-center justify-center text-white text-3xl font-black shadow-2xl">
-                        {patient.name[0]}
+                        {patient.name ? patient.name[0] : 'P'}
                     </div>
                     <div>
                         <h2 className="text-3xl font-black text-[#052c46] tracking-tighter">{patient.name}</h2>
@@ -101,7 +104,10 @@ export default function PatientDetails() {
                     </div>
                 </div>
                 <div className="flex gap-3">
-                    <Button className="rounded-2xl bg-emerald-600 text-white font-black uppercase tracking-widest text-[10px] px-6 h-12 shadow-lg shadow-emerald-500/20">
+                    <Button
+                        onClick={() => window.location.href = '/admin/agenda'}
+                        className="rounded-2xl bg-emerald-600 text-white font-black uppercase tracking-widest text-[10px] px-6 h-12 shadow-lg shadow-emerald-500/20"
+                    >
                         <Calendar className="mr-2 h-4 w-4" /> Agendar Cita
                     </Button>
                 </div>
@@ -181,27 +187,32 @@ export default function PatientDetails() {
                         <div className="space-y-4">
                             {appointments.length === 0 ? (
                                 <div className="text-center py-12 text-slate-400 font-bold uppercase tracking-widest text-xs">
-                                    No hay citas registradas para este paciente.
+                                    No hay teleconsultas registradas para este email.
                                 </div>
                             ) : (
                                 appointments.map((appt, i) => (
                                     <div key={i} className="flex items-center justify-between p-6 bg-white/50 border border-slate-100 rounded-[1.5rem] hover:border-emerald-500/10 transition-all group">
                                         <div className="flex items-center gap-6">
                                             <div className="h-12 w-12 rounded-xl bg-slate-100 flex flex-col items-center justify-center border border-slate-200">
-                                                <span className="text-[10px] font-black text-slate-400 uppercase leading-none">{new Date(appt.date).toLocaleString('es-ES', { month: 'short' })}</span>
-                                                <span className="text-lg font-black text-[#052c46] leading-none">{new Date(appt.date).getDate()}</span>
+                                                <span className="text-[10px] font-black text-slate-400 uppercase leading-none">{new Date(appt.fecha_hora).toLocaleString('es-ES', { month: 'short' })}</span>
+                                                <span className="text-lg font-black text-[#052c46] leading-none">{new Date(appt.fecha_hora).getDate()}</span>
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-800 tracking-tight">{appt.type}</p>
-                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{appt.time}</p>
+                                                <p className="font-black text-slate-800 tracking-tight">{appt.motivo || 'Teleconsulta Virtual'}</p>
+                                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{new Date(appt.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                             </div>
                                         </div>
                                         <div className="flex items-center gap-4">
-                                            <span className={`text-[8px] px-3 py-1 rounded-full font-black uppercase tracking-widest ${appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 text-slate-400'
+                                            <span className={`text-[8px] px-3 py-1 rounded-full font-black uppercase tracking-widest ${appt.estado === 'pagada' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-slate-100 text-slate-400'
                                                 }`}>
-                                                {appt.status}
+                                                {appt.estado}
                                             </span>
-                                            <Button variant="ghost" size="icon" className="rounded-xl hover:bg-emerald-50 text-emerald-600">
+                                            <Button
+                                                onClick={() => navigate(`/admin/teleconsultas/${appt.id}`)}
+                                                variant="ghost"
+                                                size="icon"
+                                                className="rounded-xl hover:bg-emerald-50 text-emerald-600"
+                                            >
                                                 <ArrowLeft className="w-5 h-5 rotate-180" />
                                             </Button>
                                         </div>

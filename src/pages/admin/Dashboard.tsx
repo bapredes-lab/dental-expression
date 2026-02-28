@@ -21,6 +21,7 @@ import { supabase } from '@/lib/supabase'
 export default function AdminDashboard() {
     const { user } = useAuth()
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState<string | null>(null)
     const [realStats, setRealStats] = useState([
         { name: 'Red de Pacientes', value: '0', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', trend: '+0%' },
         { name: 'Agendamiento Hoy', value: '0', icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10', trend: 'Hoy' },
@@ -32,42 +33,56 @@ export default function AdminDashboard() {
     useEffect(() => {
         async function fetchDashboardData() {
             setLoading(true)
+            setError(null)
             try {
-                // 1. Conteo de Pacientes
-                const { count: patientCount } = await supabase
-                    .from('patients')
-                    .select('*', { count: 'exact', head: true })
+                // 1. Red de Pacientes (Conteo de la tabla consultas según solicitud del usuario)
+                const patientRes = await supabase
+                    .from('consultas')
+                    .select('paciente_email', { count: 'exact', head: true })
 
-                // 2. Citas de hoy
-                const today = new Date().toISOString().split('T')[0]
-                const { count: appointmentsToday, data: apptsData } = await supabase
-                    .from('appointments')
-                    .select('*, patients(name)')
-                    .eq('date', today)
+                // 2. Citas de hoy (de la tabla consultas)
+                const todayStart = new Date()
+                todayStart.setHours(0, 0, 0, 0)
+                const todayEnd = new Date()
+                todayEnd.setHours(23, 59, 59, 999)
 
-                // 3. Hallazgos (de la nueva tabla de odontogramas)
-                const { count: findingsCount } = await supabase
+                const apptRes = await supabase
+                    .from('consultas')
+                    .select('*')
+                    .gte('fecha_hora', todayStart.toISOString())
+                    .lte('fecha_hora', todayEnd.toISOString())
+
+                // 3. Hallazgos
+                const findingsRes = await supabase
                     .from('patient_odontograms')
                     .select('*', { count: 'exact', head: true })
 
-                // 4. Ingresos (Suma de amount_paid en treatments)
-                const { data: incomeData } = await supabase
-                    .from('treatments')
-                    .select('amount_paid')
+                // 4. Ingresos (Suma de precio en consultas pagadas/completadas)
+                const incomeRes = await supabase
+                    .from('consultas')
+                    .select('precio')
+                    .in('estado', ['pagada', 'completada'])
 
-                const totalIncome = incomeData?.reduce((acc, curr) => acc + (Number(curr.amount_paid) || 0), 0) || 0
+                // Log de errores para diagnóstico
+                if (patientRes.error) console.error("Error consultas (count):", patientRes.error)
+                if (apptRes.error) console.error("Error agendamiento:", apptRes.error)
+                if (findingsRes.error) console.error("Error hallazgos:", findingsRes.error)
+                if (incomeRes.error) console.error("Error ingresos:", incomeRes.error)
+
+                const totalIncome = incomeRes.data?.reduce((acc, curr) => acc + (Number(curr.precio) || 0), 0) || 0
 
                 setRealStats([
-                    { name: 'Red de Pacientes', value: (patientCount || 0).toLocaleString(), icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', trend: 'Total' },
-                    { name: 'Agendamiento Hoy', value: (appointmentsToday || 0).toString(), icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10', trend: 'Hoy' },
-                    { name: 'Hallazgos Aura', value: (findingsCount || 0).toString(), icon: BrainCircuit, color: 'text-[#059669]', bg: 'bg-[#059669]/10', trend: 'IA' },
+                    { name: 'Red de Pacientes', value: (patientRes.count || 0).toLocaleString(), icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', trend: 'Total' },
+                    { name: 'Agendamiento Hoy', value: (apptRes.data?.length || 0).toString(), icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10', trend: 'Hoy' },
+                    { name: 'Hallazgos Aura', value: (findingsRes.count || 0).toString(), icon: BrainCircuit, color: 'text-[#059669]', bg: 'bg-[#059669]/10', trend: 'IA' },
                     { name: 'Ingresos USD', value: `$${totalIncome.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', trend: 'Cierre' },
                 ])
 
-                if (apptsData) setRecentAppointments(apptsData)
+                if (apptRes.data) setRecentAppointments(apptRes.data)
 
-            } catch (error) {
-                console.error("Error cargando dashboard:", error)
+            } catch (err: any) {
+                console.error("Error crítico dashboard:", err)
+                setError(err.message || "Error de conexión con Supabase")
             } finally {
                 setLoading(false)
             }
@@ -100,10 +115,16 @@ export default function AdminDashboard() {
                 <div className="flex items-center gap-4 bg-white/70 backdrop-blur-xl p-2 rounded-3xl border border-white shadow-xl luxury-shadow">
                     <div className="px-4 py-2 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
                         <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none">Global Status</p>
-                        <p className="text-xs font-bold text-emerald-700">Real-time Data Active</p>
+                        <p className="text-xs font-bold text-emerald-700">{error ? 'System offline' : 'Real-time Data Active'}</p>
                     </div>
                 </div>
             </div>
+
+            {error && (
+                <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-[2rem] text-red-600 font-bold text-sm text-center">
+                    Aviso: {error}. La tabla 'consultas' o 'patient_odontograms' podría no estar accesible.
+                </div>
+            )}
 
             {/* AI Neural Stats */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
@@ -154,7 +175,10 @@ export default function AdminDashboard() {
                                 </p>
                             </div>
                         </div>
-                        <Button variant="ghost" className="rounded-xl text-xs font-black uppercase tracking-widest text-[#0F4C75] hover:bg-[#0F4C75]/5 flex items-center gap-2">
+                        <Button variant="ghost"
+                            onClick={() => window.location.href = '/admin/agenda'}
+                            className="rounded-xl text-xs font-black uppercase tracking-widest text-[#0F4C75] hover:bg-[#0F4C75]/5 flex items-center gap-2"
+                        >
                             Ver Full Calendario <ArrowUpRight className="w-4 h-4" />
                         </Button>
                     </div>
@@ -173,23 +197,23 @@ export default function AdminDashboard() {
                             >
                                 <div className="flex items-center gap-5">
                                     <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-slate-100 to-white flex items-center justify-center font-black text-primary border border-slate-200 text-xl shadow-inner group-hover/item:rotate-6 transition-transform">
-                                        {appt.patients?.name[0]}
+                                        {appt.paciente_nombre ? appt.paciente_nombre[0] : 'P'}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <p className="font-black text-slate-800 tracking-tight">{appt.patients?.name}</p>
-                                            <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/10' : 'bg-amber-500/10 text-amber-600 border-amber-500/10'
+                                            <p className="font-black text-slate-800 tracking-tight">{appt.paciente_nombre || 'Paciente'}</p>
+                                            <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.estado === 'pagada' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/10' : 'bg-amber-500/10 text-amber-600 border-amber-500/10'
                                                 }`}>
-                                                {appt.status}
+                                                {appt.estado}
                                             </span>
                                         </div>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{appt.type}</p>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{appt.motivo || 'Teleconsulta'}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-center gap-2 justify-end mb-1">
                                         <Zap className="w-4 h-4 text-emerald-500" />
-                                        <p className="text-lg font-black text-[#0F4C75] tracking-tight">{appt.time.substring(0, 5)}</p>
+                                        <p className="text-lg font-black text-[#0F4C75] tracking-tight">{appt.fecha_hora ? new Date(appt.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}</p>
                                     </div>
                                 </div>
                             </motion.div>

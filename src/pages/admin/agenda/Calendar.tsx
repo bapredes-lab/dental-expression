@@ -22,17 +22,17 @@ export default function AgendaView() {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetchAppointments()
+        fetchConsultas()
 
-        // SUSCRIPCIÓN EN TIEMPO REAL
+        // SUSCRIPCIÓN EN TIEMPO REAL (Usando la tabla consultas)
         const channel = supabase
-            .channel('realtime_agenda')
+            .channel('realtime_agenda_consultas')
             .on('postgres_changes', {
                 event: '*',
                 schema: 'public',
-                table: 'appointments'
+                table: 'consultas'
             }, () => {
-                fetchAppointments()
+                fetchConsultas()
             })
             .subscribe()
 
@@ -41,53 +41,53 @@ export default function AgendaView() {
         }
     }, [])
 
-    const fetchAppointments = async () => {
+    const fetchConsultas = async () => {
         try {
             const { data, error } = await supabase
-                .from('appointments')
+                .from('consultas')
                 .select(`
                     id,
-                    date,
-                    time,
-                    type,
-                    status,
-                    patients ( name )
+                    fecha_hora,
+                    paciente_nombre,
+                    estado,
+                    motivo
                 `)
 
             if (error) throw error
 
             if (data) {
-                const formattedEvents = data.map((appt: any) => {
-                    const startDateTime = `${appt.date}T${appt.time}`
-                    const endDateTime = new Date(new Date(startDateTime).getTime() + 60 * 60 * 1000).toISOString().split('.')[0]
-                    const patientName = appt.patients?.name || 'Paciente'
+                const formattedEvents = data.map((consulta: any) => {
+                    const startDateTime = consulta.fecha_hora
+                    // Asumimos 1 hora de duración por defecto para visualización
+                    const endDateTime = new Date(new Date(startDateTime).getTime() + 60 * 60 * 1000).toISOString()
+
                     return {
-                        id: appt.id,
-                        title: `${patientName} - ${appt.type}`,
+                        id: consulta.id,
+                        title: `${consulta.paciente_nombre} - ${consulta.motivo || 'Teleconsulta'}`,
                         start: startDateTime,
                         end: endDateTime,
-                        backgroundColor: appt.status === 'confirmed' ? '#059669' : '#0F4C75',
+                        backgroundColor: consulta.estado === 'pagada' ? '#059669' : '#0F4C75',
                         borderColor: 'transparent',
-                        extendedProps: { ...appt }
+                        extendedProps: { ...consulta }
                     }
                 })
                 setEvents([...colombianHolidays, ...formattedEvents])
             }
         } catch (error) {
-            console.error("Error cargando agenda:", error)
+            console.error("Error cargando agenda (consultas):", error)
         } finally {
             setLoading(false)
         }
     }
 
     const handleDateClick = (arg: any) => {
-        alert('Nueva cita en: ' + arg.dateStr)
+        alert('Nueva cita seleccionada en: ' + arg.dateStr + '\n(Funcionalidad en desarrollo para agendamiento manual)')
     }
 
     const handleEventClick = (clickInfo: any) => {
         if (clickInfo.event.display !== 'background') {
-            const appt = clickInfo.event.extendedProps
-            alert(`Cita: ${clickInfo.event.title}\nEstado: ${appt.status}\nPaciente: ${appt.patients?.name}`)
+            const consulta = clickInfo.event.extendedProps
+            alert(`Teleconsulta: ${consulta.paciente_nombre}\nMotivo: ${consulta.motivo}\nEstado: ${consulta.estado}`)
         }
     }
 
@@ -98,11 +98,11 @@ export default function AgendaView() {
                     <h2 className="text-3xl font-black tracking-tight text-[#052c46]">Agenda Inteligente</h2>
                     <p className="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest flex items-center gap-2">
                         {loading ? <Loader2 className="w-3 h-3 animate-spin text-emerald-500" /> : <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />}
-                        Sincronización en Tiempo Real Activa
+                        Sincronización en Tiempo Real Activa (Consultas)
                     </p>
                 </div>
                 <Button className="bg-[#052c46] text-white hover:bg-[#0a4b78] rounded-2xl shadow-xl px-8 h-12 font-black uppercase tracking-widest text-xs transition-all active:scale-95">
-                    <Plus className="mr-2 h-4 w-4" /> Nueva Cita
+                    <Plus className="mr-2 h-4 w-4" /> Nueva Teleconsulta
                 </Button>
             </div>
 
@@ -130,7 +130,7 @@ export default function AgendaView() {
                         week: 'Semana',
                         day: 'Día'
                     }}
-                    eventClassNames="rounded-lg shadow-sm font-bold text-xs p-1 cursor-pointer"
+                    eventClassNames="rounded-lg shadow-sm font-bold text-xs p-1 cursor-pointer hover:scale-[1.02] transition-transform"
                 />
             </div>
         </div>
