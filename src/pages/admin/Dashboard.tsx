@@ -8,21 +8,73 @@ import {
     Zap,
     ArrowUpRight,
     Eye,
-    ScanLine
+    ScanLine,
+    Loader2
 } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import SmartOdontogram from '@/components/admin/SmartOdontogram'
 import { useAuth } from '@/contexts/AuthContext'
+import { useEffect, useState } from 'react'
+import { supabase } from '@/lib/supabase'
 
 export default function AdminDashboard() {
     const { user } = useAuth()
-    const stats = [
-        { name: 'Red de Pacientes', value: '1,284', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', trend: '+12%' },
-        { name: 'Agendamiento IA', value: '18', icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10', trend: 'Hoy' },
-        { name: 'Hallazgos Aura', value: '45', icon: BrainCircuit, color: 'text-[#059669]', bg: 'bg-[#059669]/10', trend: 'Nuevos' },
-        { name: 'Proyección USD', value: '$12,450', icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', trend: '+8%' },
-    ]
+    const [loading, setLoading] = useState(true)
+    const [realStats, setRealStats] = useState([
+        { name: 'Red de Pacientes', value: '0', icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', trend: '+0%' },
+        { name: 'Agendamiento Hoy', value: '0', icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10', trend: 'Hoy' },
+        { name: 'Hallazgos Aura', value: '0', icon: BrainCircuit, color: 'text-[#059669]', bg: 'bg-[#059669]/10', trend: 'Nuevos' },
+        { name: 'Ingresos USD', value: '$0', icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', trend: '+0%' },
+    ])
+    const [recentAppointments, setRecentAppointments] = useState<any[]>([])
+
+    useEffect(() => {
+        async function fetchDashboardData() {
+            setLoading(true)
+            try {
+                // 1. Conteo de Pacientes
+                const { count: patientCount } = await supabase
+                    .from('patients')
+                    .select('*', { count: 'exact', head: true })
+
+                // 2. Citas de hoy
+                const today = new Date().toISOString().split('T')[0]
+                const { count: appointmentsToday, data: apptsData } = await supabase
+                    .from('appointments')
+                    .select('*, patients(name)')
+                    .eq('date', today)
+
+                // 3. Hallazgos (de la nueva tabla de odontogramas)
+                const { count: findingsCount } = await supabase
+                    .from('patient_odontograms')
+                    .select('*', { count: 'exact', head: true })
+
+                // 4. Ingresos (Suma de amount_paid en treatments)
+                const { data: incomeData } = await supabase
+                    .from('treatments')
+                    .select('amount_paid')
+
+                const totalIncome = incomeData?.reduce((acc, curr) => acc + (Number(curr.amount_paid) || 0), 0) || 0
+
+                setRealStats([
+                    { name: 'Red de Pacientes', value: (patientCount || 0).toLocaleString(), icon: Users, color: 'text-emerald-400', bg: 'bg-emerald-500/10', trend: 'Total' },
+                    { name: 'Agendamiento Hoy', value: (appointmentsToday || 0).toString(), icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10', trend: 'Hoy' },
+                    { name: 'Hallazgos Aura', value: (findingsCount || 0).toString(), icon: BrainCircuit, color: 'text-[#059669]', bg: 'bg-[#059669]/10', trend: 'IA' },
+                    { name: 'Ingresos USD', value: `$${totalIncome.toLocaleString()}`, icon: DollarSign, color: 'text-emerald-500', bg: 'bg-emerald-500/10', trend: 'Cierre' },
+                ])
+
+                if (apptsData) setRecentAppointments(apptsData)
+
+            } catch (error) {
+                console.error("Error cargando dashboard:", error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchDashboardData()
+    }, [])
 
     return (
         <motion.div
@@ -46,21 +98,16 @@ export default function AdminDashboard() {
                 </div>
 
                 <div className="flex items-center gap-4 bg-white/70 backdrop-blur-xl p-2 rounded-3xl border border-white shadow-xl luxury-shadow">
-                    <div className="flex -space-x-3 ml-2">
-                        {[1, 2, 3, 4].map(i => (
-                            <div key={i} className="h-10 w-10 rounded-2xl bg-slate-200 border-4 border-white ring-2 ring-emerald-500/20" />
-                        ))}
-                    </div>
                     <div className="px-4 py-2 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none">Status Online</p>
-                        <p className="text-xs font-bold text-emerald-700">6 Odontólogos Activos</p>
+                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none">Global Status</p>
+                        <p className="text-xs font-bold text-emerald-700">Real-time Data Active</p>
                     </div>
                 </div>
             </div>
 
             {/* AI Neural Stats */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-                {stats.map((stat, idx) => (
+                {realStats.map((stat, idx) => (
                     <motion.div
                         key={stat.name}
                         initial={{ opacity: 0, x: -20 }}
@@ -68,11 +115,6 @@ export default function AdminDashboard() {
                         transition={{ delay: idx * 0.1 }}
                         className="group relative rounded-[2rem] border-white/50 bg-white/40 backdrop-blur-xl p-8 shadow-xl luxury-shadow border hover:border-emerald-500/30 transition-all duration-500 overflow-hidden"
                     >
-                        {/* Decorative Neural Pattern */}
-                        <div className="absolute -right-4 -bottom-4 opacity-5 group-hover:scale-125 transition-transform duration-1000">
-                            <TrendingUp className="w-24 h-24" />
-                        </div>
-
                         <div className="flex items-center justify-between mb-4 relative z-10">
                             <div className={`${stat.bg} ${stat.color} p-3 rounded-2xl shadow-inner`}>
                                 <stat.icon className="h-6 w-6" />
@@ -83,7 +125,11 @@ export default function AdminDashboard() {
                         </div>
                         <div className="relative z-10">
                             <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.name}</p>
-                            <div className="text-4xl font-black text-[#052c46] tracking-tighter group-hover:translate-x-1 transition-transform">{stat.value}</div>
+                            {loading ? (
+                                <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
+                            ) : (
+                                <div className="text-4xl font-black text-[#052c46] tracking-tighter group-hover:translate-x-1 transition-transform">{stat.value}</div>
+                            )}
                         </div>
                     </motion.div>
                 ))}
@@ -94,19 +140,18 @@ export default function AdminDashboard() {
 
             {/* Intelligence Section */}
             <div className="grid gap-8 lg:grid-cols-3">
-                {/* AI Agenda Feed */}
+                {/* AI Agenda Feed Real */}
                 <div className="lg:col-span-2 rounded-[2.5rem] bg-white/40 backdrop-blur-xl p-8 shadow-xl border border-white/40 luxury-shadow relative overflow-hidden group">
-                    {/* Glass Overlay for depth */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/5 rounded-full blur-3xl group-hover:bg-emerald-400/10 transition-colors" />
-
                     <div className="flex items-center justify-between mb-10 pb-4 border-b border-slate-100/50">
                         <div className="flex items-center gap-4">
                             <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-xl">
                                 <ScanLine className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-black text-slate-800 tracking-tight">Agenda Predictiva</h3>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">Optimizado por AURA IA</p>
+                                <h3 className="text-xl font-black text-slate-800 tracking-tight">Citas para Hoy</h3>
+                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                    {recentAppointments.length > 0 ? `Sincronizado: ${recentAppointments.length} citas` : 'No hay citas agendadas hoy'}
+                                </p>
                             </div>
                         </div>
                         <Button variant="ghost" className="rounded-xl text-xs font-black uppercase tracking-widest text-[#0F4C75] hover:bg-[#0F4C75]/5 flex items-center gap-2">
@@ -115,11 +160,12 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="space-y-4">
-                        {[
-                            { patient: 'Pamela Flores', time: '09:00 AM', procedure: 'Ortodoncia Digital', status: 'confirmada', ia: 'Alta Retención' },
-                            { patient: 'Ricardo Sosa', time: '10:30 AM', procedure: 'Implante Aura-Z', status: 'confirmada', ia: 'Caso Complejo' },
-                            { patient: 'Lucía Méndez', time: '02:00 PM', procedure: 'Scan Intraoral', status: 'pendiente', ia: 'Nueva Diagnóstico' },
-                        ].map((appt, i) => (
+                        {recentAppointments.length === 0 && !loading && (
+                            <div className="text-center py-12 text-slate-400 font-bold uppercase tracking-widest text-sm">
+                                Tranquilidad en la clínica: Sin citas hoy
+                            </div>
+                        )}
+                        {recentAppointments.map((appt, i) => (
                             <motion.div
                                 key={i}
                                 whileHover={{ x: 5 }}
@@ -127,22 +173,24 @@ export default function AdminDashboard() {
                             >
                                 <div className="flex items-center gap-5">
                                     <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-slate-100 to-white flex items-center justify-center font-black text-primary border border-slate-200 text-xl shadow-inner group-hover/item:rotate-6 transition-transform">
-                                        {appt.patient[0]}
+                                        {appt.patients?.name[0]}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <p className="font-black text-slate-800 tracking-tight">{appt.patient}</p>
-                                            <span className="text-[8px] bg-emerald-500/10 text-emerald-600 px-2 py-0.5 rounded-md font-black uppercase tracking-widest border border-emerald-500/10 shadow-sm">{appt.ia}</span>
+                                            <p className="font-black text-slate-800 tracking-tight">{appt.patients?.name}</p>
+                                            <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.status === 'confirmed' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/10' : 'bg-amber-500/10 text-amber-600 border-amber-500/10'
+                                                }`}>
+                                                {appt.status}
+                                            </span>
                                         </div>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{appt.procedure}</p>
+                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{appt.type}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-center gap-2 justify-end mb-1">
                                         <Zap className="w-4 h-4 text-emerald-500" />
-                                        <p className="text-lg font-black text-[#0F4C75] tracking-tight">{appt.time}</p>
+                                        <p className="text-lg font-black text-[#0F4C75] tracking-tight">{appt.time.substring(0, 5)}</p>
                                     </div>
-                                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Proceder al Box 01</p>
                                 </div>
                             </motion.div>
                         ))}
@@ -152,32 +200,25 @@ export default function AdminDashboard() {
                 {/* AI Creative Sidebar */}
                 <div className="space-y-8">
                     <div className="rounded-[2.5rem] bg-gradient-to-br from-emerald-600 to-teal-800 p-8 text-white shadow-2xl relative overflow-hidden luxury-shadow">
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1], rotate: [0, 90, 0] }}
-                            transition={{ duration: 15, repeat: Infinity }}
-                            className="absolute -top-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-[80px]"
-                        />
                         <div className="relative z-10">
                             <Sparkles className="w-12 h-12 mb-6 text-emerald-300 drop-shadow-[0_0_10px_rgba(110,231,183,0.5)]" />
                             <h4 className="text-2xl font-black mb-2 tracking-tighter">Smile Design IA</h4>
                             <p className="text-sm font-bold text-emerald-100 mb-8 leading-relaxed opacity-80">
-                                La creatividad dental ahora es digital. Genera simulaciones hiper-realistas para tus pacientes en segundos.
+                                La creatividad dental ahora es digital e hiper-realista con DALL-E 3.
                             </p>
-                            <Button className="w-full h-14 bg-white text-emerald-900 hover:bg-emerald-50 font-black rounded-3xl shadow-xl transition-all active:scale-95 flex items-center gap-2">
+                            <Button
+                                onClick={() => window.location.href = '/admin/before-after'}
+                                className="w-full h-14 bg-white text-emerald-900 hover:bg-emerald-50 font-black rounded-3xl shadow-xl transition-all active:scale-95 flex items-center gap-2"
+                            >
                                 <Eye className="w-5 h-5" /> INICIAR SIMULADOR
                             </Button>
                         </div>
                     </div>
 
                     <div className="rounded-[2.5rem] bg-[#052c46] p-8 text-white shadow-2xl relative overflow-hidden luxury-shadow border border-white/10">
-                        <div className="flex items-center gap-4 mb-6 pb-4 border-b border-white/5">
-                            <div className="flex -space-x-2">
-                                {[1, 2, 3].map(i => <div key={i} className="w-10 h-10 rounded-xl bg-slate-800 border-2 border-[#052c46]" />)}
-                            </div>
-                            <p className="text-xs font-bold text-slate-400">Dra. Nataly y su equipo están analizando casos complejos hoy.</p>
-                        </div>
+                        <p className="text-xs font-bold text-slate-400 mb-4">Módulo de IA conectado a Claude 3.5 Sonnet.</p>
                         <Button variant="link" className="text-emerald-400 font-bold p-0 flex items-center gap-2 hover:text-emerald-300 transition-colors uppercase text-[10px] tracking-widest">
-                            Ir a la Galería Médica <ArrowUpRight className="w-4 h-4" />
+                            Estado del Sistema: Óptimo <ArrowUpRight className="w-4 h-4" />
                         </Button>
                     </div>
                 </div>

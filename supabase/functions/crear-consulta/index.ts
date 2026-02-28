@@ -113,10 +113,8 @@ serve(async (req) => {
                 currency: "usd",
                 automatic_payment_methods: JSON.stringify({ enabled: true }),
                 description: `Teleconsulta: ${paciente_nombre}`,
-                metadata: {
-                    paciente_email,
-                    fecha_hora
-                }
+                "metadata[paciente_email]": paciente_email,
+                "metadata[fecha_hora]": fecha_hora
             })
         })
 

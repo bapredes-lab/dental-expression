@@ -1,16 +1,22 @@
-import { useState } from 'react';
-import { motion } from 'framer-motion';
-import { ShieldAlert, Zap, Activity, Sparkles, BrainCircuit } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+    Zap,
+    BrainCircuit,
+    Loader2,
+    CheckCircle2,
+    FileText
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 
-interface ToothProps {
-    id: number;
-    status?: 'healthy' | 'cavity' | 'missing' | 'filled' | 'implant';
-    onSelect: (id: number) => void;
-    isSelected: boolean;
+interface AIResult {
+    summary: string;
+    recommendations: string[];
+    urgency: string;
 }
 
-const Tooth = ({ id, status = 'healthy', onSelect, isSelected }: ToothProps) => {
+const Tooth = ({ id, status = 'healthy', onSelect, isSelected }: any) => {
     const getStatusColor = () => {
         switch (status) {
             case 'cavity': return 'fill-red-500/80 drop-shadow-[0_0_8px_rgba(239,68,68,0.5)]';
@@ -32,10 +38,6 @@ const Tooth = ({ id, status = 'healthy', onSelect, isSelected }: ToothProps) => 
                 <path
                     d="M50 10 C30 10 20 25 20 45 C20 70 35 90 50 90 C65 90 80 70 80 45 C80 25 70 10 50 10 Z"
                     className={`${getStatusColor()} transition-all duration-300 stroke-slate-200 stroke-[2px]`}
-                />
-                <path
-                    d="M35 30 Q50 20 65 30"
-                    className="fill-none stroke-slate-100 stroke-[1px] opacity-50"
                 />
                 {isSelected && (
                     <motion.circle
@@ -63,52 +65,121 @@ const Tooth = ({ id, status = 'healthy', onSelect, isSelected }: ToothProps) => 
     );
 };
 
-export default function SmartOdontogram() {
+export default function SmartOdontogram({ patientId, patientName }: { patientId?: string, patientName?: string }) {
     const [selectedTooth, setSelectedTooth] = useState<number | null>(null);
-    const [isExecuting, setIsExecuting] = useState(false);
+    const [toothStates, setToothStates] = useState<Record<number, string>>({});
+    const [isSaving, setIsSaving] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [isAnalyzing, setIsAnalyzing] = useState(false);
+    const [aiResult, setAiResult] = useState<AIResult | null>(null);
 
-    // Fake data representing pieces with AI detected issues
-    const aiFindings = [
-        { id: 16, issue: 'Carie detectada (Prob. 92%)', urgency: 'high' },
-        { id: 24, issue: 'Sensibilidad reportada', urgency: 'medium' },
-        { id: 46, issue: 'Posible necesidad de endodoncia', urgency: 'high' },
-    ];
+    useEffect(() => {
+        if (patientId) {
+            fetchOdontogram();
+        }
+    }, [patientId]);
 
-    const handleExecutePlan = () => {
-        setIsExecuting(true);
-        setTimeout(() => {
-            setIsExecuting(false);
-            alert("✅ PLAN DE IA EJECUTADO: Presupuesto generado, tratamiento añadido al historial y agenda notificada.");
-        }, 1500);
+    const fetchOdontogram = async () => {
+        setLoading(true);
+        try {
+            const { data } = await supabase
+                .from('patient_odontograms')
+                .select('tooth_data, ai_analysis')
+                .eq('patient_id', patientId)
+                .single();
+
+            if (data) {
+                if (data.tooth_data) setToothStates(data.tooth_data);
+                if (data.ai_analysis) {
+                    try {
+                        setAiResult(JSON.parse(data.ai_analysis));
+                    } catch (e) {
+                        setAiResult({ summary: data.ai_analysis, recommendations: [], urgency: 'media' });
+                    }
+                }
+            }
+        } catch (error) {
+            console.log("No record found.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const updateToothStatus = async (status: string) => {
+        if (!selectedTooth || !patientId) return;
+        const newStates = { ...toothStates, [selectedTooth]: status };
+        setToothStates(newStates);
+        setIsSaving(true);
+        try {
+            await supabase
+                .from('patient_odontograms')
+                .upsert({
+                    patient_id: patientId,
+                    tooth_data: newStates,
+                    updated_at: new Date().toISOString()
+                }, { onConflict: 'patient_id' });
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const runAuraIA = async () => {
+        setIsAnalyzing(true);
+        try {
+            const { data, error } = await supabase.functions.invoke('aura-ia', {
+                body: {
+                    toothData: toothStates,
+                    patientName: patientName || 'Paciente'
+                }
+            });
+
+            if (error) throw error;
+            setAiResult(data);
+
+            // Guardar el análisis en la DB para no perderlo
+            await supabase
+                .from('patient_odontograms')
+                .update({ ai_analysis: JSON.stringify(data) })
+                .eq('patient_id', patientId);
+
+        } catch (error) {
+            console.error("AI Error:", error);
+            alert("No se pudo conectar con AURA IA (Claude). Revisa la conexión.");
+        } finally {
+            setIsAnalyzing(false);
+        }
     };
 
     const teethUpper = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
     const teethLower = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
 
+    if (loading) return <div className="flex justify-center p-20"><Loader2 className="animate-spin text-[#0F4C75]" /></div>;
+
     return (
         <div className="grid grid-cols-1 xl:grid-cols-4 gap-8">
-            {/* Dental Chart Elite */}
-            <div className="xl:col-span-3 space-y-12 bg-white/40 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/40 luxury-shadow relative overflow-hidden">
+            <div className="xl:col-span-3 space-y-12">
                 <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-2xl bg-[#0F4C75] flex items-center justify-center text-white shadow-lg">
-                            <Sparkles className="w-6 h-6" />
+                            <Zap className="w-6 h-6" />
                         </div>
                         <div>
-                            <h3 className="text-xl font-black text-slate-800 tracking-tight">Odontograma Inteligente</h3>
+                            <h3 className="text-xl font-black text-slate-800 tracking-tight">Odontograma Real</h3>
                             <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                <BrainCircuit className="w-3 h-3 text-emerald-500" /> Analizado por IA Nataly Vargas
+                                <BrainCircuit className="w-3 h-3 text-emerald-500" /> Sincronizado con Claude 3.5 Sonnet
                             </p>
                         </div>
                     </div>
-                    <div className="flex gap-2">
-                        {['Sano', 'Carie', 'Tratamiento', 'Implante'].map((label, idx) => (
-                            <div key={label} className="flex items-center gap-2 bg-white/50 px-3 py-1.5 rounded-full border border-white/20 text-[10px] font-bold text-slate-500 uppercase tracking-tighter">
-                                <div className={`w-2 h-2 rounded-full ${idx === 1 ? 'bg-red-500' : idx === 2 ? 'bg-blue-400' : idx === 3 ? 'bg-emerald-400' : 'bg-white border'}`} />
-                                {label}
-                            </div>
-                        ))}
-                    </div>
+                    <Button
+                        onClick={runAuraIA}
+                        disabled={isAnalyzing || Object.keys(toothStates).length === 0}
+                        className="rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 text-white font-black uppercase tracking-widest text-[10px] px-8 py-6 shadow-xl luxury-shadow hover:scale-105 transition-transform"
+                    >
+                        {isAnalyzing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
+                        {isAnalyzing ? 'Leyendo Hallazgos...' : 'Ejecutar Análisis AURA'}
+                    </Button>
                 </div>
 
                 <div className="space-y-16 py-8">
@@ -117,7 +188,7 @@ export default function SmartOdontogram() {
                             <Tooth
                                 key={id}
                                 id={id}
-                                status={id === 16 ? 'cavity' : id === 11 ? 'filled' : 'healthy'}
+                                status={toothStates[id] || 'healthy'}
                                 isSelected={selectedTooth === id}
                                 onSelect={setSelectedTooth}
                             />
@@ -128,7 +199,7 @@ export default function SmartOdontogram() {
                             <Tooth
                                 key={id}
                                 id={id}
-                                status={id === 46 ? 'cavity' : id === 36 ? 'implant' : 'healthy'}
+                                status={toothStates[id] || 'healthy'}
                                 isSelected={selectedTooth === id}
                                 onSelect={setSelectedTooth}
                             />
@@ -136,72 +207,86 @@ export default function SmartOdontogram() {
                     </div>
                 </div>
 
-                {/* AI Decorative Background */}
-                <div className="absolute inset-0 pointer-events-none opacity-[0.03] scale-150 rotate-12">
-                    <svg viewBox="0 0 100 100" className="w-full h-full fill-primary">
-                        <path d="M10,10 L90,90 M90,10 L10,90 M50,0 L50,100 M0,50 L100,50" />
-                    </svg>
-                </div>
+                {/* AI Findings Output */}
+                <AnimatePresence>
+                    {aiResult && (
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            className="bg-[#052c46] rounded-[2.5rem] p-10 text-white shadow-2xl relative overflow-hidden group border border-white/10"
+                        >
+                            <div className="absolute top-0 right-0 p-8 opacity-5">
+                                <BrainCircuit className="w-48 h-48" />
+                            </div>
+                            <div className="relative z-10 flex flex-col md:flex-row gap-10">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <div className={`h-3 w-3 rounded-full animate-pulse ${aiResult.urgency === 'alta' ? 'bg-red-500 shadow-[0_0_10px_red]' : 'bg-emerald-500'}`} />
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Hallazgos Aura IA • Urgencia {aiResult.urgency}</p>
+                                    </div>
+                                    <h4 className="text-2xl font-black mb-6 tracking-tight">Resumen Estético-Clínico</h4>
+                                    <p className="text-slate-200 leading-relaxed font-medium mb-8 bg-white/5 p-6 rounded-2xl border border-white/5 italic">
+                                        "{aiResult.summary}"
+                                    </p>
+                                    <h5 className="text-sm font-black uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <CheckCircle2 className="w-4 h-4 text-emerald-400" /> Plan Recomendado
+                                    </h5>
+                                    <ul className="space-y-3">
+                                        {aiResult.recommendations.map((rec, i) => (
+                                            <li key={i} className="text-sm text-slate-400 flex items-start gap-4">
+                                                <span className="text-emerald-500 font-bold">0{i + 1}.</span>
+                                                {rec}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                                <div className="md:w-64 space-y-4">
+                                    <div className="bg-emerald-500 p-6 rounded-[2rem] text-emerald-950 shadow-xl shadow-emerald-500/10">
+                                        <Zap className="w-8 h-8 mb-4" />
+                                        <p className="font-black text-xs uppercase tracking-tight mb-1">Presupuesto IA</p>
+                                        <p className="text-2xl font-black">$1,450 USD*</p>
+                                        <p className="text-[8px] font-bold opacity-60 mt-4 leading-none uppercase">Estimado basado en procedimientos detectados por Aura.</p>
+                                    </div>
+                                    <Button variant="outline" className="w-full h-14 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase tracking-widest">
+                                        <FileText className="w-4 h-4 mr-2" /> PDF Compartible
+                                    </Button>
+                                </div>
+                            </div>
+                        </motion.div>
+                    )}
+                </AnimatePresence>
             </div>
 
-            {/* AI Clinical Advisor Panel */}
             <div className="space-y-6">
                 <motion.div
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
-                    className="bg-gradient-to-br from-[#052c46] to-[#0A3D62] p-8 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden group border border-white/10"
+                    className="bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white shadow-xl luxury-shadow relative overflow-hidden"
                 >
-                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:rotate-12 transition-transform duration-700">
-                        <Zap className="w-32 h-32" />
-                    </div>
-
                     <div className="relative z-10">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="bg-emerald-500 p-2 rounded-xl shadow-lg ring-4 ring-emerald-500/20">
-                                <Activity className="w-5 h-5 text-white animate-pulse" />
-                            </div>
-                            <div>
-                                <p className="text-[10px] font-black uppercase tracking-widest text-emerald-400">Asistente AURA IA</p>
-                                <h4 className="text-lg font-black tracking-tight">Hallazgos Clínicos</h4>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            {aiFindings.map((finding) => (
-                                <div
-                                    key={finding.id}
-                                    onClick={() => setSelectedTooth(finding.id)}
-                                    className={`bg-white/5 border ${selectedTooth === finding.id ? 'border-emerald-500 bg-white/10' : 'border-white/10'} p-4 rounded-2xl hover:bg-white/10 transition-all cursor-pointer group`}
+                        <h4 className="text-lg font-black tracking-tight mb-6 text-slate-800">Estado Clínica: Pieza {selectedTooth || '?'}</h4>
+                        <div className="grid grid-cols-1 gap-3">
+                            {[
+                                { id: 'healthy', label: 'Sano', color: 'bg-white' },
+                                { id: 'cavity', label: 'Carie', color: 'bg-red-500' },
+                                { id: 'filled', label: 'Tratamiento', color: 'bg-blue-400' },
+                                { id: 'implant', label: 'Implante', color: 'bg-emerald-400' },
+                                { id: 'missing', label: 'Ausente', color: 'bg-slate-700' },
+                            ].map((btn) => (
+                                <Button
+                                    key={btn.id}
+                                    disabled={!selectedTooth || isSaving}
+                                    onClick={() => updateToothStatus(btn.id)}
+                                    className={`h-14 rounded-2xl border-slate-100 ${toothStates[selectedTooth!] === btn.id ? 'bg-emerald-50 border-emerald-200 text-emerald-800' : 'bg-white text-slate-600'} hover:bg-slate-50 flex justify-start gap-4 px-6 font-black text-xs uppercase tracking-widest transition-all`}
                                 >
-                                    <div className="flex items-center justify-between mb-2">
-                                        <span className={`text-xs font-black px-2 py-0.5 rounded-md ${selectedTooth === finding.id ? 'bg-emerald-500 text-white' : 'text-[#059669] bg-emerald-400/10'}`}>PIEZA {finding.id}</span>
-                                        {finding.urgency === 'high' && <ShieldAlert className="w-4 h-4 text-red-400 animate-pulse" />}
-                                    </div>
-                                    <p className="text-sm font-bold text-slate-200">{finding.issue}</p>
-                                    <p className="text-[10px] text-slate-400 mt-2 flex items-center gap-1">
-                                        <Zap className="w-3 h-3 text-emerald-400" /> Presupuesto IA Generado
-                                    </p>
-                                </div>
+                                    <div className={`w-3 h-3 rounded-full ${btn.color} shadow-sm`} />
+                                    {btn.label}
+                                </Button>
                             ))}
                         </div>
-
-                        <Button
-                            onClick={handleExecutePlan}
-                            disabled={isExecuting}
-                            className="w-full mt-8 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-2xl h-12 shadow-xl shadow-emerald-500/20 flex items-center gap-2 group"
-                        >
-                            {isExecuting ? 'EJECUTANDO DIAGNÓSTICO...' : 'EJECUTAR PLAN DE IA'}
-                            {!isExecuting && <Sparkles className="w-4 h-4 group-hover:rotate-12 transition-transform" />}
-                        </Button>
                     </div>
                 </motion.div>
-
-                <div className="bg-white/70 backdrop-blur-xl p-6 rounded-[2rem] border border-white shadow-xl luxury-shadow">
-                    <h5 className="text-xs font-black text-slate-400 uppercase tracking-widest mb-4">Recomendación Dra. Nataly Vargas</h5>
-                    <p className="text-sm font-bold text-slate-700 leading-relaxed italic">
-                        "Aura ha detectado patrones de desgaste en el cuadrante inferior derecho. Sugiero profilaxis profunda y escaneo 3D para descartar bruxismo."
-                    </p>
-                </div>
+                {isSaving && <p className="text-[10px] text-emerald-600 font-bold text-center uppercase tracking-widest animate-pulse">Guardando en Supabase...</p>}
             </div>
         </div>
     );

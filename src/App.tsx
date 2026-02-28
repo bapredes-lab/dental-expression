@@ -6,6 +6,7 @@ import AdminLayout from './layouts/AdminLayout'
 import AdminDashboard from './pages/admin/Dashboard'
 import PatientsList from './pages/admin/patients/List'
 import PatientForm from './pages/admin/patients/Form'
+import PatientDetails from './pages/admin/patients/Details'
 import MediaGallery from './pages/admin/media/Gallery'
 import AgendaView from './pages/admin/agenda/Calendar'
 import TreatmentPlanBuilder from './pages/admin/treatments/Builder'
@@ -48,6 +49,7 @@ function App() {
             <Route path="dashboard" element={<AdminDashboard />} />
             <Route path="patients" element={<PatientsList />} />
             <Route path="patients/new" element={<PatientForm />} />
+            <Route path="patients/:id" element={<PatientDetails />} />
             <Route path="media" element={<MediaGallery />} />
             <Route path="agenda" element={<AgendaView />} />
             <Route path="treatments" element={<TreatmentPlanBuilder />} />

@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { ReactCompareSlider, ReactCompareSliderImage } from 'react-compare-slider'
 import {
     Upload,
-    Sparkles,
     Wand2,
     ShieldCheck,
     BrainCircuit,
@@ -10,10 +9,12 @@ import {
     Share2,
     Download,
     Eye,
-    Activity
+    Activity,
+    Loader2
 } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { supabase } from '@/lib/supabase'
 
 export default function BeforeAfterTool() {
     const [beforeImage, setBeforeImage] = useState<string | null>(null)
@@ -24,35 +25,53 @@ export default function BeforeAfterTool() {
     const aiMessages = [
         "Iniciando Escaneo de Proporciones Áureas...",
         "Analizando Simetría Facial del Paciente...",
-        "Ajustando Opacidad Incisal (Estándar Nataly Vargas)...",
-        "Generando Malla de Micro-Rehabilitación...",
-        "Finalizando Diseño de Sonrisa Hiper-Realista..."
+        "Calculando Ejes de los Caninos...",
+        "Finalizando Diseño de Sonrisa Hiper-Realista DALL-E 3..."
     ]
 
-    const handleSimulate = () => {
+    const handleSimulate = async () => {
         if (!beforeImage) return
         setIsGenerating(true)
 
+        // Simulación de los pasos de la IA antes de llamar a la API
         let msgIndex = 0
-        const interval = setInterval(() => {
+        const msgInterval = setInterval(() => {
             if (msgIndex < aiMessages.length) {
                 setAiStatus(aiMessages[msgIndex])
                 msgIndex++
             } else {
-                clearInterval(interval)
-                // Usamos la imagen generada por AntiGravity como el "Después"
-                setAfterImage('/perfect_clinical_smile_ia_1772086743396.png')
-                setIsGenerating(false)
+                clearInterval(msgInterval)
             }
-        }, 1200)
+        }, 1500)
+
+        try {
+            const { data, error } = await supabase.functions.invoke('smile-designer-ia', {
+                body: { imageBase64: beforeImage }
+            });
+
+            if (error) throw error;
+            if (data?.url) {
+                setAfterImage(data.url);
+            } else {
+                throw new Error("DALL-E no pudo generar la imagen");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("No se pudo conectar con el Motor Creativo de OpenAI. Verifica tu API Key.");
+        } finally {
+            setIsGenerating(false)
+        }
     }
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (file) {
-            const url = URL.createObjectURL(file)
-            setBeforeImage(url)
-            setAfterImage(null)
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                setBeforeImage(event.target?.result as string);
+                setAfterImage(null);
+            };
+            reader.readAsDataURL(file);
         }
     }
 
@@ -74,7 +93,7 @@ export default function BeforeAfterTool() {
                             <div className="bg-emerald-500/10 p-1 rounded-md">
                                 <BrainCircuit className="w-4 h-4 text-emerald-600" />
                             </div>
-                            <p className="text-sm font-bold text-slate-500 tracking-tight">IA Generativa <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Patrones Clínica Nataly Vargas</span></p>
+                            <p className="text-sm font-bold text-slate-500 tracking-tight">DALL-E 3 Real-time <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Nataly Vargas Elite Series</span></p>
                         </div>
                     </div>
                 </div>
@@ -116,7 +135,7 @@ export default function BeforeAfterTool() {
                                     <div>
                                         <h3 className="text-2xl font-black text-[#052c46] mb-2">Diseño Empezando Aquí</h3>
                                         <p className="text-slate-500 font-medium max-w-sm mx-auto mb-8">
-                                            Sube la fotografía intraoral frontal del paciente para que AURA IA empiece el análisis creativo.
+                                            Sube la fotografía intraoral frontal del paciente para que DALL-E 3 empiece el análisis creativo.
                                         </p>
                                         <label className="cursor-pointer bg-[#052c46] text-white px-10 py-5 rounded-[2rem] font-black uppercase tracking-widest text-xs shadow-2xl hover:bg-emerald-600 transition-all inline-block active:scale-95">
                                             Seleccionar Fotografía
@@ -131,24 +150,24 @@ export default function BeforeAfterTool() {
                                     animate={{ opacity: 1 }}
                                     className="w-full space-y-10"
                                 >
-                                    <div className="relative max-w-3xl mx-auto rounded-[2.5rem] overflow-hidden shadow-2xl border-[12px] border-white group">
+                                    <div className="relative max-w-3xl mx-auto rounded-[2.5rem] overflow-hidden shadow-2xl border-[12px] border-white group bg-slate-100">
                                         {/* Comparison or Single Image */}
                                         {afterImage ? (
                                             <ReactCompareSlider
                                                 itemOne={<ReactCompareSliderImage src={beforeImage} alt="Antes" />}
                                                 itemTwo={<ReactCompareSliderImage src={afterImage} alt="Después" />}
-                                                className="aspect-[4/3] w-full"
+                                                className="aspect-square w-full"
                                             />
                                         ) : (
                                             <div className="relative">
-                                                <img src={beforeImage} alt="Analizando" className="w-full aspect-[4/3] object-cover" />
+                                                <img src={beforeImage} alt="Analizando" className="w-full aspect-square object-cover" />
                                                 {/* Scan Animation */}
                                                 {isGenerating && (
                                                     <motion.div
                                                         initial={{ top: '0%' }}
                                                         animate={{ top: '100%' }}
                                                         transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                                                        className="absolute left-0 w-full h-1 bg-emerald-500 shadow-[0_0_20px_#10b981] z-20"
+                                                        className="absolute left-0 w-full h-2 bg-emerald-500 shadow-[0_0_20px_#10b981] z-20"
                                                     />
                                                 )}
                                                 <div className="absolute inset-0 bg-[#052c46]/20 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -158,7 +177,7 @@ export default function BeforeAfterTool() {
                                         {/* HUD Label */}
                                         <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-4 py-2 rounded-2xl shadow-lg border border-white/50 z-30">
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Estado</p>
-                                            <p className="text-xs font-black text-[#052c46]">{afterImage ? 'SIMULACIÓN COMPLETADA' : isGenerating ? 'PROCESANDO RED NEURAL...' : 'LISTO PARA ESCANEO'}</p>
+                                            <p className="text-xs font-black text-[#052c46]">{afterImage ? 'SIMULACIÓN COMPLETADA' : isGenerating ? 'PROCESANDO RED NEURAL DALL-E...' : 'LISTO PARA ESCANEO'}</p>
                                         </div>
                                     </div>
 
@@ -172,7 +191,7 @@ export default function BeforeAfterTool() {
                                                         exit={{ opacity: 0 }}
                                                         className="flex items-center gap-3 bg-emerald-500/10 px-6 py-3 rounded-2xl border border-emerald-500/20"
                                                     >
-                                                        <Sparkles className="w-5 h-5 text-emerald-600 animate-spin" />
+                                                        <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" />
                                                         <span className="text-sm font-black text-emerald-800 uppercase tracking-widest">{aiStatus}</span>
                                                     </motion.div>
                                                 )}
@@ -187,7 +206,7 @@ export default function BeforeAfterTool() {
                                                     disabled={isGenerating}
                                                     className="rounded-[2rem] h-14 px-10 bg-gradient-to-r from-[#052c46] to-emerald-600 text-white font-black uppercase tracking-widest text-xs shadow-2xl luxury-shadow hover:scale-105 transition-transform"
                                                 >
-                                                    <Wand2 className="mr-3 h-5 w-5" /> Iniciar Diseño Creativo
+                                                    <Wand2 className="mr-3 h-5 w-5" /> Generar Sonrisa Perfecta
                                                 </Button>
                                             </div>
                                         </div>
@@ -221,33 +240,23 @@ export default function BeforeAfterTool() {
                             <div className="bg-emerald-500 p-3 rounded-2xl w-fit mb-6 shadow-xl shadow-emerald-500/20 ring-4 ring-emerald-500/10">
                                 <Zap className="w-5 h-5" />
                             </div>
-                            <h4 className="text-xl font-black mb-2 tracking-tighter">Motor Creativo AURA</h4>
-                            <p className="text-xs font-bold text-emerald-200/60 uppercase tracking-widest mb-6 border-b border-white/5 pb-4">Nataly Vargas Elite Series</p>
+                            <h4 className="text-xl font-black mb-2 tracking-tighter">Smile Designer DALL-E</h4>
+                            <p className="text-xs font-bold text-emerald-200/60 uppercase tracking-widest mb-6 border-b border-white/5 pb-4">Conectado a OpenAI API</p>
                             <p className="text-sm font-medium text-slate-300 leading-relaxed mb-8">
-                                AURA no solo simula; propone una arquitectura dental basada en la simetría de los tercios faciales del paciente, optimizando el eje del canino y la transparencia incisal.
+                                AURA utiliza DALL-E 3 para proponer una arquitectura dental basada en la simetría de los tercios faciales del paciente, optimizando el eje del canino.
                             </p>
 
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
                                     <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Precisión Estética 99.8%</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">IA Generativa de Imagen</span>
                                 </div>
                                 <div className="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
                                     <Eye className="w-4 h-4 text-blue-400" />
-                                    <span className="text-[10px] font-black uppercase tracking-widest">Ray-Tracing Dental</span>
+                                    <span className="text-[10px] font-black uppercase tracking-widest">Ray-Tracing Dental Real</span>
                                 </div>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="bg-white/70 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white shadow-xl luxury-shadow">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
-                            <h5 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">AI Feedback Central</h5>
-                        </div>
-                        <p className="text-sm font-bold text-slate-700 leading-relaxed italic border-l-4 border-emerald-500 pl-4">
-                            "Añadiendo caracterización natural... reduciendo saturación gingival para armonía con tono de labios detectado."
-                        </p>
                     </div>
                 </div>
             </div>
