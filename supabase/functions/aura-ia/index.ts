@@ -25,6 +25,17 @@ serve(async (req) => {
             .map(([id, status]) => `Pieza ${id}: ${status}`)
             .join(', ')
 
+        if (findings.length === 0) {
+            return new Response(JSON.stringify({
+                summary: "No se detectaron hallazgos significativos en el odontograma actual. Todos los tejidos y piezas evaluados presentan condiciones de normalidad clínica.",
+                recommendations: ["Continuar con higiene oral regular.", "Control preventivo en 6 meses."],
+                urgency: "baja"
+            }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                status: 200,
+            })
+        }
+
         const prompt = `Actúa como un asistente dental experto llamado AURA IA. 
     Paciente: ${patientName}
     Hallazgos en el odontograma: ${findings}
@@ -49,7 +60,7 @@ serve(async (req) => {
                 'content-type': 'application/json',
             },
             body: JSON.stringify({
-                model: 'claude-3-sonnet-20240229',
+                model: 'claude-3-5-sonnet-20240620', // Actualizado a 3.5 Sonnet
                 max_tokens: 1024,
                 messages: [{ role: 'user', content: prompt }],
             }),
@@ -59,16 +70,18 @@ serve(async (req) => {
 
         if (!response.ok) {
             console.error('Anthropic API Error:', data);
-            throw new Error(`ANTHROPIC_ERROR: ${data.error?.message || response.statusText}`);
-        }
-
-        if (!data.content || !data.content[0]) {
-            throw new Error('ANTHROPIC_INVALID_RESPONSE: No content returned from Claude.');
+            // Devolvemos un 200 con el error dentro para que el frontend pueda leerlo fácilmente
+            return new Response(JSON.stringify({
+                error: true,
+                message: `ANTHROPIC_ERROR: ${data.error?.message || response.statusText}`,
+                type: data.error?.type
+            }), {
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+                status: 200, // Usamos 200 para evitar que el cliente de Supabase enmascare el error
+            })
         }
 
         const content = data.content[0].text
-
-        // Intentar extraer el JSON de la respuesta de Claude
         const jsonMatch = content.match(/\{[\s\S]*\}/)
         const result = jsonMatch ? JSON.parse(jsonMatch[0]) : { summary: content, recommendations: [], urgency: 'media' }
 
@@ -79,9 +92,9 @@ serve(async (req) => {
 
     } catch (error) {
         console.error('Edge Function Error:', error.message);
-        return new Response(JSON.stringify({ error: error.message, detail: 'Check Supabase Edge Function logs for details.' }), {
+        return new Response(JSON.stringify({ error: true, message: error.message }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 400,
+            status: 200,
         })
     }
 })

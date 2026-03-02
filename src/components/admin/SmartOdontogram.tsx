@@ -145,6 +145,13 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
             });
 
             if (error) throw error;
+
+            // Si la función responde 200 pero con un objeto que contiene 'error: true'
+            if (data?.error) {
+                alert(`Error de AURA IA (Claude):\n\n${data.message}\n\nTipo: ${data.type || 'Inespecífico'}`);
+                return;
+            }
+
             setAiResult(data);
 
             // Guardar el análisis en la DB para no perderlo
