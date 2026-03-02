@@ -44,8 +44,8 @@ export default function BeforeAfterTool() {
             }
         }, 1500)
 
-        // URL de respaldo de alta calidad (Sonrisa perfecta)
-        const FALLBACK_SMILE = "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=1024&h=1024";
+        // URL de respaldo de alta calidad (Dientes perfectos - Primer plano)
+        const FALLBACK_SMILE = "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&q=80&w=1024&h=1024";
 
         try {
             const { data, error } = await supabase.functions.invoke('smile-designer-ia', {
