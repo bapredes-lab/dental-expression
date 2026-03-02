@@ -153,9 +153,10 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
                 .update({ ai_analysis: JSON.stringify(data) })
                 .eq('patient_id', patientId);
 
-        } catch (error) {
+        } catch (error: any) {
             console.error("AI Error:", error);
-            alert("No se pudo conectar con AURA IA (Claude). Revisa la conexión.");
+            const errorMessage = error.message || (typeof error === 'string' ? error : "Error desconocido al contactar a AURA IA.");
+            alert(`Error técnico en AURA IA: ${errorMessage}\n\nPor favor, verifica los secretos ANTHROPIC_API_KEY en Supabase.`);
         } finally {
             setIsAnalyzing(false);
         }

@@ -13,6 +13,10 @@ serve(async (req) => {
     }
 
     try {
+        if (!ANTHROPIC_API_KEY) {
+            throw new Error('AURA_MISSING_API_KEY: Anthropic key is not defined in project secrets.');
+        }
+
         const { toothData, patientName } = await req.json()
 
         // Formatear los datos del odontograma para Claude
@@ -40,7 +44,7 @@ serve(async (req) => {
         const response = await fetch('https://api.anthropic.com/v1/messages', {
             method: 'POST',
             headers: {
-                'x-api-key': ANTHROPIC_API_KEY!,
+                'x-api-key': ANTHROPIC_API_KEY,
                 'anthropic-version': '2023-06-01',
                 'content-type': 'application/json',
             },
@@ -52,6 +56,16 @@ serve(async (req) => {
         })
 
         const data = await response.json()
+
+        if (!response.ok) {
+            console.error('Anthropic API Error:', data);
+            throw new Error(`ANTHROPIC_ERROR: ${data.error?.message || response.statusText}`);
+        }
+
+        if (!data.content || !data.content[0]) {
+            throw new Error('ANTHROPIC_INVALID_RESPONSE: No content returned from Claude.');
+        }
+
         const content = data.content[0].text
 
         // Intentar extraer el JSON de la respuesta de Claude
@@ -60,10 +74,12 @@ serve(async (req) => {
 
         return new Response(JSON.stringify(result), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+            status: 200,
         })
 
     } catch (error) {
-        return new Response(JSON.stringify({ error: error.message }), {
+        console.error('Edge Function Error:', error.message);
+        return new Response(JSON.stringify({ error: error.message, detail: 'Check Supabase Edge Function logs for details.' }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 400,
         })
