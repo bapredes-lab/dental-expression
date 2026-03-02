@@ -68,11 +68,11 @@ export default function AgendarConsulta() {
 
             if (fnError || data?.error) throw new Error(fnError?.message || data?.error || 'Error al procesar')
 
-            if (data.consulta_id && data.client_secret) {
-                // Navegar a pago pasando el secret y el id
-                navigate(`/pagar/${data.consulta_id}`, { state: { clientSecret: data.client_secret } })
+            if (data.consulta_id) {
+                // Navegar a la página de pago de Wompi pasando el id
+                navigate(`/pagar/${data.consulta_id}`)
             } else {
-                throw new Error("Respuesta inválida del servidor")
+                throw new Error("Respuesta inválida del servidor (Falta consulta_id)")
             }
 
         } catch (err: any) {
