@@ -1,6 +1,6 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts"
 
-const ANTHROPIC_API_KEY = Deno.env.get('ANTHROPIC_API_KEY')
+const OPENAI_API_KEY = Deno.env.get('OPENAI_API_KEY')
 
 const corsHeaders = {
     'Access-Control-Allow-Origin': '*',
@@ -13,13 +13,12 @@ serve(async (req) => {
     }
 
     try {
-        if (!ANTHROPIC_API_KEY) {
-            throw new Error('AURA_MISSING_API_KEY: Anthropic key is not defined in project secrets.');
+        if (!OPENAI_API_KEY) {
+            throw new Error('AURA_MISSING_API_KEY: OpenAI key is not defined in project secrets.');
         }
 
         const { toothData, patientName } = await req.json()
 
-        // Formatear los datos del odontograma para Claude
         const findings = Object.entries(toothData)
             .filter(([_, status]) => status !== 'healthy')
             .map(([id, status]) => `Pieza ${id}: ${status}`)
@@ -27,12 +26,11 @@ serve(async (req) => {
 
         if (findings.length === 0) {
             return new Response(JSON.stringify({
-                summary: "No se detectaron hallazgos significativos en el odontograma actual. Todos los tejidos y piezas evaluados presentan condiciones de normalidad clínica.",
-                recommendations: ["Continuar con higiene oral regular.", "Control preventivo en 6 meses."],
+                summary: "No se detectaron hallazgos significativos en el odontograma actual. Todo normal.",
+                recommendations: ["Control preventivo en 6 meses."],
                 urgency: "baja"
             }), {
                 headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 200,
             })
         }
 
@@ -52,46 +50,36 @@ serve(async (req) => {
       "urgency": "alta/media/baja"
     }`
 
-        const response = await fetch('https://api.anthropic.com/v1/messages', {
+        const response = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
-                'x-api-key': ANTHROPIC_API_KEY,
-                'anthropic-version': '2023-06-01',
-                'content-type': 'application/json',
+                'Authorization': `Bearer ${OPENAI_API_KEY}`,
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                model: 'claude-3-5-sonnet-20240620', // Actualizado a 3.5 Sonnet
-                max_tokens: 1024,
-                messages: [{ role: 'user', content: prompt }],
+                model: 'gpt-4o',
+                messages: [
+                    { role: 'system', content: 'Eres AURA IA, un experto asistente dental.' },
+                    { role: 'user', content: prompt }
+                ],
+                response_format: { type: "json_object" }
             }),
         })
 
         const data = await response.json()
 
         if (!response.ok) {
-            console.error('Anthropic API Error:', data);
-            // Devolvemos un 200 con el error dentro para que el frontend pueda leerlo fácilmente
-            return new Response(JSON.stringify({
-                error: true,
-                message: `ANTHROPIC_ERROR: ${data.error?.message || response.statusText}`,
-                type: data.error?.type
-            }), {
-                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-                status: 200, // Usamos 200 para evitar que el cliente de Supabase enmascare el error
-            })
+            throw new Error(`OPENAI_ERROR: ${data.error?.message || response.statusText}`);
         }
 
-        const content = data.content[0].text
-        const jsonMatch = content.match(/\{[\s\S]*\}/)
-        const result = jsonMatch ? JSON.parse(jsonMatch[0]) : { summary: content, recommendations: [], urgency: 'media' }
+        const content = data.choices[0].message.content
+        const result = JSON.parse(content)
 
         return new Response(JSON.stringify(result), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-            status: 200,
         })
 
-    } catch (error) {
-        console.error('Edge Function Error:', error.message);
+    } catch (error: any) {
         return new Response(JSON.stringify({ error: true, message: error.message }), {
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             status: 200,
