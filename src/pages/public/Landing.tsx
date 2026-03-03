@@ -77,16 +77,18 @@ export default function Landing() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     transition={{ duration: 1 }}
-                    className="absolute inset-0 z-0 pointer-events-none opacity-30 blur-sm"
+                    className="absolute inset-0 z-0 pointer-events-none opacity-20 blur-sm"
                 >
                     <img src="/hero-bg.png" alt="Visual effect" className="w-full h-full object-cover transform rotate-1 scale-110" />
+                    {/* Dark Overlay to improve contrast */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-[#052c46] via-[#052c46]/60 to-[#052c46] shadow-[inset_0_0_100px_rgba(0,0,0,0.5)]" />
                 </motion.div>
 
                 <div className="relative z-10 text-center max-w-4xl">
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full mb-8"
+                        className="inline-flex items-center gap-2 bg-emerald-500/20 border border-emerald-500/30 px-4 py-2 rounded-full mb-8 backdrop-blur-md"
                     >
                         <div className="relative flex h-2 w-2">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -101,7 +103,7 @@ export default function Landing() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.2 }}
-                        className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8"
+                        className="text-6xl md:text-8xl font-black tracking-tighter leading-none mb-8 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                     >
                         Reinventando tu <br />
                         <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-200 to-emerald-400 animate-gradient-x">
@@ -113,7 +115,7 @@ export default function Landing() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 }}
-                        className="text-lg md:text-xl text-slate-300 font-medium max-w-2xl mx-auto mb-12 leading-relaxed"
+                        className="text-lg md:text-xl text-slate-100 font-semibold max-w-2xl mx-auto mb-12 leading-relaxed drop-shadow-md"
                     >
                         Experimenta el futuro de la odontología. Una suite virtual de alta gama diseñada para ofrecerte una valoración precisa, profesional y segura sin salir de tu hogar.
                     </motion.p>
@@ -126,17 +128,17 @@ export default function Landing() {
                     >
                         <Link
                             to="/agendar"
-                            className="group w-full sm:w-auto px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-full transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 shadow-[0_0_40px_rgba(16,185,129,0.3)] relative overflow-hidden"
+                            className="group w-full sm:w-auto px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-full transition-all hover:scale-105 active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(16,185,129,0.3)] relative overflow-hidden"
                         >
                             <span className="relative z-10 flex items-center gap-2">
                                 Agendar mi consulta
                                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </span>
                         </Link>
-                        <div className="flex flex-col text-left border-l border-white/10 pl-8">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Inversión Ética</span>
+                        <div className="flex flex-col text-left border-l-2 border-emerald-500/50 pl-8">
+                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-widest">Inversión Ética</span>
                             <div className="flex items-baseline gap-2">
-                                <span className="text-3xl font-black text-white">$50.00</span>
+                                <span className="text-3xl font-black text-white drop-shadow-lg">$50.00</span>
                                 <span className="text-sm font-bold text-emerald-400 uppercase">USD</span>
                             </div>
                         </div>
