@@ -54,7 +54,7 @@ export default function AdminDashboard() {
 
                 // 3. Hallazgos
                 const findingsRes = await supabase
-                    .from('patient_odontograms')
+                    .from('odontogramas_pacientes')
                     .select('*', { count: 'exact', head: true })
 
                 // 4. Ingresos (Suma de precio en consultas pagadas/completadas)
@@ -122,7 +122,7 @@ export default function AdminDashboard() {
 
             {error && (
                 <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-[2rem] text-red-600 font-bold text-sm text-center">
-                    Aviso: {error}. La tabla 'consultas' o 'patient_odontograms' podría no estar accesible.
+                    Aviso: {error}. La tabla 'consultas' u 'odontogramas_pacientes' podría no estar accesible.
                 </div>
             )}
 

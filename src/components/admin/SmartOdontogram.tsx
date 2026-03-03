@@ -87,9 +87,9 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
         setLoading(true);
         try {
             const { data, error } = await supabase
-                .from('patient_odontograms')
-                .select('tooth_data, ai_analysis')
-                .eq('patient_id', patientId)
+                .from('odontogramas_pacientes')
+                .select('datos_dentales, analisis_ia')
+                .eq('paciente_id', patientId)
                 .single();
 
             // Si hay un error que no sea que no existe el registro, lo logeamos
@@ -98,12 +98,12 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
             }
 
             if (data) {
-                if (data.tooth_data) setToothStates(data.tooth_data);
-                if (data.ai_analysis) {
+                if (data.datos_dentales) setToothStates(data.datos_dentales);
+                if (data.analisis_ia) {
                     try {
-                        setAiResult(JSON.parse(data.ai_analysis));
+                        setAiResult(JSON.parse(data.analisis_ia));
                     } catch (e) {
-                        setAiResult({ summary: data.ai_analysis, recommendations: [], urgency: 'media' });
+                        setAiResult({ summary: data.analisis_ia, recommendations: [], urgency: 'media' });
                     }
                 }
             }
@@ -121,12 +121,12 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
         setIsSaving(true);
         try {
             await supabase
-                .from('patient_odontograms')
+                .from('odontogramas_pacientes')
                 .upsert({
-                    patient_id: patientId,
-                    tooth_data: newStates,
-                    updated_at: new Date().toISOString()
-                }, { onConflict: 'patient_id' });
+                    paciente_id: patientId,
+                    datos_dentales: newStates,
+                    actualizado_en: new Date().toISOString()
+                }, { onConflict: 'paciente_id' });
         } catch (error) {
             console.error(error);
         } finally {
@@ -181,9 +181,9 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
 
             // Guardar el análisis en la DB para no perderlo
             await supabase
-                .from('patient_odontograms')
-                .update({ ai_analysis: JSON.stringify(data) })
-                .eq('patient_id', patientId);
+                .from('odontogramas_pacientes')
+                .update({ analisis_ia: JSON.stringify(data) })
+                .eq('paciente_id', patientId);
 
         } catch (error: any) {
             console.error("AI Fallback Error:", error);

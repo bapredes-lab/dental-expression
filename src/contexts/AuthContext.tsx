@@ -49,17 +49,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             user,
             loading,
             signIn: async (email, password) => {
-                // MODO SIMULADOR: Permitir acceso con credenciales de prueba sin Supabase
-                if (email === 'admin@test.com' && password === '123456') {
-                    const mockSession = {
-                        access_token: 'mock-token',
-                        user: { email: 'admin@test.com', id: 'mock-id' }
-                    } as any
-                    setSession(mockSession)
-                    setUser(mockSession.user)
-                    return
-                }
-
                 const { error } = await supabase.auth.signInWithPassword({ email, password })
                 if (error) throw error
             },

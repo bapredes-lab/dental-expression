@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import timeGridPlugin from '@fullcalendar/timegrid'
 import interactionPlugin from '@fullcalendar/interaction'
 import { Plus, Loader2 } from 'lucide-react'
-import { Button } from '@/components/ui/button'
+import { Button } from '../../../components/ui/button'
 import { supabase } from '@/lib/supabase'
 
 // Festivos colombianos básicos

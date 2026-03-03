@@ -7,9 +7,9 @@ import { Link } from "react-router-dom"
 
 interface Patient {
     id: string;
-    name: string;
+    nombre: string;
     email: string;
-    phone: string;
+    telefono: string;
     created_at: string;
 }
 
@@ -25,7 +25,7 @@ export default function PatientsList() {
     const fetchPatients = async () => {
         setLoading(true)
         if (import.meta.env.VITE_SUPABASE_URL !== "") {
-            const { data, error } = await supabase.from('patients').select('*').order('created_at', { ascending: false })
+            const { data, error } = await supabase.from('pacientes').select('*').order('created_at', { ascending: false })
             if (!error && data) {
                 setPatients(data)
             } else {
@@ -34,15 +34,15 @@ export default function PatientsList() {
         } else {
             // Mock Data Fallback
             setPatients([
-                { id: '1', name: 'Carlos Perez', email: 'carlos@example.com', phone: '3101234567', created_at: new Date().toISOString() },
-                { id: '2', name: 'Maria Gomez', email: 'maria@example.com', phone: '3209876543', created_at: new Date().toISOString() }
+                { id: '1', nombre: 'Carlos Perez', email: 'carlos@example.com', telefono: '3101234567', created_at: new Date().toISOString() },
+                { id: '2', nombre: 'Maria Gomez', email: 'maria@example.com', telefono: '3209876543', created_at: new Date().toISOString() }
             ])
         }
         setLoading(false)
     }
 
     const filteredPatients = patients.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.nombre.toLowerCase().includes(searchTerm.toLowerCase()) ||
         p.email.toLowerCase().includes(searchTerm.toLowerCase())
     )
 
@@ -108,14 +108,14 @@ export default function PatientsList() {
                                 filteredPatients.map((patient) => (
                                     <tr key={patient.id} className="hover:bg-emerald-50/50 transition-colors group">
                                         <td className="px-6 py-4">
-                                            <p className="font-black text-[#052c46]">{patient.name}</p>
+                                            <p className="font-black text-[#052c46]">{patient.nombre}</p>
                                             <span className="text-[10px] bg-slate-100 text-slate-400 px-2 py-0.5 rounded font-mono mt-1 inline-block">ID: {patient.id.substring(0, 8)}</span>
                                         </td>
                                         <td className="px-6 py-4 text-sm font-bold text-slate-500">
                                             {patient.email}
                                         </td>
                                         <td className="px-6 py-4 text-sm font-bold text-slate-500">
-                                            {patient.phone || 'No registrado'}
+                                            {patient.telefono || 'No registrado'}
                                         </td>
                                         <td className="px-6 py-4 text-sm font-bold text-slate-500">
                                             {new Date(patient.created_at).toLocaleDateString('es-CO')}

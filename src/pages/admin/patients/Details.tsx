@@ -34,7 +34,7 @@ export default function PatientDetails() {
         try {
             // 1. Datos básicos del paciente
             const { data: patientData, error: pError } = await supabase
-                .from('patients')
+                .from('pacientes')
                 .select('*')
                 .eq('id', id)
                 .single();
@@ -93,10 +93,10 @@ export default function PatientDetails() {
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div className="h-20 w-20 rounded-[2rem] bg-gradient-to-br from-[#052c46] to-[#0A3D62] flex items-center justify-center text-white text-3xl font-black shadow-2xl">
-                        {patient.name ? patient.name[0] : 'P'}
+                        {patient.nombre ? patient.nombre[0] : 'P'}
                     </div>
                     <div>
-                        <h2 className="text-3xl font-black text-[#052c46] tracking-tighter">{patient.name}</h2>
+                        <h2 className="text-3xl font-black text-[#052c46] tracking-tighter">{patient.nombre}</h2>
                         <div className="flex items-center gap-4 mt-1 text-sm font-bold text-slate-500 uppercase tracking-widest">
                             <span className="flex items-center gap-1"><User className="w-4 h-4" /> ID: {patient.id.substring(0, 8)}</span>
                             <span className="text-emerald-500">● Paciente Activo</span>
@@ -136,7 +136,7 @@ export default function PatientDetails() {
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Teléfono Movil</p>
-                                        <p className="font-bold text-slate-700">{patient.phone || 'N/A'}</p>
+                                        <p className="font-bold text-slate-700">{patient.telefono || 'N/A'}</p>
                                     </div>
                                     <div>
                                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Dirección Residencial</p>

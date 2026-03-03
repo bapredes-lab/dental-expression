@@ -71,11 +71,11 @@ export default function PatientForm() {
         try {
             if (import.meta.env.VITE_SUPABASE_URL !== "") {
                 const { error } = await supabase
-                    .from('patients')
+                    .from('pacientes')
                     .insert([{
-                        name: formData.nombre,
+                        nombre: formData.nombre,
                         email: formData.email,
-                        phone: formData.telefono
+                        telefono: formData.telefono
                     }])
 
                 if (error) throw error
