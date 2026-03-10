@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { useState } from 'react'
 import {
     Calendar, Video, ShieldCheck, ArrowRight, Star, Quote,
-    CheckCircle2, Clock, Globe, Briefcase, FileText, Activity,
+    CheckCircle2, Briefcase, FileText, Activity,
     Sparkles, HeartPulse, ChevronDown, Instagram, Linkedin
 } from 'lucide-react'
 
