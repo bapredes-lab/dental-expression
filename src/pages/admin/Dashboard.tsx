@@ -106,8 +106,8 @@ export default function AdminDashboard() {
                             Clínica <span className="text-emerald-500">Command Center</span>
                         </h2>
                         <div className="flex items-center gap-3 mt-2">
-                            <span className="text-[10px] font-black text-white bg-[#052c46] px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">DIRECTOR CLÍNICO</span>
-                            <p className="text-sm font-bold text-slate-500 tracking-tight">{user?.user_metadata?.full_name || 'Dra. Nataly Vargas'} <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Sistema AURA IA Activo</span></p>
+                            <span className="text-[10px] font-black text-white bg-[#052c46] px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">{user?.user_metadata?.rol || 'ADMINISTRADOR'}</span>
+                            <p className="text-sm font-bold text-slate-500 tracking-tight">{user?.user_metadata?.full_name || user?.email} <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Sistema AURA IA Activo</span></p>
                         </div>
                     </div>
                 </div>

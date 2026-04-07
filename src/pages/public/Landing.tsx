@@ -1,17 +1,21 @@
 import { motion, AnimatePresence } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import {
     Calendar, Video, ShieldCheck, ArrowRight, Star, Quote,
     CheckCircle2, Briefcase, FileText, Activity,
-    Sparkles, HeartPulse, ChevronDown, Instagram, Linkedin
+    Sparkles, HeartPulse, ChevronDown, Instagram, Linkedin, Loader2
 } from 'lucide-react'
 
-const mockReviews = [
-    { id: 1, patient: 'Isabella Rodriguez', date: '24 Feb 2026', rating: 5, comment: 'Excelente atención de la Dra. Vargas. El simulador IA me ayudó a decidir mi tratamiento con total seguridad.' },
-    { id: 2, patient: 'Mateo Sánchez', date: '20 Feb 2026', rating: 5, comment: 'Muy profesional todo el equipo. Mis resultados fueron mejores de lo esperado y el seguimiento por teleconsulta fue increíble.' },
-    { id: 3, patient: 'Valentina López', date: '15 Feb 2026', rating: 5, comment: 'La tecnología que usan es impresionante. Me sentí en el futuro de la odontología desde la primera cita virtual.' },
-]
+import { supabase } from '@/lib/supabase'
+
+type Resena = {
+    id: string
+    nombre_paciente: string
+    calificacion: number
+    comentario: string
+    created_at: string
+}
 
 const services = [
     { icon: FileText, title: 'Valoración Completa', desc: 'Diagnóstico general y evaluación de estado actual de salud bucal.' },
@@ -32,6 +36,25 @@ const faqs = [
 
 export default function Landing() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
+    const [reviews, setReviews] = useState<Resena[]>([]);
+    const [loadingReviews, setLoadingReviews] = useState(true);
+
+    useEffect(() => {
+        const fetchReviews = async () => {
+            const { data, error } = await supabase
+                .from('resenas')
+                .select('id, nombre_paciente, calificacion, comentario, created_at')
+                .eq('estado', 'publicada')
+                .order('created_at', { ascending: false })
+                .limit(3);
+
+            if (!error && data) {
+                setReviews(data);
+            }
+            setLoadingReviews(false);
+        };
+        fetchReviews();
+    }, []);
 
     return (
         <div className="min-h-screen bg-[#052c46] text-white selection:bg-emerald-500/30 font-sans overflow-x-hidden">
@@ -376,35 +399,47 @@ export default function Landing() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {mockReviews.map((review, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                whileInView={{ opacity: 1, scale: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: i * 0.1 }}
-                                className="bg-white/[0.04] border border-white/10 hover:border-emerald-500/30 p-10 rounded-[2.5rem] backdrop-blur-xl relative group transition-colors"
-                            >
-                                <Quote className="absolute top-10 right-10 w-12 h-12 text-white/5 group-hover:text-emerald-500/10 transition-colors" />
-                                <div className="flex gap-1 mb-6">
-                                    {[...Array(5)].map((_, star) => (
-                                        <Star key={star} className="w-4 h-4 text-emerald-400 fill-emerald-400" />
-                                    ))}
-                                </div>
-                                <p className="text-slate-300 font-medium italic mb-8 leading-relaxed h-[120px]">
-                                    "{review.comment}"
-                                </p>
-                                <div className="flex items-center gap-4">
-                                    <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-lg shadow-inner">
-                                        {review.patient[0]}
+                        {loadingReviews ? (
+                            <div className="col-span-full flex justify-center py-10">
+                                <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
+                            </div>
+                        ) : reviews.length > 0 ? (
+                            reviews.map((review, i) => (
+                                <motion.div
+                                    key={review.id}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: i * 0.1 }}
+                                    className="bg-white/[0.04] border border-white/10 hover:border-emerald-500/30 p-10 rounded-[2.5rem] backdrop-blur-xl relative group transition-colors"
+                                >
+                                    <Quote className="absolute top-10 right-10 w-12 h-12 text-white/5 group-hover:text-emerald-500/10 transition-colors" />
+                                    <div className="flex gap-1 mb-6">
+                                        {[...Array(5)].map((_, star) => (
+                                            <Star key={star} className={`w-4 h-4 ${star < review.calificacion ? 'text-emerald-400 fill-emerald-400' : 'text-white/10'}`} />
+                                        ))}
                                     </div>
-                                    <div>
-                                        <h4 className="font-black text-white tracking-tight leading-none mb-1 text-sm">{review.patient}</h4>
-                                        <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">{review.date}</p>
+                                    <p className="text-slate-300 font-medium italic mb-8 leading-relaxed h-[120px] overflow-hidden">
+                                        "{review.comentario}"
+                                    </p>
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-lg shadow-inner uppercase">
+                                            {review.nombre_paciente[0]}
+                                        </div>
+                                        <div>
+                                            <h4 className="font-black text-white tracking-tight leading-none mb-1 text-sm">{review.nombre_paciente}</h4>
+                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                                {new Date(review.created_at).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            </motion.div>
-                        ))}
+                                </motion.div>
+                            ))
+                        ) : (
+                            <div className="col-span-full text-center py-10 text-slate-500">
+                                <p className="text-sm font-bold uppercase tracking-widest">No hay reseñas publicadas aún.</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </section>

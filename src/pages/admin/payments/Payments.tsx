@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import {
     CheckCircle2, Search, DollarSign,
     Send, Wallet, Download, Activity, ScanLine, AlertCircle, Link as LinkIcon,
-    Users, Receipt, Zap, BrainCircuit, CreditCard as CardIcon
+    Users, Receipt, Zap, CreditCard as CardIcon
 } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -18,7 +18,7 @@ const mockPayments = [
 export default function PaymentsAdmin() {
     const [searchTerm, setSearchTerm] = useState('')
     const [activeTab, setActiveTab] = useState<'terminal' | 'links'>('terminal')
-    const [isProcessing, setIsProcessing] = useState(false)
+    const [showBanner, setShowBanner] = useState(false)
 
     const filteredPayments = mockPayments.filter(tx =>
         tx.patient.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,10 +28,8 @@ export default function PaymentsAdmin() {
     const totalRevenue = mockPayments.filter(p => p.status === 'succeeded').reduce((acc, curr) => acc + curr.amount, 0)
 
     const handleProcessPayment = () => {
-        setIsProcessing(true)
-        setTimeout(() => {
-            setIsProcessing(false)
-        }, 2000)
+        setShowBanner(true)
+        setTimeout(() => setShowBanner(false), 4000)
     }
 
     return (
@@ -76,6 +74,21 @@ export default function PaymentsAdmin() {
                     </Button>
                 </div>
             </div>
+
+            {/* Banner pasarela en configuración */}
+            <AnimatePresence>
+                {showBanner && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -8 }}
+                        className="flex items-center gap-3 p-5 bg-amber-500/10 border border-amber-500/30 rounded-2xl text-amber-700 font-bold text-sm"
+                    >
+                        <AlertCircle className="w-5 h-5 shrink-0 text-amber-500" />
+                        Pasarela de pagos en configuración. Pronto podrás procesar cobros directamente desde aquí.
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* Financial Stats */}
             <div className="grid gap-6 md:grid-cols-3">
@@ -187,23 +200,19 @@ export default function PaymentsAdmin() {
                                 </div>
                             )}
 
-                            <div className="pt-6">
+                            <div className="pt-6 space-y-3">
                                 <Button
                                     onClick={handleProcessPayment}
-                                    disabled={isProcessing}
                                     className="w-full h-16 rounded-2xl bg-gradient-to-r from-[#052c46] to-[#0a4b78] hover:from-[#0a4b78] hover:to-[#052c46] text-white font-black text-lg shadow-xl shadow-blue-900/20 transition-all active:scale-95"
                                 >
-                                    {isProcessing ? (
-                                        <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }}>
-                                            <BrainCircuit className="w-6 h-6 text-emerald-400" />
-                                        </motion.div>
-                                    ) : (
-                                        <div className="flex items-center gap-2">
-                                            {activeTab === 'terminal' ? <CheckCircle2 className="w-6 h-6 text-emerald-400" /> : <LinkIcon className="w-6 h-6 text-emerald-400" />}
-                                            {activeTab === 'terminal' ? 'Completar Transacción' : 'Generar Link'}
-                                        </div>
-                                    )}
+                                    <div className="flex items-center gap-2">
+                                        {activeTab === 'terminal' ? <CheckCircle2 className="w-6 h-6 text-emerald-400" /> : <LinkIcon className="w-6 h-6 text-emerald-400" />}
+                                        {activeTab === 'terminal' ? 'Registrar Cobro' : 'Generar Link'}
+                                    </div>
                                 </Button>
+                                <p className="text-[10px] text-center text-slate-400 font-bold uppercase tracking-widest">
+                                    Pasarela en configuración — próximamente activa
+                                </p>
                             </div>
                         </div>
                     </div>

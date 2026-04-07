@@ -101,7 +101,7 @@ export default function BeforeAfterTool() {
                             <div className="bg-emerald-500/10 p-1 rounded-md">
                                 <BrainCircuit className="w-4 h-4 text-emerald-600" />
                             </div>
-                            <p className="text-sm font-bold text-slate-500 tracking-tight">DALL-E 3 Real-time <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Nataly Vargas Elite Series</span></p>
+                            <p className="text-sm font-bold text-slate-500 tracking-tight">DALL-E 3 Real-time <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Simulación IA Activa</span></p>
                         </div>
                     </div>
                 </div>

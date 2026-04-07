@@ -65,8 +65,8 @@ export default function AdminLayout() {
                                         exit={{ opacity: 0, x: -10 }}
                                         className="flex flex-col overflow-hidden"
                                     >
-                                        <span translate="no" className="text-sm font-black tracking-tighter text-white whitespace-nowrap">DENTAL EXPRESSION</span>
-                                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest whitespace-nowrap">{user?.user_metadata?.full_name || 'Dra. Nataly Vargas'}</span>
+                                        <span translate="no" className="text-sm font-black tracking-tighter text-white whitespace-nowrap">{user?.user_metadata?.clinica_nombre || 'MI CLÍNICA'}</span>
+                                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest whitespace-nowrap">{user?.user_metadata?.full_name || user?.email}</span>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
@@ -104,9 +104,8 @@ export default function AdminLayout() {
                             </div>
                             {sidebarOpen && (
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-bold text-white truncate">{user?.user_metadata?.full_name || 'Dra. Nataly Vargas'}</p>
-                                    <p className="text-[9px] font-black text-emerald-400 uppercase tracking-tighter">Director Clínico</p>
-                                    <p className="text-[10px] text-slate-400 mt-1">Powered by Zynaia</p>
+                                    <p className="text-xs font-bold text-white truncate">{user?.user_metadata?.full_name || user?.email}</p>
+                                    <p className="text-[9px] font-black text-emerald-400 uppercase tracking-tighter">{user?.user_metadata?.rol || 'Administrador'}</p>
                                 </div>
                             )}
                             {sidebarOpen && (
@@ -142,7 +141,7 @@ export default function AdminLayout() {
                     <div className="flex items-center gap-3">
                         <div className="hidden md:flex flex-col items-right text-right mr-2">
                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sede Principal</p>
-                            <p className="text-xs font-bold text-slate-700">Dental Expression</p>
+                            <p className="text-xs font-bold text-slate-700">{user?.user_metadata?.clinica_nombre || 'Mi Clínica'}</p>
                         </div>
                         <button className="p-2 hover:bg-white rounded-xl text-slate-500 shadow-sm border border-slate-100 relative">
                             <Bell className="h-5 w-5" />
