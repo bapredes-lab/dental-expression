@@ -8,13 +8,17 @@ import {
     FileText,
     Activity,
     History,
-    Plus,
-    Loader2
+    Loader2,
+    Trash2,
+    CheckCircle2,
+    AlertCircle,
+    ImageIcon
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/lib/supabase';
 import SmartOdontogram from '@/components/admin/SmartOdontogram';
+import { FileUploader } from '@/components/admin/FileUploader';
 
 export default function PatientDetails() {
     const { id } = useParams();
@@ -22,10 +26,14 @@ export default function PatientDetails() {
     const [patient, setPatient] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [appointments, setAppointments] = useState<any[]>([]);
+    const [mediaFiles, setMediaFiles] = useState<any[]>([]);
+    const [uploading, setUploading] = useState(false);
+    const [uploadStatus, setUploadStatus] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
     useEffect(() => {
         if (id) {
             fetchPatientData();
+            fetchMedia();
         }
     }, [id]);
 
@@ -59,6 +67,59 @@ export default function PatientDetails() {
             console.error("Error al cargar paciente:", error);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchMedia = async () => {
+        try {
+            const { data, error } = await supabase
+                .storage
+                .from('expedientes-medicos')
+                .list(`${id}/`, {
+                    limit: 100,
+                    offset: 0,
+                    sortBy: { column: 'name', order: 'desc' },
+                });
+
+            if (error) throw error;
+            setMediaFiles(data || []);
+        } catch (error) {
+            console.error("Error al cargar media:", error);
+        }
+    };
+
+    const handleFilesUpload = async (files: File[]) => {
+        setUploading(true);
+        setUploadStatus(null);
+        try {
+            for (const file of files) {
+                const fileExt = file.name.split('.').pop();
+                const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+                const filePath = `${id}/${fileName}`;
+                const { error: uploadError } = await supabase.storage
+                    .from('expedientes-medicos')
+                    .upload(filePath, file);
+                if (uploadError) throw uploadError;
+            }
+            setUploadStatus({ type: 'success', message: `${files.length} archivo(s) subido(s) correctamente.` });
+            setTimeout(() => setUploadStatus(null), 4000);
+            await fetchMedia();
+        } catch (error: any) {
+            setUploadStatus({ type: 'error', message: 'Error al subir: ' + error.message });
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const deleteFile = async (fileName: string) => {
+        try {
+            const { error } = await supabase.storage
+                .from('expedientes-medicos')
+                .remove([`${id}/${fileName}`]);
+            if (error) throw error;
+            await fetchMedia();
+        } catch (error: any) {
+            setUploadStatus({ type: 'error', message: 'Error al eliminar: ' + error.message });
         }
     };
 
@@ -224,11 +285,75 @@ export default function PatientDetails() {
                 </TabsContent>
 
                 <TabsContent value="files">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        <button className="aspect-square rounded-[2rem] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center gap-3 hover:border-emerald-500 hover:bg-emerald-50/50 transition-all group">
-                            <Plus className="w-8 h-8 text-slate-300 group-hover:text-emerald-500 transition-colors" />
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest group-hover:text-emerald-600">Subir Media</span>
-                        </button>
+                    <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white shadow-xl luxury-shadow space-y-8">
+                        <div className="flex items-center justify-between">
+                            <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                                <ImageIcon className="w-6 h-6 text-emerald-500" /> Galería Clínica
+                            </h3>
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full">
+                                {mediaFiles.length} archivo(s)
+                            </span>
+                        </div>
+
+                        {/* Notificación de estado */}
+                        {uploadStatus && (
+                            <div className={`flex items-center gap-3 px-5 py-4 rounded-2xl text-sm font-bold ${uploadStatus.type === 'success' ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                                {uploadStatus.type === 'success'
+                                    ? <CheckCircle2 className="w-5 h-5 flex-shrink-0" />
+                                    : <AlertCircle className="w-5 h-5 flex-shrink-0" />}
+                                {uploadStatus.message}
+                            </div>
+                        )}
+
+                        {/* Uploader */}
+                        {uploading ? (
+                            <div className="flex items-center justify-center gap-3 py-8 text-slate-500 font-bold">
+                                <Loader2 className="w-6 h-6 animate-spin text-emerald-500" />
+                                Subiendo archivos...
+                            </div>
+                        ) : (
+                            <FileUploader onUpload={handleFilesUpload} maxFiles={10} />
+                        )}
+
+                        {/* Grid de archivos */}
+                        {mediaFiles.length === 0 ? (
+                            <div className="text-center py-8 text-slate-400 font-bold uppercase tracking-widest text-xs">
+                                No hay archivos en esta galería aún.
+                            </div>
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                {mediaFiles.map((file) => {
+                                    const isPDF = file.name.toLowerCase().endsWith('.pdf');
+                                    const fileUrl = `${import.meta.env.VITE_SUPABASE_URL}/storage/v1/object/public/expedientes-medicos/${id}/${file.name}`;
+                                    return (
+                                        <div key={file.id} className="group relative aspect-square rounded-[1.5rem] bg-slate-100 overflow-hidden border border-white/50 shadow-lg">
+                                            {isPDF ? (
+                                                <a href={fileUrl} target="_blank" rel="noopener noreferrer" className="w-full h-full flex flex-col items-center justify-center gap-2 p-3">
+                                                    <FileText className="w-10 h-10 text-slate-400" />
+                                                    <span className="text-[9px] font-bold text-slate-500 text-center break-all leading-tight">{file.name.substring(0, 15)}...</span>
+                                                </a>
+                                            ) : (
+                                                <img
+                                                    src={fileUrl}
+                                                    alt={file.name}
+                                                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                                />
+                                            )}
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                                                <p className="text-[9px] text-white font-bold text-center break-all leading-tight">{file.name.substring(0, 20)}</p>
+                                                <button
+                                                    onClick={() => deleteFile(file.name)}
+                                                    className="p-2 bg-red-500 hover:bg-red-600 rounded-xl transition-colors"
+                                                    title="Eliminar archivo"
+                                                >
+                                                    <Trash2 className="w-4 h-4 text-white" />
+                                                </button>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        )}
                     </div>
                 </TabsContent>
             </Tabs>

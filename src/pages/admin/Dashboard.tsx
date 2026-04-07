@@ -239,11 +239,38 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    <div className="rounded-[2.5rem] bg-[#052c46] p-8 text-white shadow-2xl relative overflow-hidden luxury-shadow border border-white/10">
-                        <p className="text-xs font-bold text-slate-400 mb-4">Módulo de IA conectado a Claude 3.5 Sonnet.</p>
-                        <Button variant="link" className="text-emerald-400 font-bold p-0 flex items-center gap-2 hover:text-emerald-300 transition-colors uppercase text-[10px] tracking-widest">
-                            Estado del Sistema: Óptimo <ArrowUpRight className="w-4 h-4" />
-                        </Button>
+                    {/* SaaS & Platform Scaling Monitor */}
+                    <div className="rounded-[2.5rem] bg-[#052c46] p-8 text-white shadow-2xl relative overflow-hidden luxury-shadow border border-white/10 group">
+                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
+                            <Zap className="w-20 h-20 text-emerald-400" />
+                        </div>
+                        <div className="relative z-10">
+                            <div className="flex items-center gap-2 mb-4">
+                                <span className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
+                                <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">SaaS Platform Active</p>
+                            </div>
+                            <h4 className="text-xl font-black mb-4 tracking-tighter">Preparado para Escalar</h4>
+                            <div className="space-y-3 mb-6">
+                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 border-b border-white/5 pb-2">
+                                    <span>MULTI-TENANCY</span>
+                                    <span className="text-emerald-400">READY</span>
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 border-b border-white/5 pb-2">
+                                    <span>AI NODES (CLAUDE 3.5)</span>
+                                    <span className="text-emerald-400">STABLE</span>
+                                </div>
+                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                                    <span>DATABASE LATENCY</span>
+                                    <span className="text-emerald-400">24ms</span>
+                                </div>
+                            </div>
+                            <Button 
+                                variant="outline"
+                                className="w-full bg-white/5 border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 font-black rounded-2xl text-[9px] uppercase tracking-widest h-10"
+                            >
+                                Gestionar Licencias <ArrowUpRight className="w-3 h-3 ml-2" />
+                            </Button>
+                        </div>
                     </div>
                 </div>
             </div>
