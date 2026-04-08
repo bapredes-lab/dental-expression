@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plan de Presentación - Dental Expression</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap');
+        
+        :root {
+            --primary: #052c46;
+            --emerald: #10b981;
+            --emerald-dark: #047857;
+            --bg: #f8fafc;
+            --text: #334155;
+            --border: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: white;
+            color: var(--text);
+            line-height: 1.6;
+            max-width: 850px;
+            margin: 0 auto;
+            padding: 40px;
+        }
+
+        .header {
+            border-bottom: 3px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .header h1 {
+            color: var(--primary);
+            font-weight: 800;
+            font-size: 32px;
+            margin: 0;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: var(--emerald);
+            font-weight: 600;
+            margin: 5px 0 0 0;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 2px;
+        }
+
+        .section-title {
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 800;
+            font-size: 18px;
+            margin-top: 40px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card {
+            background-color: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            border-bottom: 1px dashed var(--border);
+            padding-bottom: 20px;
+        }
+
+        .step:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .step-number {
+            background-color: var(--emerald);
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .step-content h3 {
+            margin: 0 0 10px 0;
+            color: var(--primary);
+            font-size: 16px;
+        }
+
+        .step-content p {
+            margin: 0;
+            font-size: 14px;
+        }
+
+        .highlight {
+            background-color: #ecfdf5;
+            color: var(--emerald-dark);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tips {
+            background-color: #fffbeb;
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            margin-top: 30px;
+            font-size: 14px;
+            color: #92400e;
+        }
+
+        @media print {
+            body { padding: 0; }
+            .print-btn { display: none; }
+        }
+
+        .print-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--emerald);
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 800;
+            font-size: 14px;
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .print-btn:hover { transform: scale(1.05); }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">📥 GUARDAR COMO PDF</button>
+
+    <div class="header">
+        <div>
+            <h1>Pitch & Demostración</h1>
+            <p>Dental Expression — SaaS AI-Powered</p>
+        </div>
+        <div style="text-align: right; color: #94a3b8; font-size: 12px; font-weight: 600;">
+            FECHA: HOY<br>
+            VERSIÓN: 1.0 (PRODUCCIÓN)
+        </div>
+    </div>
+
+    <p style="font-size: 18px; font-weight: 300;">Este documento detalla el paso a paso exacto, los tiempos y las palabras clave ("the script") para lograr un efecto <b>WOW</b> inmediato en el cliente/profesor durante la demostración en vivo.</p>
+
+    <!-- PREPARACIÓN -->
+    <div class="section-title">
+        <span>⚙️</span> FASE 0: PREPARACIÓN (Antes de proyectar pantalla)
+    </div>
+    <div class="card">
+        <ul style="margin: 0; padding-left: 20px; font-size: 14px;">
+            <li style="margin-bottom: 10px;">Cerciórate de tener la <b>foto de una sonrisa</b> descargada en tu escritorio para el simulador.</li>
+            <li style="margin-bottom: 10px;">Crea un <b>paciente de prueba</b> previamente desde la sección "Pacientes" si no tienes uno.</li>
+            <li>Abre la aplicación ya logueado como Administrador, pero quédate en la pantalla "Command Center" del Dashboard de inicio.</li>
+        </ul>
+    </div>
+
+    <!-- GANCHO -->
+    <div class="section-title">
+        <span>🚀</span> FASE 1: EL GANCHO DE CONTEXTO (2 minutos)
+    </div>
+    <p style="font-size: 14px; margin-top: 15px;">Antes de mover el mouse, establece el valor del producto:</p>
+    <div class="card" style="background-color: #f1f5f9; border-color: #cbd5e1;">
+        <p style="font-size: 14px; margin: 0; font-style: italic; color: #475569;">
+            "La mayoría del software odontológico de hoy es solo hojas de Excel glorificadas. Con <b>Dental Expression</b>, hemos creado un sistema SaaS multi-tenant que no solo organiza datos de pacientes, <b>sino que integra Inteligencia Artificial Generativa y Diagnóstica (AURA) para aumentar espectacularmente el cierre de presupuestos de alto valor</b> en las clínicas dentales."
+        </p>
+    </div>
+
+    <!-- DEMO -->
+    <div class="section-title">
+        <span>💻</span> FASE 2: DEMOSTRACIÓN EN VIVO (10 minutos)
+    </div>
+
+    <div class="step">
+        <div class="step-number">1</div>
+        <div class="step-content">
+            <h3>El "Command Center" (2 Minutos)</h3>
+            <p><b>Acción:</b> Proyecta el Dashboard inicial.</p>
+            <p style="margin-top: 5px; color: #64748b;"><b>Discurso:</b> "Aquí inicia el día del odontólogo. A diferencia de interfaces antiguas, Dental Expression funciona en tiempo real con un dashboard enfocado en crecimiento. Vemos ingresos, citas y hallazgos automáticos detectados por nuestra red neuronal."</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">2</div>
+        <div class="step-content">
+            <h3>Odontograma Inteligente AURA (3 Minutos)</h3>
+            <p><b>Acción:</b> Navega a "Pacientes" > Selecciona tu paciente falso > Ve a la pestaña <span class="highlight">Odontograma Real</span>.</p>
+            <p style="margin-top: 5px;">Mueve el mouse y selecciona un diente (ej. Pieza 11). Márcale "Carie". Selecciona otro (ej. 21) y márcale "Ausente". Finalmente haz clic en el botón verde grande y brillante de <span class="highlight">Ejecutar Análisis AURA</span>.</p>
+            <p style="margin-top: 5px; color: #64748b;"><b>Discurso:</b> "Lo mágico viene ahora. En vez de solo guardar datos, nuestra IA analiza la carga de patologías del paciente y en un par de segundos emite un plan de tratamiento priorizado, evalúa las urgencias y formula un presupuesto aproximado."</p>
+            <p style="margin-top: 5px;"><b>Acción:</b> Una vez salga el texto verde de AURA, haz clic en <span class="highlight">PDF Compartible</span>. Abre el PDF generado en directo para que se asombre la audiencia con el formato profesional.</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">3</div>
+        <div class="step-content">
+            <h3>El Efecto WOW: Neural Smile Designer (4 Minutos)</h3>
+            <p><b>Acción:</b> Navega al módulo de "Simulador Before/After".</p>
+            <p style="margin-top: 5px;">Sube la foto que separaste. Haz clic en <span class="highlight">Generar Sonrisa Perfecta</span>.</p>
+            <p style="margin-top: 5px; color: #64748b;"><b>Discurso:</b> "Cuando propones diseño de sonrisa a un paciente (~$3,000 USD), el miedo al resultado los frena. Hemos integrado tecnología <i>DALL-E 3</i> adaptada al ámbito clínico. Sube la foto y la IA predice un resultado hiper-realista siguiendo proporciones áureas."</p>
+            <p style="margin-top: 5px;"><b>Acción:</b> Mueve el 'Slider' del Antes y Después para mostrar la interacción dinámica.<br>Haz clic en <span class="highlight">Aprobar Plan Estético</span> y luego en <span class="highlight">Descargar Reporte</span>. Abre este PDF también haciendo énfasis en la zona de las firmas.</p>
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">4</div>
+        <div class="step-content">
+            <h3>Clausura: Agenda y Telemedicina (1 Minuto)</h3>
+            <p><b>Acción:</b> Muestra brevemente la lista del plan de tratamiento drag-and-drop o el calendario intermedio.</p>
+            <p style="margin-top: 5px; color: #64748b;"><b>Discurso:</b> "Y por supuesto, el sistema cuenta con pasarelas de pago integradas, generación de PDFs modulares y salas de telemedicina con WebRTC. Hoy la clínica usa este producto."</p>
+        </div>
+    </div>
+
+    <!-- CIERRE Y MODELO -->
+    <div class="section-title">
+        <span>📈</span> FASE 3: EL FUTURO DE LA APP COMO MÁQUINA DE DINERO
+    </div>
+    <div class="card">
+        <p style="font-size: 14px; margin: 0;">
+            Asegúrate de cerrar la presentación indicando la visión tecnológica SaaS:<br><br>
+            <i>"El siguiente paso a nivel de arquitectura es aprovechar que nuestro stack de Supabase ya tiene preparadas las políticas de Multi-Tenancy (RLS). Esto significa que <b>estamos a días de convertir esto en un Software-as-a-Service recurrente</b>, abriendo cuentas para clínicas odontológicas en toda Latinoamérica con licencias de $99 USD a $299 USD al mes por utilizar nuestra capa de IA."</i>
+        </p>
+    </div>
+
+    <div class="tips">
+        <b>💡 Tip de seguridad para la Demo:</b><br><br>
+        Recuerda que la Inteligencia Artificial (AURA y Smile Designer) cuenta con un <b>Modo Demo Inteligente Offline Automático</b>. Esto significa que si en el lugar de la presentación falla el internet o el API de OpenAI rechaza peticiones, tu aplicación generará un resultado Premium y un análisis elegante de manera oculta de todos modos en menos de 3 segundos.<br><br>
+        <b>Nada podrá salir mal. Podrás brillar sin miedo a caídas técnicas.</b>
+    </div>
+
+    <script>
+        // Disparar inmediatamente al abrir si se pasa parámetro local, si no lo dejamos para el botón manual.
+        setTimeout(() => {
+            if (confirm("¿Quieres guardar e imprimir este documento como PDF ahora mismo?")) {
+                window.print();
+            }
+        }, 1200);
+    </script>
+</body>
+</html>

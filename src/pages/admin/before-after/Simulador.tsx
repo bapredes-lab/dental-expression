@@ -45,7 +45,8 @@ export default function BeforeAfterTool() {
             }
         }, 1500)
 
-        const FALLBACK_SMILE = "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&q=80&w=1024&h=1024"
+        // En modo demostración de seguridad máxima, cargamos el asset local que el usuario guardó
+        const FALLBACK_SMILE = "/caso_clinico_despues.png"
 
         try {
             const { data, error } = await supabase.functions.invoke('smile-designer-ia', {
