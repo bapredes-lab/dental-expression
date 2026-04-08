@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { supabase } from '@/lib/supabase';
-import { pdf } from '@react-pdf/renderer';
+import { PDFDownloadLink } from '@react-pdf/renderer';
 import { AuraReportPDF } from '@/components/admin/AuraReportPDF';
 
 interface AIResult {
@@ -202,33 +202,6 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
         }
     };
 
-    const handleDownloadPDF = async () => {
-        if (!aiResult) return;
-        setIsDownloadingPDF(true);
-        try {
-            const toothCount = Object.keys(toothStates).length;
-            const blob = await pdf(
-                <AuraReportPDF
-                    patientName={patientName || 'Paciente'}
-                    summary={aiResult.summary}
-                    recommendations={aiResult.recommendations}
-                    urgency={aiResult.urgency}
-                    toothCount={toothCount}
-                />
-            ).toBlob();
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `Reporte_AURA_${(patientName || 'Paciente').replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`;
-            link.click();
-            URL.revokeObjectURL(url);
-        } catch (err) {
-            console.error('PDF Error:', err);
-        } finally {
-            setIsDownloadingPDF(false);
-        }
-    };
-
     const teethUpper = [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28];
     const teethLower = [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38];
 
@@ -329,18 +302,33 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
                                         <p className="text-2xl font-black">$1,450 USD*</p>
                                         <p className="text-[8px] font-bold opacity-60 mt-4 leading-none uppercase">Estimado basado en procedimientos detectados por Aura.</p>
                                     </div>
-                                    <Button
-                                        variant="outline"
-                                        onClick={handleDownloadPDF}
-                                        disabled={isDownloadingPDF}
-                                        className="w-full h-14 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase tracking-widest"
-                                    >
-                                        {isDownloadingPDF
-                                            ? <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                            : <Download className="w-4 h-4 mr-2" />
+                                    <PDFDownloadLink
+                                        document={
+                                            <AuraReportPDF
+                                                patientName={patientName || 'Paciente'}
+                                                summary={aiResult.summary}
+                                                recommendations={aiResult.recommendations}
+                                                urgency={aiResult.urgency}
+                                                toothCount={Object.keys(toothStates).length}
+                                            />
                                         }
-                                        {isDownloadingPDF ? 'Generando...' : 'PDF Compartible'}
-                                    </Button>
+                                        fileName={`Reporte_AURA_${(patientName || 'Paciente').replace(/\s+/g, '_')}_${new Date().toISOString().slice(0, 10)}.pdf`}
+                                        style={{ width: '100%' }}
+                                    >
+                                        {({ loading }) => (
+                                            <Button
+                                                variant="outline"
+                                                disabled={loading}
+                                                className="w-full h-14 rounded-2xl border-white/10 bg-white/5 hover:bg-white/10 text-white font-black text-[10px] uppercase tracking-widest"
+                                            >
+                                                {loading
+                                                    ? <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                                                    : <Download className="w-4 h-4 mr-2" />
+                                                }
+                                                {loading ? 'Generando...' : 'PDF Compartible'}
+                                            </Button>
+                                        )}
+                                    </PDFDownloadLink>
                                 </div>
                             </div>
                         </motion.div>

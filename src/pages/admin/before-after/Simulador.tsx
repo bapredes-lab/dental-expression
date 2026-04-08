@@ -7,7 +7,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { supabase } from '@/lib/supabase'
-import { pdf } from '@react-pdf/renderer'
+import { PDFDownloadLink } from '@react-pdf/renderer'
 import { SmileReportPDF } from '@/components/admin/SmileReportPDF'
 
 export default function BeforeAfterTool() {
@@ -91,31 +91,6 @@ export default function BeforeAfterTool() {
         showNotification('success', 'Imagen abierta en nueva pestaña — comparte el enlace con tu paciente.')
     }
 
-    const handleDownloadPDF = async () => {
-        if (!beforeImage || !afterImage) {
-            showNotification('info', 'Genera un diseño de sonrisa primero para descargar el reporte.')
-            return
-        }
-        setIsDownloadingPDF(true)
-        try {
-            const blob = await pdf(
-                <SmileReportPDF beforeImage={beforeImage} afterImage={afterImage} />
-            ).toBlob()
-            const url = URL.createObjectURL(blob)
-            const link = document.createElement('a')
-            link.href = url
-            link.download = `Diseño_Sonrisa_DentalExpression_${new Date().toISOString().slice(0, 10)}.pdf`
-            link.click()
-            URL.revokeObjectURL(url)
-            showNotification('success', 'Reporte PDF descargado exitosamente.')
-        } catch (err) {
-            console.error('PDF Error:', err)
-            showNotification('error', 'Error al generar el PDF. Intenta de nuevo.')
-        } finally {
-            setIsDownloadingPDF(false)
-        }
-    }
-
     const handleApprove = () => {
         if (!afterImage) return
         setApproved(true)
@@ -156,17 +131,30 @@ export default function BeforeAfterTool() {
                     >
                         <Share2 className="w-4 h-4 mr-2" /> Compartir con Paciente
                     </Button>
-                    <Button
-                        onClick={handleDownloadPDF}
-                        disabled={isDownloadingPDF}
-                        className="rounded-2xl h-12 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl luxury-shadow font-black uppercase tracking-widest text-[10px]"
-                    >
-                        {isDownloadingPDF
-                            ? <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                            : <Download className="w-4 h-4 mr-2" />
-                        }
-                        {isDownloadingPDF ? 'Generando PDF...' : 'Guardar Reporte PDF'}
-                    </Button>
+                    {beforeImage && afterImage ? (
+                        <PDFDownloadLink
+                            document={<SmileReportPDF beforeImage={beforeImage} afterImage={afterImage} />}
+                            fileName={`Diseño_Sonrisa_DentalExpression_${new Date().toISOString().slice(0, 10)}.pdf`}
+                        >
+                            {({ loading }) => (
+                                <Button
+                                    disabled={loading}
+                                    className="rounded-2xl h-12 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl luxury-shadow font-black uppercase tracking-widest text-[10px]"
+                                >
+                                    {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                                    {loading ? 'Generando PDF...' : 'Guardar Reporte PDF'}
+                                </Button>
+                            )}
+                        </PDFDownloadLink>
+                    ) : (
+                        <Button
+                            onClick={() => showNotification('info', 'Genera un diseño de sonrisa primero para descargar el reporte.')}
+                            className="rounded-2xl h-12 bg-emerald-600 hover:bg-emerald-700 text-white shadow-xl luxury-shadow font-black uppercase tracking-widest text-[10px]"
+                        >
+                            <Download className="w-4 h-4 mr-2" />
+                            Guardar Reporte PDF
+                        </Button>
+                    )}
                 </div>
             </div>
 
@@ -328,17 +316,20 @@ export default function BeforeAfterTool() {
                                                     <CheckCircle2 className="w-4 h-4 mr-2" /> Aprobar Plan Estético
                                                 </Button>
                                             ) : (
-                                                <Button
-                                                    onClick={handleDownloadPDF}
-                                                    disabled={isDownloadingPDF}
-                                                    className="rounded-2xl h-14 px-12 bg-emerald-600 text-white font-black uppercase tracking-widest text-xs shadow-2xl"
+                                                <PDFDownloadLink
+                                                    document={<SmileReportPDF beforeImage={beforeImage} afterImage={afterImage} />}
+                                                    fileName={`Diseño_Sonrisa_DentalExpression_${new Date().toISOString().slice(0, 10)}.pdf`}
                                                 >
-                                                    {isDownloadingPDF
-                                                        ? <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                                        : <Download className="w-4 h-4 mr-2" />
-                                                    }
-                                                    Descargar Reporte
-                                                </Button>
+                                                    {({ loading }) => (
+                                                        <Button
+                                                            disabled={loading}
+                                                            className="rounded-2xl h-14 px-12 bg-emerald-600 text-white font-black uppercase tracking-widest text-xs shadow-2xl"
+                                                        >
+                                                            {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Download className="w-4 h-4 mr-2" />}
+                                                            Descargar Reporte
+                                                        </Button>
+                                                    )}
+                                                </PDFDownloadLink>
                                             )}
                                         </div>
                                     )}
