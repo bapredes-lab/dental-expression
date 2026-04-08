@@ -5,7 +5,6 @@ import {
     BrainCircuit,
     Loader2,
     CheckCircle2,
-    FileText,
     Download
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -75,7 +74,6 @@ export default function SmartOdontogram({ patientId, patientName }: { patientId?
     const [loading, setLoading] = useState(false);
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [aiResult, setAiResult] = useState<AIResult | null>(null);
-    const [isDownloadingPDF, setIsDownloadingPDF] = useState(false);
 
     useEffect(() => {
         if (patientId) {

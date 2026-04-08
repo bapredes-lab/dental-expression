@@ -16,7 +16,6 @@ export default function BeforeAfterTool() {
     const [afterImage, setAfterImage] = useState<string | null>(null)
     const [aiStatus, setAiStatus] = useState<string>('')
     const [approved, setApproved] = useState(false)
-    const [isDownloadingPDF, setIsDownloadingPDF] = useState(false)
     const [notification, setNotification] = useState<{ type: 'success' | 'error' | 'info'; message: string } | null>(null)
 
     const showNotification = (type: 'success' | 'error' | 'info', message: string) => {
@@ -133,7 +132,7 @@ export default function BeforeAfterTool() {
                     </Button>
                     {beforeImage && afterImage ? (
                         <PDFDownloadLink
-                            document={<SmileReportPDF beforeImage={beforeImage} afterImage={afterImage} />}
+                            document={<SmileReportPDF beforeImage={beforeImage!} afterImage={afterImage!} />}
                             fileName={`Diseño_Sonrisa_DentalExpression_${new Date().toISOString().slice(0, 10)}.pdf`}
                         >
                             {({ loading }) => (
@@ -317,7 +316,7 @@ export default function BeforeAfterTool() {
                                                 </Button>
                                             ) : (
                                                 <PDFDownloadLink
-                                                    document={<SmileReportPDF beforeImage={beforeImage} afterImage={afterImage} />}
+                                                    document={<SmileReportPDF beforeImage={beforeImage!} afterImage={afterImage!} />}
                                                     fileName={`Diseño_Sonrisa_DentalExpression_${new Date().toISOString().slice(0, 10)}.pdf`}
                                                 >
                                                     {({ loading }) => (
