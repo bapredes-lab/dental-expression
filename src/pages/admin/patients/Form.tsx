@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { useNavigate } from "react-router-dom"
+import { useState, useEffect } from "react"
+import { useNavigate, useParams } from "react-router-dom"
 import { motion } from "framer-motion"
 import {
     ArrowLeft,
@@ -34,6 +34,8 @@ const itemVariants = {
 
 export default function PatientForm() {
     const navigate = useNavigate()
+    const { id } = useParams()
+    const isEditing = !!id
     const [loading, setLoading] = useState(false)
     const [formData, setFormData] = useState({
         nombre: '',
@@ -59,6 +61,34 @@ export default function PatientForm() {
         contacto_telefono: ''
     })
 
+    useEffect(() => {
+        if (isEditing) {
+            fetchPatient()
+        }
+    }, [id])
+
+    const fetchPatient = async () => {
+        try {
+            setLoading(true)
+            const { data, error } = await supabase
+                .from('pacientes')
+                .select('*')
+                .eq('id', id)
+                .single()
+            
+            if (error) throw error
+            if (data) {
+                // Rellenamos el estado iterando o uno a uno, aquí uno a uno
+                setFormData(prev => ({ ...prev, ...data }))
+            }
+        } catch (error) {
+            console.error('Error fetching patient:', error)
+            alert("No se pudo cargar la información del paciente.")
+        } finally {
+            setLoading(false)
+        }
+    }
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
@@ -70,15 +100,32 @@ export default function PatientForm() {
 
         try {
             if (import.meta.env.VITE_SUPABASE_URL !== "") {
-                const { error } = await supabase
-                    .from('pacientes')
-                    .insert([{
-                        nombre: formData.nombre,
-                        email: formData.email,
-                        telefono: formData.telefono
-                    }])
+                const payload = {
+                    nombre: formData.nombre,
+                    email: formData.email,
+                    telefono: formData.telefono,
+                    documento_tipo: formData.documento_tipo,
+                    documento_numero: formData.documento_numero,
+                    genero: formData.genero,
+                    direccion: formData.direccion,
+                    alergias: formData.alergias,
+                    enfermedades_patologicas: formData.enfermedades_patologicas,
+                    motivo_consulta: formData.motivo_consulta,
+                    eps: formData.eps
+                }
 
-                if (error) throw error
+                if (isEditing) {
+                    const { error } = await supabase
+                        .from('pacientes')
+                        .update(payload)
+                        .eq('id', id)
+                    if (error) throw error
+                } else {
+                    const { error } = await supabase
+                        .from('pacientes')
+                        .insert([payload])
+                    if (error) throw error
+                }
             }
             navigate('/admin/patients')
         } catch (error) {
@@ -103,9 +150,9 @@ export default function PatientForm() {
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div>
-                        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">Nueva Ficha Clínica</h2>
+                        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">{isEditing ? 'Editar Paciente' : 'Nueva Ficha Clínica'}</h2>
                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                            <User className="w-3 h-3" /> Registro de Paciente Elite
+                            <User className="w-3 h-3" /> {isEditing ? 'Actualización de Datos' : 'Registro de Paciente Elite'}
                         </p>
                     </div>
                 </div>
@@ -118,7 +165,7 @@ export default function PatientForm() {
                         disabled={loading}
                         className="rounded-2xl bg-gradient-to-r from-[#0F4C75] to-[#052c46] px-8 font-black uppercase tracking-widest text-xs shadow-xl luxury-shadow"
                     >
-                        <Save className="mr-2 h-4 w-4" /> {loading ? 'Sincronizando...' : 'Guardar y Abrir Ficha'}
+                        <Save className="mr-2 h-4 w-4" /> {loading ? (isEditing ? 'Actualizando...' : 'Sincronizando...') : (isEditing ? 'Guardar Cambios' : 'Guardar y Abrir Ficha')}
                     </Button>
                 </div>
             </div>

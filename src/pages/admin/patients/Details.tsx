@@ -166,6 +166,13 @@ export default function PatientDetails() {
                 </div>
                 <div className="flex gap-3">
                     <Button
+                        onClick={() => navigate(`/admin/patients/${id}/edit`)}
+                        variant="outline"
+                        className="rounded-2xl border-slate-200 text-[#0F4C75] font-black uppercase tracking-widest text-[10px] px-6 h-12 shadow-sm"
+                    >
+                        <User className="mr-2 h-4 w-4" /> Editar Paciente
+                    </Button>
+                    <Button
                         onClick={() => window.location.href = '/admin/agenda'}
                         className="rounded-2xl bg-emerald-600 text-white font-black uppercase tracking-widest text-[10px] px-6 h-12 shadow-lg shadow-emerald-500/20"
                     >

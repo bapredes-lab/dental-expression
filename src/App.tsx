@@ -50,6 +50,7 @@ function App() {
             <Route path="patients" element={<PatientsList />} />
             <Route path="patients/new" element={<PatientForm />} />
             <Route path="patients/:id" element={<PatientDetails />} />
+            <Route path="patients/:id/edit" element={<PatientForm />} />
             <Route path="media" element={<MediaGallery />} />
             <Route path="agenda" element={<AgendaView />} />
             <Route path="treatments" element={<TreatmentPlanBuilder />} />
