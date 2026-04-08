@@ -100,18 +100,12 @@ export default function PatientForm() {
 
         try {
             if (import.meta.env.VITE_SUPABASE_URL !== "") {
+                // NOTA: Restringimos el payload solo a las columnas que existen en la BD actualmente.
+                // Para guardar el resto (alergias, documento, etc), necesitas crear esas columnas primero en Supabase.
                 const payload = {
                     nombre: formData.nombre,
                     email: formData.email,
-                    telefono: formData.telefono,
-                    documento_tipo: formData.documento_tipo,
-                    documento_numero: formData.documento_numero,
-                    genero: formData.genero,
-                    direccion: formData.direccion,
-                    alergias: formData.alergias,
-                    enfermedades_patologicas: formData.enfermedades_patologicas,
-                    motivo_consulta: formData.motivo_consulta,
-                    eps: formData.eps
+                    telefono: formData.telefono
                 }
 
                 if (isEditing) {
