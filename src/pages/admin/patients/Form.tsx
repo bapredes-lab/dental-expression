@@ -61,12 +61,6 @@ export default function PatientForm() {
         contacto_telefono: ''
     })
 
-    useEffect(() => {
-        if (isEditing) {
-            fetchPatient()
-        }
-    }, [id])
-
     const fetchPatient = async () => {
         try {
             setLoading(true)
@@ -88,6 +82,12 @@ export default function PatientForm() {
             setLoading(false)
         }
     }
+
+    useEffect(() => {
+        if (isEditing) {
+            fetchPatient()
+        }
+    }, [id])
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         const { name, value } = e.target
