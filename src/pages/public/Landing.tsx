@@ -69,7 +69,7 @@ export default function Landing() {
             <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46]/90 backdrop-blur-xl border-b border-white/10">
                 <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="bg-white p-2 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                        <div className="bg-white/10 border border-white/20 backdrop-blur-sm p-1.5 rounded-xl ring-1 ring-emerald-400/20">
                             <img src="/logo.jpg" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
                         </div>
                         <div className="flex flex-col">
