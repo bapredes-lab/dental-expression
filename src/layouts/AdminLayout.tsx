@@ -15,7 +15,8 @@ import {
     Bell,
     Settings,
     Star,
-    Video
+    Video,
+    CalendarClock
 } from 'lucide-react'
 import { useAuth } from '@/contexts/AuthContext'
 
@@ -23,6 +24,7 @@ const navigation = [
     { name: 'Dashboard', href: '/admin', icon: LayoutDashboard },
     { name: 'Fichas de Pacientes', href: '/admin/patients', icon: Users },
     { name: 'Agenda Digital', href: '/admin/agenda', icon: Calendar },
+    { name: 'Disponibilidad', href: '/admin/disponibilidad', icon: CalendarClock },
     { name: 'Teleconsultas', href: '/admin/teleconsultas', icon: Video },
     { name: 'Galería Médica', href: '/admin/media', icon: ImageIcon },
     { name: 'Planes de Tratamiento', href: '/admin/treatments', icon: FileText },

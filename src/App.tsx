@@ -13,6 +13,7 @@ import TreatmentPlanBuilder from './pages/admin/treatments/Builder'
 import PaymentsAdmin from './pages/admin/payments/Payments'
 import BeforeAfterTool from './pages/admin/before-after/Simulador'
 import ReviewsList from './pages/admin/reviews/List'
+import Disponibilidad from './pages/admin/disponibilidad/Disponibilidad'
 
 import Landing from './pages/public/Landing'
 import AgendarConsulta from './pages/public/AgendarConsulta'
@@ -59,6 +60,7 @@ function App() {
             <Route path="before-after" element={<BeforeAfterTool />} />
             <Route path="teleconsultas" element={<TeleconsultationsList />} />
             <Route path="teleconsultas/:consultaId" element={<TeleconsultationRoom />} />
+            <Route path="disponibilidad" element={<Disponibilidad />} />
           </Route>
 
           <Route path="*" element={<Navigate to="/" replace />} />
