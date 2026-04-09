@@ -15,6 +15,13 @@ const DURACION_SLOT_MIN = 30
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
 
+function to12h(time: string): string {
+    const [h, m] = time.split(':').map(Number)
+    const period = h >= 12 ? 'PM' : 'AM'
+    const hour = h % 12 || 12
+    return `${hour}:${m.toString().padStart(2, '0')} ${period}`
+}
+
 function generarSlots(horaInicio: string, horaFin: string): string[] {
     const [sh, sm] = horaInicio.split(':').map(Number)
     const [eh, em] = horaFin.split(':').map(Number)
@@ -421,7 +428,7 @@ export default function AgendarConsulta() {
                                                                         : 'border-slate-100 bg-slate-50 hover:bg-slate-100 text-slate-600'
                                                                 }`}
                                                             >
-                                                                {time}
+                                                                {to12h(time)}
                                                             </motion.button>
                                                         )
                                                     })}
@@ -437,7 +444,7 @@ export default function AgendarConsulta() {
                                             <p className="text-3xl font-black text-slate-800">${PRECIO_CONSULTA.toFixed(2)} <span className="text-sm text-slate-400">USD</span></p>
                                             {selectedDate && selectedTime && (
                                                 <p className="text-xs text-emerald-600 font-bold mt-1 capitalize">
-                                                    {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })} a las {selectedTime}
+                                                    {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })} a las {selectedTime ? to12h(selectedTime) : ''}
                                                 </p>
                                             )}
                                         </div>
