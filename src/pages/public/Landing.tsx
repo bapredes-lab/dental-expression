@@ -66,27 +66,27 @@ export default function Landing() {
             </div>
 
             {/* Navbar */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46]/90 backdrop-blur-xl border-b border-white/10">
-                <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46] border-b-2 border-emerald-500/20">
+                <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="bg-white/10 border border-white/20 backdrop-blur-sm p-1.5 rounded-xl ring-1 ring-emerald-400/20">
-                            <img src="/logo.jpg" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
+                        <div className="border-2 border-emerald-400/40 p-1.5 rounded-xl">
+                            <img src="/logo.jpg" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-base font-black tracking-widest text-white leading-none">DENTAL EXPRESSION</span>
-                            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest mt-0.5">Dra. Nataly Vargas</span>
+                            <span className="text-xl font-black text-white leading-none">DENTAL EXPRESSION</span>
+                            <span className="text-sm font-bold text-emerald-400 mt-0.5">Dra. Nataly Vargas</span>
                         </div>
                     </div>
                     <div className="flex items-center gap-10">
-                        <div className="hidden lg:flex gap-8 text-base font-semibold text-white">
+                        <div className="hidden lg:flex gap-8 text-lg font-semibold text-white">
                             <a href="#servicios" className="hover:text-emerald-400 transition-colors">Servicios</a>
                             <a href="#proceso" className="hover:text-emerald-400 transition-colors">Cómo Funciona</a>
                             <a href="#diagnostico-ia" className="hover:text-emerald-400 transition-colors">Diagnóstico IA</a>
                             <a href="#experta" className="hover:text-emerald-400 transition-colors">La Experta</a>
                             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
                         </div>
-                        <Link to="/login" className="px-6 py-3 bg-emerald-500/20 border border-emerald-400/30 rounded-full text-base font-semibold text-white hover:bg-emerald-500/30 transition-all flex items-center gap-2">
-                            <Briefcase className="w-4 h-4 text-emerald-400" />
+                        <Link to="/login" className="px-7 py-3 bg-emerald-500 rounded-xl text-base font-bold text-white hover:bg-emerald-400 transition-all flex items-center gap-2">
+                            <Briefcase className="w-5 h-5" />
                             Acceso Equipo
                         </Link>
                     </div>
@@ -141,19 +141,19 @@ export default function Landing() {
                         >
                             <Link
                                 to="/agendar"
-                                className="group w-full sm:w-auto px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(16,185,129,0.35)]"
+                                className="group w-full sm:w-auto px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(16,185,129,0.4)]"
                             >
                                 Agendar mi valoración
-                                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
                             </Link>
 
                             {/* Price Card */}
-                            <div className="flex items-center gap-4 bg-white/8 border border-white/15 rounded-2xl px-7 py-4 backdrop-blur-sm w-full sm:w-auto justify-center">
+                            <div className="flex items-center gap-4 bg-white/20 border border-white/30 rounded-2xl px-7 py-4 backdrop-blur-sm w-full sm:w-auto justify-center">
                                 <div className="flex flex-col items-start leading-none">
-                                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wide mb-1">Inversión Profesional</span>
+                                    <span className="text-sm font-bold text-emerald-300 mb-1">Inversión Profesional</span>
                                     <div className="flex items-baseline gap-1.5">
-                                        <span className="text-3xl font-black text-white">$50.00</span>
-                                        <span className="text-sm font-bold text-slate-300">USD</span>
+                                        <span className="text-4xl font-black text-white">$50.00</span>
+                                        <span className="text-base font-bold text-slate-200">USD</span>
                                     </div>
                                 </div>
                             </div>
