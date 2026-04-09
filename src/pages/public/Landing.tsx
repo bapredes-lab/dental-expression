@@ -78,14 +78,14 @@ export default function Landing() {
                         </div>
                     </div>
                     <div className="flex items-center gap-8">
-                        <div className="hidden lg:flex gap-6 text-[10px] font-black uppercase tracking-widest text-white/80">
+                        <div className="hidden lg:flex gap-8 text-sm font-semibold text-white/90">
                             <a href="#servicios" className="hover:text-emerald-400 transition-colors">Servicios</a>
                             <a href="#proceso" className="hover:text-emerald-400 transition-colors">Cómo Funciona</a>
                             <a href="#diagnostico-ia" className="hover:text-emerald-400 transition-colors">Diagnóstico IA</a>
                             <a href="#experta" className="hover:text-emerald-400 transition-colors">La Experta</a>
                             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
                         </div>
-                        <Link to="/login" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-white/10 transition-all flex items-center gap-2">
+                        <Link to="/login" className="px-5 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm font-semibold hover:bg-white/20 transition-all flex items-center gap-2">
                             <Briefcase className="w-3 h-3 text-emerald-400" />
                             Acceso Equipo
                         </Link>
