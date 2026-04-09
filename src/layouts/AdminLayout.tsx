@@ -56,8 +56,8 @@ export default function AdminLayout() {
                     {/* Brand Pill */}
                     <div className="p-6">
                         <div className={`flex items-center gap-3 ${sidebarOpen ? '' : 'justify-center'}`}>
-                            <div className="bg-white p-2 rounded-2xl shadow-lg ring-4 ring-white/10 shrink-0">
-                                <img src="/logo.jpg" alt="Logo" className="h-8 w-auto object-contain" />
+                            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-base shadow-lg border border-emerald-400/30 shrink-0">
+                                DE
                             </div>
                             <AnimatePresence>
                                 {sidebarOpen && (
