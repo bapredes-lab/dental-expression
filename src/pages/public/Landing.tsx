@@ -101,13 +101,13 @@ export default function Landing() {
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full mb-8 backdrop-blur-md w-fit"
+                            className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/40 px-5 py-2.5 rounded-full mb-8 backdrop-blur-md w-fit"
                         >
-                            <div className="relative flex h-2 w-2">
+                            <div className="relative flex h-2.5 w-2.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                             </div>
-                            <span className="text-[10px] font-black text-emerald-300 tracking-[0.2em] uppercase">
+                            <span className="text-sm font-bold text-emerald-300">
                                 Telemedicina Odontológica Premium
                             </span>
                         </motion.div>
@@ -141,19 +141,19 @@ export default function Landing() {
                         >
                             <Link
                                 to="/agendar"
-                                className="group w-full sm:w-auto px-8 py-4 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black rounded-full transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_15px_30px_rgba(16,185,129,0.25)]"
+                                className="group w-full sm:w-auto px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(16,185,129,0.35)]"
                             >
                                 Agendar mi valoración
-                                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                             </Link>
 
                             {/* Price Card */}
-                            <div className="flex items-center gap-4 bg-white/5 border border-white/10 rounded-full px-6 py-3 backdrop-blur-sm w-full sm:w-auto justify-center">
+                            <div className="flex items-center gap-4 bg-white/8 border border-white/15 rounded-2xl px-7 py-4 backdrop-blur-sm w-full sm:w-auto justify-center">
                                 <div className="flex flex-col items-start leading-none">
-                                    <span className="text-[9px] font-black text-emerald-400/80 uppercase tracking-widest mb-1">Inversión Profesional</span>
+                                    <span className="text-xs font-bold text-emerald-400 uppercase tracking-wide mb-1">Inversión Profesional</span>
                                     <div className="flex items-baseline gap-1.5">
-                                        <span className="text-2xl font-black text-white">$50.00</span>
-                                        <span className="text-[10px] font-bold text-slate-400 uppercase">USD</span>
+                                        <span className="text-3xl font-black text-white">$50.00</span>
+                                        <span className="text-sm font-bold text-slate-300">USD</span>
                                     </div>
                                 </div>
                             </div>
@@ -165,8 +165,8 @@ export default function Landing() {
                             transition={{ delay: 0.5 }}
                             className="flex items-center gap-4 mt-8 opacity-90"
                         >
-                            <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                            <span className="text-xs font-medium tracking-wide">Pago 100% seguro a través de Stripe en plataforma cifrada HIPAA.</span>
+                            <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
+                            <span className="text-sm font-medium text-slate-300">Pago 100% seguro · Plataforma cifrada HIPAA</span>
                         </motion.div>
                     </div>
 
