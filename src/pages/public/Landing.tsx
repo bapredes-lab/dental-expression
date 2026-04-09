@@ -78,7 +78,7 @@ export default function Landing() {
                         </div>
                     </div>
                     <div className="flex items-center gap-8">
-                        <div className="hidden lg:flex gap-6 text-[10px] font-black uppercase tracking-widest text-slate-400">
+                        <div className="hidden lg:flex gap-6 text-[10px] font-black uppercase tracking-widest text-white/80">
                             <a href="#servicios" className="hover:text-emerald-400 transition-colors">Servicios</a>
                             <a href="#proceso" className="hover:text-emerald-400 transition-colors">Cómo Funciona</a>
                             <a href="#diagnostico-ia" className="hover:text-emerald-400 transition-colors">Diagnóstico IA</a>
@@ -163,7 +163,7 @@ export default function Landing() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            className="flex items-center gap-4 mt-8 opacity-60"
+                            className="flex items-center gap-4 mt-8 opacity-90"
                         >
                             <ShieldCheck className="w-4 h-4 text-emerald-400" />
                             <span className="text-xs font-medium tracking-wide">Pago 100% seguro a través de Stripe en plataforma cifrada HIPAA.</span>

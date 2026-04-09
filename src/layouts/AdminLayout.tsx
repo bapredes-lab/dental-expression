@@ -86,12 +86,12 @@ export default function AdminLayout() {
                                     className={`
                                         flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-300 group
                                         ${isActive
-                                            ? 'bg-gradient-to-r from-emerald-600/20 to-emerald-500/10 text-emerald-400 border border-emerald-500/20 shadow-lg shadow-emerald-900/10'
-                                            : 'text-slate-400 hover:text-white hover:bg-white/5'}
+                                            ? 'bg-gradient-to-r from-emerald-500/25 to-emerald-400/10 text-emerald-300 border border-emerald-400/30 shadow-lg shadow-emerald-900/20'
+                                            : 'text-slate-200 hover:text-white hover:bg-white/10'}
                                     `}
                                     title={!sidebarOpen ? item.name : ''}
                                 >
-                                    <item.icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-emerald-400' : 'group-hover:scale-110 transition-transform'}`} />
+                                    <item.icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-emerald-300' : 'text-slate-300 group-hover:scale-110 transition-transform'}`} />
                                     {sidebarOpen && <span className="font-semibold text-sm truncate">{item.name}</span>}
                                 </Link>
                             )
@@ -155,7 +155,7 @@ export default function AdminLayout() {
                     </div>
                 </div>
 
-                <div className="max-w-[1200px] mx-auto">
+                <div className="w-full">
                     <AnimatePresence mode="wait">
                         <motion.div
                             key={location.pathname}
