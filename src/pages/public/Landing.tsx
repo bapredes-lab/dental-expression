@@ -69,8 +69,8 @@ export default function Landing() {
             <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46] border-b-2 border-emerald-500/20">
                 <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
                     <div className="flex items-center gap-4">
-                        <div className="border-2 border-emerald-400/40 p-1.5 rounded-xl">
-                            <img src="/logo.jpg" alt="Logo" className="h-10 w-auto object-contain rounded-lg" />
+                        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-emerald-900/40 border border-emerald-400/30 shrink-0">
+                            DE
                         </div>
                         <div className="flex flex-col">
                             <span className="text-xl font-black text-white leading-none">DENTAL EXPRESSION</span>
@@ -141,7 +141,7 @@ export default function Landing() {
                         >
                             <Link
                                 to="/agendar"
-                                className="group w-full sm:w-auto px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(16,185,129,0.4)]"
+                                className="group whitespace-nowrap w-full sm:w-auto px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(16,185,129,0.4)]"
                             >
                                 Agendar mi valoración
                                 <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
