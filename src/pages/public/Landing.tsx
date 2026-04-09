@@ -571,7 +571,53 @@ export default function Landing() {
                     </div>
                 </div>
             </footer>
+
+            {/* ── Botón flotante de WhatsApp ── */}
+            {/* TODO: reemplazar XXXXXXXXXX con el número de la doctora (ej: 3001234567) */}
+            <WhatsAppButton numero="XXXXXXXXXX" mensaje="Hola, me gustaría agendar una teleconsulta con la Dra. Nataly." />
         </div>
+    )
+}
+
+// ── Componente WhatsApp ───────────────────────────────────────────────────────
+
+function WhatsAppButton({ numero, mensaje }: { numero: string; mensaje: string }) {
+    const url = `https://wa.me/57${numero}?text=${encodeURIComponent(mensaje)}`
+    const esPlaceholder = numero === 'XXXXXXXXXX'
+
+    return (
+        <motion.a
+            href={esPlaceholder ? undefined : url}
+            target="_blank"
+            rel="noopener noreferrer"
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.95 }}
+            className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[#25D366] text-white font-black rounded-full shadow-2xl shadow-green-500/40 transition-all group ${esPlaceholder ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-green-500/60'}`}
+            title={esPlaceholder ? 'Número pendiente de configurar' : 'Escríbenos por WhatsApp'}
+        >
+            {/* Ping animado */}
+            {!esPlaceholder && (
+                <span className="absolute top-0 right-0 flex h-3 w-3">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500" />
+                </span>
+            )}
+
+            {/* Ícono WhatsApp SVG */}
+            <div className="w-14 h-14 flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 32 32" className="w-7 h-7 fill-white" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.485 2.027 7.788L0 32l8.418-2.009A15.928 15.928 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.28 13.28 0 01-6.757-1.847l-.484-.287-5.001 1.194 1.216-4.87-.317-.5A13.253 13.253 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.862c-.398-.199-2.354-1.162-2.718-1.295-.365-.133-.631-.199-.897.199-.265.398-1.03 1.295-1.262 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.202-1.976-1.183-1.055-1.982-2.358-2.214-2.756-.232-.398-.025-.613.174-.812.179-.178.398-.465.597-.697.2-.232.266-.398.398-.664.133-.265.067-.498-.033-.697-.1-.199-.897-2.162-1.229-2.96-.324-.778-.652-.672-.897-.684l-.764-.013c-.265 0-.697.1-1.063.498-.365.398-1.394 1.362-1.394 3.323 0 1.96 1.427 3.855 1.626 4.12.199.266 2.808 4.287 6.806 6.013.951.41 1.693.655 2.272.838.955.303 1.824.26 2.511.158.766-.114 2.354-.963 2.686-1.893.332-.93.332-1.727.232-1.893-.1-.166-.365-.266-.763-.465z"/>
+                </svg>
+            </div>
+
+            {/* Texto — aparece al hover */}
+            <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap pr-0 group-hover:pr-5 text-sm">
+                Escríbenos
+            </span>
+        </motion.a>
     )
 }
 
