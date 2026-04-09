@@ -66,27 +66,27 @@ export default function Landing() {
             </div>
 
             {/* Navbar */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46]/80 backdrop-blur-xl border-b border-white/5">
-                <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                        <div className="bg-white p-1.5 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)]">
-                            <img src="/logo.jpg" alt="Logo" className="h-7 w-auto object-contain rounded-lg" />
+            <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46]/90 backdrop-blur-xl border-b border-white/10">
+                <div className="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        <div className="bg-white p-2 rounded-xl shadow-[0_0_20px_rgba(255,255,255,0.1)]">
+                            <img src="/logo.jpg" alt="Logo" className="h-9 w-auto object-contain rounded-lg" />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-xs font-black tracking-widest text-white leading-none">DENTAL EXPRESSION</span>
-                            <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mt-0.5">Dra. Nataly Vargas</span>
+                            <span className="text-base font-black tracking-widest text-white leading-none">DENTAL EXPRESSION</span>
+                            <span className="text-xs font-bold text-emerald-400 uppercase tracking-widest mt-0.5">Dra. Nataly Vargas</span>
                         </div>
                     </div>
-                    <div className="flex items-center gap-8">
-                        <div className="hidden lg:flex gap-8 text-sm font-semibold text-white/90">
+                    <div className="flex items-center gap-10">
+                        <div className="hidden lg:flex gap-8 text-base font-semibold text-white">
                             <a href="#servicios" className="hover:text-emerald-400 transition-colors">Servicios</a>
                             <a href="#proceso" className="hover:text-emerald-400 transition-colors">Cómo Funciona</a>
                             <a href="#diagnostico-ia" className="hover:text-emerald-400 transition-colors">Diagnóstico IA</a>
                             <a href="#experta" className="hover:text-emerald-400 transition-colors">La Experta</a>
                             <a href="#faq" className="hover:text-emerald-400 transition-colors">FAQ</a>
                         </div>
-                        <Link to="/login" className="px-5 py-2.5 bg-white/10 border border-white/20 rounded-full text-sm font-semibold hover:bg-white/20 transition-all flex items-center gap-2">
-                            <Briefcase className="w-3 h-3 text-emerald-400" />
+                        <Link to="/login" className="px-6 py-3 bg-emerald-500/20 border border-emerald-400/30 rounded-full text-base font-semibold text-white hover:bg-emerald-500/30 transition-all flex items-center gap-2">
+                            <Briefcase className="w-4 h-4 text-emerald-400" />
                             Acceso Equipo
                         </Link>
                     </div>
