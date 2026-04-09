@@ -66,22 +66,30 @@ export default function Disponibilidad() {
 
     async function loadData() {
         setLoading(true)
-        const today = new Date().toISOString().split('T')[0]
+        try {
+            const today = new Date().toISOString().split('T')[0]
 
-        const [{ data: horarioData }, { data: bloqueosData }] = await Promise.all([
-            supabase.from('horario_semanal').select('*'),
-            supabase.from('bloqueos_agenda').select('*').gte('fecha_fin', today).order('fecha_inicio'),
-        ])
+            const [{ data: horarioData, error: errH }, { data: bloqueosData, error: errB }] = await Promise.all([
+                supabase.from('horario_semanal').select('*'),
+                supabase.from('bloqueos_agenda').select('*').gte('fecha_fin', today).order('fecha_inicio'),
+            ])
 
-        if (horarioData && horarioData.length > 0) {
-            setHorario(DIAS.map(d => {
-                const found = horarioData.find((h: any) => h.dia_semana === d.num)
-                return found || { dia_semana: d.num, hora_inicio: '08:00', hora_fin: '18:00', activo: false }
-            }))
+            if (errH) console.error('Error cargando horario:', errH)
+            if (errB) console.error('Error cargando bloqueos:', errB)
+
+            if (horarioData && horarioData.length > 0) {
+                setHorario(DIAS.map(d => {
+                    const found = horarioData.find((h: any) => h.dia_semana === d.num)
+                    return found || { dia_semana: d.num, hora_inicio: '08:00', hora_fin: '18:00', activo: false }
+                }))
+            }
+
+            setBloqueos(bloqueosData || [])
+        } catch (err) {
+            console.error('Error en loadData:', err)
+        } finally {
+            setLoading(false)
         }
-
-        setBloqueos(bloqueosData || [])
-        setLoading(false)
     }
 
     // ── Guardar horario ──────────────────────────────────────────────────────
