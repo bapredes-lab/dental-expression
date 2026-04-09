@@ -119,19 +119,40 @@ export default function AgendarConsulta() {
             }
 
             const fechaStr = dateToStr(selectedDate!)
-            const { data: consultasData } = await supabase
-                .from('consultas')
-                .select('fecha_hora')
-                .gte('fecha_hora', `${fechaStr}T00:00:00`)
-                .lte('fecha_hora', `${fechaStr}T23:59:59`)
-                .neq('estado', 'cancelada')
+
+            // Citas ya reservadas + bloqueos parciales del día
+            const [{ data: consultasData }, { data: bloqueosParciales }] = await Promise.all([
+                supabase
+                    .from('consultas')
+                    .select('fecha_hora')
+                    .gte('fecha_hora', `${fechaStr}T00:00:00`)
+                    .lte('fecha_hora', `${fechaStr}T23:59:59`)
+                    .neq('estado', 'cancelada'),
+                supabase
+                    .from('bloqueos_agenda')
+                    .select('hora_inicio, hora_fin')
+                    .eq('todo_el_dia', false)
+                    .lte('fecha_inicio', fechaStr)
+                    .gte('fecha_fin', fechaStr)
+            ])
 
             const reservados = new Set(
                 (consultasData || []).map(c => format(new Date(c.fecha_hora), 'HH:mm'))
             )
 
             const todos = generarSlots(horarioDia.hora_inicio, horarioDia.hora_fin)
-            setSlotsDisponibles(todos.filter(s => !reservados.has(s)))
+            setSlotsDisponibles(todos.filter(slot => {
+                if (reservados.has(slot)) return false
+                // Excluir slots dentro de bloqueos de horas específicas
+                for (const blq of bloqueosParciales || []) {
+                    if (blq.hora_inicio && blq.hora_fin) {
+                        const inicio = blq.hora_inicio.slice(0, 5)
+                        const fin = blq.hora_fin.slice(0, 5)
+                        if (slot >= inicio && slot < fin) return false
+                    }
+                }
+                return true
+            }))
             setLoadingSlots(false)
         }
         cargarSlots()

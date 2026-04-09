@@ -24,6 +24,8 @@ type Bloqueo = {
     fecha_fin: string
     motivo: string
     todo_el_dia: boolean
+    hora_inicio?: string | null
+    hora_fin?: string | null
 }
 
 // ── Configuración de días ────────────────────────────────────────────────────
@@ -54,7 +56,10 @@ export default function Disponibilidad() {
     const [saving, setSaving] = useState(false)
     const [saved, setSaved] = useState(false)
 
-    const [nuevoBloqueo, setNuevoBloqueo] = useState({ fecha_inicio: '', fecha_fin: '', motivo: '' })
+    const [nuevoBloqueo, setNuevoBloqueo] = useState({
+        fecha_inicio: '', fecha_fin: '', motivo: '',
+        todo_el_dia: true, hora_inicio: '09:00', hora_fin: '11:00'
+    })
     const [addingBloqueo, setAddingBloqueo] = useState(false)
     const [deletingId, setDeletingId] = useState<string | null>(null)
 
@@ -133,17 +138,26 @@ export default function Disponibilidad() {
     async function addBloqueo() {
         if (!nuevoBloqueo.fecha_inicio || !nuevoBloqueo.fecha_fin || !nuevoBloqueo.motivo) return
         if (nuevoBloqueo.fecha_fin < nuevoBloqueo.fecha_inicio) return
+        if (!nuevoBloqueo.todo_el_dia && nuevoBloqueo.hora_fin <= nuevoBloqueo.hora_inicio) return
 
         setAddingBloqueo(true)
+        const payload = {
+            fecha_inicio: nuevoBloqueo.fecha_inicio,
+            fecha_fin: nuevoBloqueo.fecha_fin,
+            motivo: nuevoBloqueo.motivo,
+            todo_el_dia: nuevoBloqueo.todo_el_dia,
+            hora_inicio: nuevoBloqueo.todo_el_dia ? null : nuevoBloqueo.hora_inicio,
+            hora_fin: nuevoBloqueo.todo_el_dia ? null : nuevoBloqueo.hora_fin,
+        }
         const { data, error } = await supabase
             .from('bloqueos_agenda')
-            .insert({ ...nuevoBloqueo, todo_el_dia: true })
+            .insert(payload)
             .select()
             .single()
 
         if (!error && data) {
             setBloqueos(prev => [...prev, data].sort((a, b) => a.fecha_inicio.localeCompare(b.fecha_inicio)))
-            setNuevoBloqueo({ fecha_inicio: '', fecha_fin: '', motivo: '' })
+            setNuevoBloqueo({ fecha_inicio: '', fecha_fin: '', motivo: '', todo_el_dia: true, hora_inicio: '09:00', hora_fin: '11:00' })
         }
         setAddingBloqueo(false)
     }
@@ -333,33 +347,83 @@ export default function Disponibilidad() {
                             </div>
 
                             <div className="space-y-4">
-                                <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Desde</label>
-                                    <input
-                                        type="date"
-                                        value={nuevoBloqueo.fecha_inicio}
-                                        min={new Date().toISOString().split('T')[0]}
-                                        onChange={e => setNuevoBloqueo(prev => ({ ...prev, fecha_inicio: e.target.value, fecha_fin: prev.fecha_fin < e.target.value ? e.target.value : prev.fecha_fin }))}
-                                        className="w-full bg-white/10 border border-white/20 text-white font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 [color-scheme:dark]"
-                                    />
+                                {/* Toggle todo el día / horas específicas */}
+                                <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                                    <button
+                                        onClick={() => setNuevoBloqueo(prev => ({ ...prev, todo_el_dia: true }))}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${nuevoBloqueo.todo_el_dia ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                                    >
+                                        Todo el día
+                                    </button>
+                                    <button
+                                        onClick={() => setNuevoBloqueo(prev => ({ ...prev, todo_el_dia: false }))}
+                                        className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-widest transition-all ${!nuevoBloqueo.todo_el_dia ? 'bg-emerald-500 text-white' : 'text-slate-400 hover:text-white'}`}
+                                    >
+                                        Horas específicas
+                                    </button>
                                 </div>
-                                <div>
-                                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Hasta</label>
-                                    <input
-                                        type="date"
-                                        value={nuevoBloqueo.fecha_fin}
-                                        min={nuevoBloqueo.fecha_inicio || new Date().toISOString().split('T')[0]}
-                                        onChange={e => setNuevoBloqueo(prev => ({ ...prev, fecha_fin: e.target.value }))}
-                                        className="w-full bg-white/10 border border-white/20 text-white font-bold rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 [color-scheme:dark]"
-                                    />
+
+                                <div className="grid grid-cols-2 gap-3">
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Fecha inicio</label>
+                                        <input
+                                            type="date"
+                                            value={nuevoBloqueo.fecha_inicio}
+                                            min={new Date().toISOString().split('T')[0]}
+                                            onChange={e => setNuevoBloqueo(prev => ({ ...prev, fecha_inicio: e.target.value, fecha_fin: prev.fecha_fin < e.target.value ? e.target.value : prev.fecha_fin }))}
+                                            className="w-full bg-white/10 border border-white/20 text-white font-bold rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 [color-scheme:dark] text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Fecha fin</label>
+                                        <input
+                                            type="date"
+                                            value={nuevoBloqueo.fecha_fin}
+                                            min={nuevoBloqueo.fecha_inicio || new Date().toISOString().split('T')[0]}
+                                            onChange={e => setNuevoBloqueo(prev => ({ ...prev, fecha_fin: e.target.value }))}
+                                            className="w-full bg-white/10 border border-white/20 text-white font-bold rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 [color-scheme:dark] text-sm"
+                                        />
+                                    </div>
                                 </div>
+
+                                {/* Horas específicas — solo cuando no es todo el día */}
+                                <AnimatePresence>
+                                    {!nuevoBloqueo.todo_el_dia && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: 'auto' }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="grid grid-cols-2 gap-3 overflow-hidden"
+                                        >
+                                            <div>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Desde</label>
+                                                <input
+                                                    type="time"
+                                                    value={nuevoBloqueo.hora_inicio}
+                                                    onChange={e => setNuevoBloqueo(prev => ({ ...prev, hora_inicio: e.target.value }))}
+                                                    className="w-full bg-white/10 border border-white/20 text-white font-bold rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 [color-scheme:dark] text-sm"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Hasta</label>
+                                                <input
+                                                    type="time"
+                                                    value={nuevoBloqueo.hora_fin}
+                                                    onChange={e => setNuevoBloqueo(prev => ({ ...prev, hora_fin: e.target.value }))}
+                                                    className="w-full bg-white/10 border border-white/20 text-white font-bold rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500/50 [color-scheme:dark] text-sm"
+                                                />
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+
                                 <div>
                                     <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Motivo</label>
                                     <input
                                         type="text"
                                         value={nuevoBloqueo.motivo}
                                         onChange={e => setNuevoBloqueo(prev => ({ ...prev, motivo: e.target.value }))}
-                                        placeholder="Ej: Vacaciones, Congreso..."
+                                        placeholder="Ej: Reunión, Congreso, Vacaciones..."
                                         className="w-full bg-white/10 border border-white/20 text-white font-bold placeholder:text-slate-500 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
                                     />
                                 </div>
@@ -371,7 +435,7 @@ export default function Disponibilidad() {
                                     className="w-full h-14 bg-emerald-500 hover:bg-emerald-400 disabled:bg-white/10 disabled:text-slate-500 text-white font-black rounded-2xl transition-all flex items-center justify-center gap-2 uppercase tracking-widest text-sm mt-2"
                                 >
                                     {addingBloqueo ? <Loader2 className="w-5 h-5 animate-spin" /> : <Plus className="w-5 h-5" />}
-                                    {addingBloqueo ? 'Bloqueando...' : 'Bloquear Fechas'}
+                                    {addingBloqueo ? 'Bloqueando...' : 'Bloquear'}
                                 </motion.button>
                             </div>
                         </div>
@@ -421,7 +485,14 @@ export default function Disponibilidad() {
                                                     <CalendarOff className="w-4 h-4 text-rose-500" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="font-black text-[#052c46] text-sm">{b.motivo}</p>
+                                                    <div className="flex items-center gap-2">
+                                                        <p className="font-black text-[#052c46] text-sm">{b.motivo}</p>
+                                                        {!b.todo_el_dia && (
+                                                            <span className="text-[9px] font-black bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-widest shrink-0">
+                                                                {b.hora_inicio?.slice(0,5)} – {b.hora_fin?.slice(0,5)}
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                     <p className="text-xs font-bold text-slate-500 mt-0.5 capitalize">
                                                         {mismaFecha
                                                             ? format(inicio, "d 'de' MMMM yyyy", { locale: es })
