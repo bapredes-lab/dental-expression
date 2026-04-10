@@ -260,15 +260,15 @@ export default function Disponibilidad() {
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05 }}
-                                className={`relative rounded-[1.5rem] border-2 p-5 transition-all duration-300 ${
+                                className={`relative rounded-[1.5rem] border p-5 transition-all duration-300 ${
                                     h.activo
-                                        ? 'border-emerald-500/40 bg-gradient-to-b from-emerald-50 to-white shadow-lg shadow-emerald-500/10'
-                                        : 'border-slate-100 bg-slate-50/50'
+                                        ? 'border-emerald-500/30 bg-emerald-500/5 shadow-lg shadow-emerald-900/20'
+                                        : 'border-white/5 bg-white/[0.03]'
                                 }`}
                             >
                                 {/* Día abreviado */}
                                 <div className="flex items-center justify-between mb-4">
-                                    <span className={`text-xs font-black uppercase tracking-widest ${h.activo ? 'text-emerald-600' : 'text-slate-400'}`}>
+                                    <span className={`text-xs font-black uppercase tracking-widest ${h.activo ? 'text-emerald-400' : 'text-slate-600'}`}>
                                         {dia.abrev}
                                     </span>
                                     {/* Toggle */}
@@ -304,8 +304,8 @@ export default function Disponibilidad() {
                                                 className="w-full text-sm font-bold text-white bg-white/10 border border-white/20 rounded-xl px-3 py-2 [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                                             />
                                         </div>
-                                        <div className="pt-2 border-t border-emerald-100">
-                                            <p className="text-[9px] font-black text-emerald-600 uppercase tracking-widest text-center">
+                                        <div className="pt-2 border-t border-emerald-500/20">
+                                            <p className="text-[9px] font-black text-emerald-400 uppercase tracking-widest text-center">
                                                 {(() => {
                                                     const [sh, sm] = h.hora_inicio.split(':').map(Number)
                                                     const [eh, em] = h.hora_fin.split(':').map(Number)
@@ -318,7 +318,7 @@ export default function Disponibilidad() {
                                     </div>
                                 ) : (
                                     <div className="flex flex-col items-center justify-center py-4 gap-2">
-                                        <Ban className="w-6 h-6 text-slate-300" />
+                                        <Ban className="w-6 h-6 text-slate-600" />
                                         <p className="text-xs font-bold text-slate-400">Cerrado</p>
                                     </div>
                                 )}

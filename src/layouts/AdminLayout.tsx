@@ -79,8 +79,15 @@ export default function AdminLayout() {
                     {/* Brand Pill */}
                     <div className="p-6">
                         <div className={`flex items-center gap-3 ${sidebarOpen ? '' : 'justify-center'}`}>
-                            <div className="h-11 w-11 rounded-2xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 overflow-hidden">
-                                <img src="/logo.png" alt="DE" className="h-full w-full object-contain p-1" />
+                            {/* Tooth icon — siempre visible */}
+                            <div className="shrink-0">
+                                <svg width="30" height="34" viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M16 1C9.5 1 4 5.8 4 12c0 3.2 1.2 5.8 2.5 8L9 30c.6 3 1.8 5 3.5 5s2.5-1.5 3.5-5l.3-1.5.2 1.5c1 3.5 1.8 5 3.5 5s2.9-2 3.5-5l2.5-10C27 17.8 28 15.2 28 12c0-6.2-5.5-11-12-11z"
+                                        fill="#3ABDE0"
+                                        style={{ filter: 'drop-shadow(0 0 5px rgba(58,189,224,0.7))' }}
+                                    />
+                                </svg>
                             </div>
                             <AnimatePresence>
                                 {sidebarOpen && (
@@ -88,10 +95,34 @@ export default function AdminLayout() {
                                         initial={{ opacity: 0, x: -10 }}
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: -10 }}
-                                        className="flex flex-col overflow-hidden"
+                                        className="flex flex-col leading-none overflow-hidden"
                                     >
-                                        <span translate="no" className="text-sm font-black tracking-tighter text-white whitespace-nowrap">{user?.user_metadata?.clinica_nombre || 'MI CLÍNICA'}</span>
-                                        <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-widest whitespace-nowrap">{user?.user_metadata?.full_name || user?.email}</span>
+                                        <span
+                                            style={{
+                                                fontFamily: '"Dancing Script", cursive',
+                                                fontSize: '1.15rem',
+                                                fontWeight: 700,
+                                                color: '#ffffff',
+                                                textShadow: '0 0 12px rgba(58,189,224,0.6)',
+                                                whiteSpace: 'nowrap',
+                                                lineHeight: 1.1,
+                                            }}
+                                        >
+                                            Dental Expression
+                                        </span>
+                                        <span
+                                            style={{
+                                                fontSize: '0.58rem',
+                                                fontWeight: 700,
+                                                color: '#3ABDE0',
+                                                letterSpacing: '0.22em',
+                                                textTransform: 'uppercase',
+                                                marginTop: '3px',
+                                                whiteSpace: 'nowrap',
+                                            }}
+                                        >
+                                            Nataly · Vargas
+                                        </span>
                                     </motion.div>
                                 )}
                             </AnimatePresence>
