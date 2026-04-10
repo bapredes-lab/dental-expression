@@ -144,7 +144,7 @@ export default function PatientForm() {
                         <ArrowLeft className="h-5 w-5" />
                     </Button>
                     <div>
-                        <h2 className="text-3xl font-black text-slate-800 tracking-tighter">{isEditing ? 'Editar Paciente' : 'Nueva Ficha Clínica'}</h2>
+                        <h2 className="text-3xl font-black text-white tracking-tighter">{isEditing ? 'Editar Paciente' : 'Nueva Ficha Clínica'}</h2>
                         <p className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                             <User className="w-3 h-3" /> {isEditing ? 'Actualización de Datos' : 'Registro de Paciente Elite'}
                         </p>
@@ -167,23 +167,23 @@ export default function PatientForm() {
             <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 {/* Column 1: Personal Info */}
                 <motion.div variants={itemVariants} className="lg:col-span-2 space-y-8">
-                    <div className="glass-card bg-white rounded-[2rem] p-8 luxury-shadow border-slate-200/50">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10">
                         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-100">
                             <div className="bg-[#0F4C75]/10 p-2 rounded-xl text-primary">
                                 <User className="w-5 h-5" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800">Identificación y Perfil</h3>
+                            <h3 className="text-lg font-black text-white">Identificación y Perfil</h3>
                         </div>
 
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor="nombre" className="font-bold text-slate-600 ml-1">Nombre Completo del Paciente</Label>
-                                <Input id="nombre" name="nombre" required placeholder="Ej. Juan Pérez" value={formData.nombre} onChange={handleChange} className="h-12 border-slate-200 rounded-xl focus:ring-primary/20" />
+                                <Label htmlFor="nombre" className="font-bold text-slate-400 ml-1">Nombre Completo del Paciente</Label>
+                                <Input id="nombre" name="nombre" required placeholder="Ej. Juan Pérez" value={formData.nombre} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark] focus:ring-primary/20" />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="documento_tipo" className="font-bold text-slate-600 ml-1">Documento</Label>
-                                <select id="documento_tipo" name="documento_tipo" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm focus:ring-primary/20 outline-none" value={formData.documento_tipo} onChange={handleChange}>
+                                <Label htmlFor="documento_tipo" className="font-bold text-slate-400 ml-1">Documento</Label>
+                                <select id="documento_tipo" name="documento_tipo" className="flex h-12 w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white [color-scheme:dark] focus:ring-emerald-500/30 outline-none" value={formData.documento_tipo} onChange={handleChange}>
                                     <option value="CC">Cédula Ciudadanía</option>
                                     <option value="CE">Cédula Extranjería</option>
                                     <option value="PP">Pasaporte</option>
@@ -191,13 +191,13 @@ export default function PatientForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="documento_numero" className="font-bold text-slate-600 ml-1">Número ID</Label>
-                                <Input id="documento_numero" name="documento_numero" required placeholder="000.000.000" value={formData.documento_numero} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="documento_numero" className="font-bold text-slate-400 ml-1">Número ID</Label>
+                                <Input id="documento_numero" name="documento_numero" required placeholder="000.000.000" value={formData.documento_numero} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="genero" className="font-bold text-slate-600 ml-1">Género</Label>
-                                <select id="genero" name="genero" className="flex h-12 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none" value={formData.genero} onChange={handleChange}>
+                                <Label htmlFor="genero" className="font-bold text-slate-400 ml-1">Género</Label>
+                                <select id="genero" name="genero" className="flex h-12 w-full rounded-xl border border-white/20 bg-white/10 px-3 py-2 text-sm text-white [color-scheme:dark] outline-none" value={formData.genero} onChange={handleChange}>
                                     <option value="M">Masculino</option>
                                     <option value="F">Femenino</option>
                                     <option value="O">Otro</option>
@@ -205,32 +205,32 @@ export default function PatientForm() {
                             </div>
 
                             <div className="space-y-2">
-                                <Label htmlFor="fecha_nacimiento" className="font-bold text-slate-600 ml-1 flex items-center gap-2"><CalendarDays className="w-4 h-4" /> Nacimiento</Label>
-                                <Input id="fecha_nacimiento" name="fecha_nacimiento" type="date" value={formData.fecha_nacimiento} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="fecha_nacimiento" className="font-bold text-slate-400 ml-1 flex items-center gap-2"><CalendarDays className="w-4 h-4" /> Nacimiento</Label>
+                                <Input id="fecha_nacimiento" name="fecha_nacimiento" type="date" value={formData.fecha_nacimiento} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
                         </div>
                     </div>
 
-                    <div className="glass-card bg-white rounded-[2rem] p-8 luxury-shadow border-slate-200/50">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10">
                         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-100">
                             <div className="bg-emerald-500/10 p-2 rounded-xl text-emerald-600">
                                 <Phone className="w-5 h-5" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800">Contacto y Residencia</h3>
+                            <h3 className="text-lg font-black text-white">Contacto y Residencia</h3>
                         </div>
 
                         <div className="grid gap-6 md:grid-cols-2">
                             <div className="space-y-2">
-                                <Label htmlFor="telefono" className="font-bold text-slate-600 ml-1">Celular</Label>
-                                <Input id="telefono" name="telefono" type="tel" placeholder="+57 300..." value={formData.telefono} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="telefono" className="font-bold text-slate-400 ml-1">Celular</Label>
+                                <Input id="telefono" name="telefono" type="tel" placeholder="+57 300..." value={formData.telefono} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="email" className="font-bold text-slate-600 ml-1 flex items-center gap-2"><AtSign className="w-4 h-4" /> Email</Label>
-                                <Input id="email" name="email" type="email" placeholder="paciente@mail.com" value={formData.email} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="email" className="font-bold text-slate-400 ml-1 flex items-center gap-2"><AtSign className="w-4 h-4" /> Email</Label>
+                                <Input id="email" name="email" type="email" placeholder="paciente@mail.com" value={formData.email} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
                             <div className="space-y-2 md:col-span-2">
-                                <Label htmlFor="direccion" className="font-bold text-slate-600 ml-1 flex items-center gap-2"><MapPin className="w-4 h-4" /> Dirección</Label>
-                                <Input id="direccion" name="direccion" placeholder="Calle, Barrio, Apto..." value={formData.direccion} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="direccion" className="font-bold text-slate-400 ml-1 flex items-center gap-2"><MapPin className="w-4 h-4" /> Dirección</Label>
+                                <Input id="direccion" name="direccion" placeholder="Calle, Barrio, Apto..." value={formData.direccion} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
                         </div>
                     </div>
@@ -267,21 +267,21 @@ export default function PatientForm() {
                         </div>
                     </div>
 
-                    <div className="glass-card bg-white rounded-[2rem] p-8 luxury-shadow border-slate-200/50">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[2rem] p-8 border border-white/10">
                         <div className="flex items-center gap-3 mb-8 pb-4 border-b border-slate-100">
                             <div className="bg-slate-100 p-2 rounded-xl text-slate-600">
                                 <Stethoscope className="w-5 h-5" />
                             </div>
-                            <h3 className="text-lg font-black text-slate-800">Otros Antecedentes</h3>
+                            <h3 className="text-lg font-black text-white">Otros Antecedentes</h3>
                         </div>
                         <div className="space-y-4">
                             <div className="space-y-2">
-                                <Label htmlFor="motivo_consulta" className="font-bold text-slate-600 ml-1">Motivo de Consulta</Label>
-                                <Input id="motivo_consulta" name="motivo_consulta" placeholder="¿Por qué viene hoy?" value={formData.motivo_consulta} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="motivo_consulta" className="font-bold text-slate-400 ml-1">Motivo de Consulta</Label>
+                                <Input id="motivo_consulta" name="motivo_consulta" placeholder="¿Por qué viene hoy?" value={formData.motivo_consulta} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="eps" className="font-bold text-slate-600 ml-1">EPS / Convenio</Label>
-                                <Input id="eps" name="eps" placeholder="Nombre de EPS" value={formData.eps} onChange={handleChange} className="h-12 border-slate-200 rounded-xl" />
+                                <Label htmlFor="eps" className="font-bold text-slate-400 ml-1">EPS / Convenio</Label>
+                                <Input id="eps" name="eps" placeholder="Nombre de EPS" value={formData.eps} onChange={handleChange} className="h-12 bg-white/5 border-white/20 text-white placeholder:text-slate-500 rounded-xl [color-scheme:dark]" />
                             </div>
                         </div>
                     </div>

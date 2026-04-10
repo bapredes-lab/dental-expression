@@ -135,7 +135,7 @@ export default function PatientDetails() {
     if (!patient) {
         return (
             <div className="text-center py-20">
-                <h3 className="text-2xl font-bold text-slate-800">Paciente no encontrado</h3>
+                <h3 className="text-2xl font-bold text-white">Paciente no encontrado</h3>
                 <Button onClick={() => navigate('/admin/patients')} className="mt-4">Volver al listado</Button>
             </div>
         );
@@ -148,7 +148,7 @@ export default function PatientDetails() {
             className="space-y-8 pb-20"
         >
             {/* Header / Perfil Rápido */}
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/40 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/50 shadow-xl luxury-shadow">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 bg-white/5 backdrop-blur-xl p-8 rounded-[2.5rem] border border-white/10">
                 <div className="flex items-center gap-6">
                     <Button variant="outline" size="icon" onClick={() => navigate('/admin/patients')} className="rounded-2xl border-slate-200">
                         <ArrowLeft className="h-5 w-5" />
@@ -157,7 +157,7 @@ export default function PatientDetails() {
                         {patient.nombre ? patient.nombre[0] : 'P'}
                     </div>
                     <div>
-                        <h2 className="text-3xl font-black text-[#052c46] tracking-tighter">{patient.nombre}</h2>
+                        <h2 className="text-3xl font-black text-white tracking-tighter">{patient.nombre}</h2>
                         <div className="flex items-center gap-4 mt-1 text-sm font-bold text-slate-500 uppercase tracking-widest">
                             <span className="flex items-center gap-1"><User className="w-4 h-4" /> ID: {patient.id.substring(0, 8)}</span>
                             <span className="text-emerald-500">● Paciente Activo</span>
@@ -182,7 +182,7 @@ export default function PatientDetails() {
             </div>
 
             <Tabs defaultValue="overview" className="space-y-8">
-                <TabsList className="bg-white/50 backdrop-blur p-1 rounded-2xl border border-white/50 h-14">
+                <TabsList className="bg-white/5 backdrop-blur p-1 rounded-2xl border border-white/10 h-14">
                     <TabsTrigger value="overview" className="rounded-xl px-6 font-black uppercase tracking-widest text-[10px]">Resumen Médico</TabsTrigger>
                     <TabsTrigger value="odontogram" className="rounded-xl px-6 font-black uppercase tracking-widest text-[10px]">Odontograma Real</TabsTrigger>
                     <TabsTrigger value="history" className="rounded-xl px-6 font-black uppercase tracking-widest text-[10px]">Historial / Citas</TabsTrigger>
@@ -193,8 +193,8 @@ export default function PatientDetails() {
                     <div className="grid lg:grid-cols-3 gap-8">
                         <div className="lg:col-span-2 space-y-8">
                             {/* Info de contacto */}
-                            <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white shadow-xl luxury-shadow">
-                                <h3 className="text-lg font-black text-slate-800 mb-6 flex items-center gap-2">
+                            <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10">
+                                <h3 className="text-lg font-black text-white mb-6 flex items-center gap-2">
                                     <FileText className="w-5 h-5 text-[#0F4C75]" /> Datos de Contacto
                                 </h3>
                                 <div className="grid md:grid-cols-2 gap-8">
@@ -236,15 +236,15 @@ export default function PatientDetails() {
                 </TabsContent>
 
                 <TabsContent value="odontogram">
-                    <div className="bg-white/40 backdrop-blur-xl rounded-[3rem] p-4 lg:p-10 border border-white/50 shadow-2xl luxury-shadow min-h-[600px]">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[3rem] p-4 lg:p-10 border border-white/10 min-h-[600px]">
                         <SmartOdontogram patientId={patient.id} patientName={patient.name} />
                     </div>
                 </TabsContent>
 
                 <TabsContent value="history">
-                    <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white shadow-xl luxury-shadow">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10">
                         <div className="flex items-center justify-between mb-10">
-                            <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                            <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
                                 <History className="w-6 h-6 text-emerald-500" /> Cronograma de Consultas
                             </h3>
                             <Button variant="ghost" className="text-xs font-black uppercase tracking-widest text-[#0F4C75] rounded-xl">
@@ -259,14 +259,14 @@ export default function PatientDetails() {
                                 </div>
                             ) : (
                                 appointments.map((appt, i) => (
-                                    <div key={i} className="flex items-center justify-between p-6 bg-white/50 border border-slate-100 rounded-[1.5rem] hover:border-emerald-500/10 transition-all group">
+                                    <div key={i} className="flex items-center justify-between p-6 bg-white/5 border border-white/10 rounded-[1.5rem] hover:border-emerald-500/20 transition-all group">
                                         <div className="flex items-center gap-6">
                                             <div className="h-12 w-12 rounded-xl bg-slate-100 flex flex-col items-center justify-center border border-slate-200">
                                                 <span className="text-[10px] font-black text-slate-400 uppercase leading-none">{new Date(appt.fecha_hora).toLocaleString('es-ES', { month: 'short' })}</span>
-                                                <span className="text-lg font-black text-[#052c46] leading-none">{new Date(appt.fecha_hora).getDate()}</span>
+                                                <span className="text-lg font-black text-white leading-none">{new Date(appt.fecha_hora).getDate()}</span>
                                             </div>
                                             <div>
-                                                <p className="font-black text-slate-800 tracking-tight">{appt.motivo || 'Teleconsulta Virtual'}</p>
+                                                <p className="font-black text-white tracking-tight">{appt.motivo || 'Teleconsulta Virtual'}</p>
                                                 <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{new Date(appt.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                                             </div>
                                         </div>
@@ -292,9 +292,9 @@ export default function PatientDetails() {
                 </TabsContent>
 
                 <TabsContent value="files">
-                    <div className="bg-white/70 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white shadow-xl luxury-shadow space-y-8">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[2.5rem] p-8 border border-white/10 space-y-8">
                         <div className="flex items-center justify-between">
-                            <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-3">
+                            <h3 className="text-xl font-black text-white tracking-tight flex items-center gap-3">
                                 <ImageIcon className="w-6 h-6 text-emerald-500" /> Galería Clínica
                             </h3>
                             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest bg-slate-100 px-3 py-1 rounded-full">

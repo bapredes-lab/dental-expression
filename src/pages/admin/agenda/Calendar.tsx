@@ -237,7 +237,7 @@ export default function AgendaView() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-black tracking-tight text-[#052c46]">Agenda Inteligente</h2>
+                    <h2 className="text-3xl font-black tracking-tight text-white">Agenda Inteligente</h2>
                     <p className="text-sm font-bold text-slate-500 mt-1 uppercase tracking-widest flex items-center gap-2">
                         {loading
                             ? <Loader2 className="w-3 h-3 animate-spin text-emerald-500" />
@@ -260,7 +260,7 @@ export default function AgendaView() {
             <div className="grid gap-6 lg:grid-cols-3">
 
                 {/* Calendario */}
-                <div className="lg:col-span-2 bg-white/40 backdrop-blur-xl p-4 rounded-[2.5rem] border border-white/50 shadow-2xl luxury-shadow overflow-hidden">
+                <div className="lg:col-span-2 bg-white/5 backdrop-blur-xl p-4 rounded-[2.5rem] border border-white/10 overflow-hidden">
                     <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-2 flex items-center gap-2">
                         <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Teleconsultas
                         <span className="w-2 h-2 rounded-full bg-rose-400 inline-block ml-2" /> Bloqueado (consultorio/viaje)
@@ -301,12 +301,12 @@ export default function AgendaView() {
                 <div className="space-y-4">
 
                     {/* Próximas teleconsultas */}
-                    <div className="bg-white/60 backdrop-blur-xl border border-white rounded-[2rem] shadow-xl luxury-shadow p-5">
+                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-5">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="p-1.5 bg-[#052c46]/10 rounded-lg">
-                                <Calendar className="w-4 h-4 text-[#052c46]" />
+                                <Calendar className="w-4 h-4 text-white" />
                             </div>
-                            <h3 className="text-sm font-black text-[#052c46]">Próximas Teleconsultas</h3>
+                            <h3 className="text-sm font-black text-white">Próximas Teleconsultas</h3>
                         </div>
 
                         {proximas.length === 0 ? (
@@ -317,10 +317,10 @@ export default function AgendaView() {
                                     const fecha = parseISO(c.fecha_hora)
                                     const cfg = ESTADO_CONFIG[c.estado] ?? ESTADO_CONFIG.pendiente
                                     return (
-                                        <div key={c.id} className="flex items-start gap-2 p-3 bg-white rounded-xl border border-slate-100 hover:border-emerald-200 transition-all group">
+                                        <div key={c.id} className="flex items-start gap-2 p-3 bg-white/5 rounded-xl border border-white/10 hover:border-emerald-500/30 transition-all group">
                                             <div className="w-1 self-stretch rounded-full shrink-0" style={{ backgroundColor: cfg.color }} />
                                             <div className="flex-1 min-w-0">
-                                                <p className="font-black text-[#052c46] text-xs truncate flex items-center gap-1">
+                                                <p className="font-black text-white text-xs truncate flex items-center gap-1">
                                                     <User className="w-3 h-3 shrink-0" /> {c.paciente_nombre}
                                                 </p>
                                                 <p className="text-[10px] font-bold text-slate-500 mt-0.5 flex items-center gap-1 capitalize">
@@ -337,12 +337,12 @@ export default function AgendaView() {
                     </div>
 
                     {/* Bloqueos próximos */}
-                    <div className="bg-white/60 backdrop-blur-xl border border-white rounded-[2rem] shadow-xl luxury-shadow p-5">
+                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-5">
                         <div className="flex items-center gap-2 mb-4">
                             <div className="p-1.5 bg-rose-500/10 rounded-lg">
                                 <CalendarOff className="w-4 h-4 text-rose-500" />
                             </div>
-                            <h3 className="text-sm font-black text-[#052c46]">Fechas Bloqueadas</h3>
+                            <h3 className="text-sm font-black text-white">Fechas Bloqueadas</h3>
                         </div>
 
                         {bloqueosProximos.length === 0 ? (
@@ -352,7 +352,7 @@ export default function AgendaView() {
                                 {bloqueosProximos.map(b => (
                                     <div key={b.id} className="flex items-center gap-2 p-3 bg-rose-50 rounded-xl border border-rose-100 group">
                                         <div className="flex-1 min-w-0">
-                                            <p className="font-black text-[#052c46] text-xs truncate">{b.motivo}</p>
+                                            <p className="font-black text-white text-xs truncate">{b.motivo}</p>
                                             <p className="text-[10px] font-bold text-slate-500 mt-0.5">
                                                 {b.fecha_inicio === b.fecha_fin
                                                     ? format(parseISO(b.fecha_inicio), "d MMM", { locale: es })
@@ -374,7 +374,7 @@ export default function AgendaView() {
                     </div>
 
                     {/* Leyenda */}
-                    <div className="bg-white/60 backdrop-blur-xl border border-white rounded-[2rem] shadow-xl luxury-shadow p-5">
+                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-5">
                         <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Leyenda</p>
                         <div className="space-y-1.5">
                             {Object.entries(ESTADO_CONFIG).map(([, cfg]) => (
@@ -416,7 +416,7 @@ export default function AgendaView() {
                             exit={{ opacity: 0, scale: 0.95, y: 20 }}
                             className="fixed inset-0 z-50 flex items-center justify-center p-4"
                         >
-                            <div className="bg-white rounded-[2rem] shadow-2xl w-full max-w-md p-8 relative">
+                            <div className="bg-[#0d1f33] border border-white/10 rounded-[2rem] shadow-2xl w-full max-w-md p-8 relative">
                                 <button
                                     onClick={() => setModalOpen(false)}
                                     className="absolute top-5 right-5 p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-all"
@@ -429,7 +429,7 @@ export default function AgendaView() {
                                         <Ban className="w-5 h-5 text-rose-600" />
                                     </div>
                                     <div>
-                                        <h3 className="text-lg font-black text-[#052c46]">Bloquear Tiempo</h3>
+                                        <h3 className="text-lg font-black text-white">Bloquear Tiempo</h3>
                                         <p className="text-xs font-bold text-slate-400">Cita presencial, viaje, reunión...</p>
                                     </div>
                                 </div>
@@ -439,13 +439,13 @@ export default function AgendaView() {
                                     <div className="flex gap-2 p-1 bg-slate-100 rounded-xl">
                                         <button
                                             onClick={() => setModalData(p => ({ ...p, todo_el_dia: true }))}
-                                            className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${modalData.todo_el_dia ? 'bg-white shadow text-[#052c46]' : 'text-slate-400'}`}
+                                            className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${modalData.todo_el_dia ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
                                         >
                                             Todo el día
                                         </button>
                                         <button
                                             onClick={() => setModalData(p => ({ ...p, todo_el_dia: false }))}
-                                            className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${!modalData.todo_el_dia ? 'bg-white shadow text-[#052c46]' : 'text-slate-400'}`}
+                                            className={`flex-1 py-2 rounded-lg text-xs font-black uppercase tracking-wide transition-all ${!modalData.todo_el_dia ? 'bg-emerald-600 text-white' : 'text-slate-400 hover:text-white'}`}
                                         >
                                             Horas específicas
                                         </button>
@@ -457,7 +457,7 @@ export default function AgendaView() {
                                             <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Desde</label>
                                             <input type="date" value={modalData.fecha_inicio}
                                                 onChange={e => setModalData(p => ({ ...p, fecha_inicio: e.target.value, fecha_fin: p.fecha_fin < e.target.value ? e.target.value : p.fecha_fin }))}
-                                                className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-[#052c46] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                                                className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-sm font-bold text-white [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                                             />
                                         </div>
                                         <div>
@@ -465,7 +465,7 @@ export default function AgendaView() {
                                             <input type="date" value={modalData.fecha_fin}
                                                 min={modalData.fecha_inicio}
                                                 onChange={e => setModalData(p => ({ ...p, fecha_fin: e.target.value }))}
-                                                className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-[#052c46] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                                                className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-sm font-bold text-white [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                                             />
                                         </div>
                                     </div>
@@ -483,14 +483,14 @@ export default function AgendaView() {
                                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Hora inicio</label>
                                                     <input type="time" value={modalData.hora_inicio}
                                                         onChange={e => setModalData(p => ({ ...p, hora_inicio: e.target.value }))}
-                                                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-[#052c46] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                                                        className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-sm font-bold text-white [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                                                     />
                                                 </div>
                                                 <div>
                                                     <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Hora fin</label>
                                                     <input type="time" value={modalData.hora_fin}
                                                         onChange={e => setModalData(p => ({ ...p, hora_fin: e.target.value }))}
-                                                        className="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-bold text-[#052c46] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                                                        className="w-full bg-white/10 border border-white/20 rounded-xl px-3 py-2.5 text-sm font-bold text-white [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                                                     />
                                                 </div>
                                             </motion.div>
@@ -506,7 +506,7 @@ export default function AgendaView() {
                                             onChange={e => setModalData(p => ({ ...p, motivo: e.target.value }))}
                                             placeholder="Ej: Cita consultorio, Congreso, Viaje..."
                                             autoFocus
-                                            className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-[#052c46] placeholder:text-slate-300 focus:outline-none focus:ring-2 focus:ring-rose-500/30"
+                                            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-sm font-bold text-white placeholder:text-slate-500 [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-rose-500/30"
                                         />
                                     </div>
 

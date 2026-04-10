@@ -101,14 +101,14 @@ export default function ReviewsList() {
             {/* Header */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-black tracking-tight text-[#052c46]">Módulo de Reseñas</h2>
+                    <h2 className="text-3xl font-black tracking-tight text-white">Módulo de Reseñas</h2>
                     <p className="text-sm font-bold text-slate-400 uppercase tracking-widest mt-1">
                         {loading ? 'Cargando...' : `${publicadas.length} publicadas · ${pendientes.length} pendientes`}
                     </p>
                 </div>
                 <Button
                     onClick={() => setShowForm(!showForm)}
-                    className="rounded-2xl bg-[#052c46] hover:bg-[#0a4b78] text-white font-black uppercase tracking-widest text-xs px-6 h-12 shadow-lg flex items-center gap-2"
+                    className="rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black uppercase tracking-widest text-xs px-6 h-12 shadow-lg flex items-center gap-2"
                 >
                     <Plus className="w-4 h-4" /> Nueva Reseña
                 </Button>
@@ -121,13 +121,13 @@ export default function ReviewsList() {
                         initial={{ opacity: 0, y: -10 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -10 }}
-                        className="bg-white/80 backdrop-blur-xl border border-white rounded-[2rem] p-8 shadow-xl space-y-5"
+                        className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 space-y-5"
                     >
                         <div className="flex items-center gap-3 mb-2">
                             <div className="h-10 w-10 rounded-2xl bg-emerald-500/10 flex items-center justify-center">
                                 <MessageSquarePlus className="w-5 h-5 text-emerald-600" />
                             </div>
-                            <h3 className="text-lg font-black text-[#052c46]">Agregar Reseña de Paciente</h3>
+                            <h3 className="text-lg font-black text-white">Agregar Reseña de Paciente</h3>
                         </div>
 
                         <div className="grid sm:grid-cols-2 gap-5">
@@ -216,7 +216,7 @@ export default function ReviewsList() {
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: i * 0.05 }}
-                                className="bg-white/70 backdrop-blur-xl p-6 rounded-[2rem] border border-white shadow-xl flex flex-col md:flex-row gap-6 items-start"
+                                className="bg-white/5 backdrop-blur-xl p-6 rounded-[2rem] border border-white/10 flex flex-col md:flex-row gap-6 items-start"
                             >
                                 <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex-shrink-0 flex items-center justify-center text-white shadow-lg text-xl font-black">
                                     {review.nombre_paciente[0].toUpperCase()}
@@ -225,7 +225,7 @@ export default function ReviewsList() {
                                 <div className="flex-1 min-w-0">
                                     <div className="flex flex-wrap justify-between items-start gap-2 mb-2">
                                         <div>
-                                            <h4 className="font-black text-slate-800 tracking-tight">{review.nombre_paciente}</h4>
+                                            <h4 className="font-black text-white tracking-tight">{review.nombre_paciente}</h4>
                                             <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                                                 {new Date(review.created_at).toLocaleDateString('es-CO', { year: 'numeric', month: 'short', day: 'numeric' })}
                                             </p>
@@ -236,10 +236,10 @@ export default function ReviewsList() {
                                             ))}
                                         </div>
                                     </div>
-                                    <p className="text-slate-600 leading-relaxed font-medium italic">"{review.comentario}"</p>
+                                    <p className="text-slate-400 leading-relaxed font-medium italic">"{review.comentario}"</p>
 
                                     <div className="mt-4 flex flex-wrap items-center gap-3">
-                                        <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${isPublicada ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'}`}>
+                                        <span className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${isPublicada ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border border-amber-500/20'}`}>
                                             {isPublicada ? 'Publicada' : 'Pendiente de Moderación'}
                                         </span>
 
@@ -250,7 +250,7 @@ export default function ReviewsList() {
                                                 {!isPublicada && (
                                                     <button
                                                         onClick={() => handleCambiarEstado(review.id, ESTADO_PUBLICADA)}
-                                                        className="flex items-center gap-1 text-[9px] font-black text-emerald-600 uppercase tracking-widest hover:underline"
+                                                        className="flex items-center gap-1 text-[9px] font-black text-emerald-400 uppercase tracking-widest hover:underline"
                                                     >
                                                         <CheckCircle2 className="w-3 h-3" /> Aprobar
                                                     </button>
@@ -258,7 +258,7 @@ export default function ReviewsList() {
                                                 {isPublicada && (
                                                     <button
                                                         onClick={() => handleCambiarEstado(review.id, ESTADO_PENDIENTE)}
-                                                        className="flex items-center gap-1 text-[9px] font-black text-amber-600 uppercase tracking-widest hover:underline"
+                                                        className="flex items-center gap-1 text-[9px] font-black text-amber-400 uppercase tracking-widest hover:underline"
                                                     >
                                                         <XCircle className="w-3 h-3" /> Ocultar
                                                     </button>

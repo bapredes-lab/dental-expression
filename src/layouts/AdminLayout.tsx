@@ -52,7 +52,7 @@ export default function AdminLayout() {
     }
 
     return (
-        <div className="min-h-screen bg-[#f1f5f9]">
+        <div className="min-h-screen admin-dark-bg">
             {/* Mobile Overlay */}
             <AnimatePresence>
                 {isMobile && sidebarOpen && (
@@ -61,7 +61,7 @@ export default function AdminLayout() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSidebarOpen(false)}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
                     />
                 )}
             </AnimatePresence>
@@ -153,27 +153,27 @@ export default function AdminLayout() {
                 style={{ marginLeft: isMobile ? 0 : (sidebarOpen ? 280 : 80) }}
             >
                 {/* Global Header */}
-                <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
+                <div className="flex items-center justify-between mb-8 pb-4 border-b border-white/10">
                     <div className="flex items-center gap-2">
                         <button
                             onClick={() => setSidebarOpen(!sidebarOpen)}
-                            className="p-2 hover:bg-white rounded-xl text-slate-500 shadow-sm border border-slate-100 transition-all"
+                            className="p-2 hover:bg-white/10 rounded-xl text-slate-400 border border-white/10 transition-all"
                         >
                             {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                         </button>
-                        <h2 className="text-xl font-bold text-slate-800 tracking-tight">Panel de Control</h2>
+                        <h2 className="text-xl font-bold text-white tracking-tight">Panel de Control</h2>
                     </div>
 
                     <div className="flex items-center gap-3">
                         <div className="hidden md:flex flex-col items-right text-right mr-2">
-                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Sede Principal</p>
-                            <p className="text-xs font-bold text-slate-700">{user?.user_metadata?.clinica_nombre || 'Mi Clínica'}</p>
+                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Sede Principal</p>
+                            <p className="text-xs font-bold text-slate-300">{user?.user_metadata?.clinica_nombre || 'Mi Clínica'}</p>
                         </div>
-                        <button className="p-2 hover:bg-white rounded-xl text-slate-500 shadow-sm border border-slate-100 relative">
+                        <button className="p-2 hover:bg-white/10 rounded-xl text-slate-400 border border-white/10 relative transition-all">
                             <Bell className="h-5 w-5" />
-                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-emerald-500 rounded-full border-2 border-[#06111e]" />
                         </button>
-                        <button className="p-2 hover:bg-white rounded-xl text-slate-500 shadow-sm border border-slate-100">
+                        <button className="p-2 hover:bg-white/10 rounded-xl text-slate-400 border border-white/10 transition-all">
                             <Settings className="h-5 w-5" />
                         </button>
                     </div>

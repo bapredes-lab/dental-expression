@@ -50,11 +50,11 @@ export default function PatientsList() {
         <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-[#052c46]">Fichas de Pacientes</h2>
+                    <h2 className="text-3xl font-bold tracking-tight text-white">Fichas de Pacientes</h2>
                     <p className="text-sm text-slate-500 mt-1">Directorio maestro de red de pacientes (Supabase Live)</p>
                 </div>
                 <Link to="/admin/patients/new">
-                    <Button className="bg-[#052c46] text-white hover:bg-[#0a4b78] rounded-xl shadow-lg shadow-blue-900/10">
+                    <Button className="bg-emerald-600 text-white hover:bg-emerald-500 rounded-xl shadow-lg shadow-emerald-900/20">
                         <Plus className="mr-2 h-4 w-4" /> Nuevo Paciente
                     </Button>
                 </Link>
@@ -62,21 +62,21 @@ export default function PatientsList() {
 
             <div className="flex items-center gap-2">
                 <div className="relative w-full max-w-md">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-500" />
                     <Input
                         type="search"
                         placeholder="Buscar por nombre o email..."
-                        className="pl-10 h-12 bg-white rounded-xl shadow-sm border-slate-200 focus:ring-emerald-500"
+                        className="pl-10 h-12 bg-white/5 rounded-xl border-white/10 text-white placeholder:text-slate-500 focus:ring-emerald-500 focus:border-emerald-500/50"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />
                 </div>
             </div>
 
-            <div className="rounded-2xl border bg-white shadow-xl luxury-shadow overflow-hidden">
+            <div className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-[#f8fafc] border-b border-slate-100">
+                        <thead className="bg-white/5 border-b border-white/10">
                             <tr>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Nombre Completo</th>
                                 <th className="px-6 py-4 text-xs font-black text-slate-500 uppercase tracking-widest">Email</th>
@@ -85,10 +85,10 @@ export default function PatientsList() {
                                 <th className="px-6 py-4 text-right text-xs font-black text-slate-500 uppercase tracking-widest">Acciones</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-50">
+                        <tbody className="divide-y divide-white/5">
                             {loading ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
                                         <div className="flex flex-col items-center gap-3">
                                             <div className="w-6 h-6 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
                                             <p className="font-bold tracking-wide">Sincronizando con Base de Datos...</p>
@@ -97,7 +97,7 @@ export default function PatientsList() {
                                 </tr>
                             ) : filteredPatients.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-400">
+                                    <td colSpan={5} className="px-6 py-12 text-center text-slate-500">
                                         <div className="flex flex-col items-center gap-3">
                                             <Search className="w-8 h-8 opacity-20" />
                                             <p className="font-bold tracking-wide">No se encontraron pacientes en tu red.</p>
@@ -106,23 +106,23 @@ export default function PatientsList() {
                                 </tr>
                             ) : (
                                 filteredPatients.map((patient) => (
-                                    <tr key={patient.id} className="hover:bg-emerald-50/50 transition-colors group">
+                                    <tr key={patient.id} className="hover:bg-white/5 transition-colors group">
                                         <td className="px-6 py-4">
-                                            <p className="font-black text-[#052c46]">{patient.nombre}</p>
-                                            <span className="text-[10px] bg-slate-100 text-slate-400 px-2 py-0.5 rounded font-mono mt-1 inline-block">ID: {patient.id.substring(0, 8)}</span>
+                                            <p className="font-black text-white">{patient.nombre}</p>
+                                            <span className="text-[10px] bg-white/10 text-slate-400 px-2 py-0.5 rounded font-mono mt-1 inline-block">ID: {patient.id.substring(0, 8)}</span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm font-bold text-slate-500">
+                                        <td className="px-6 py-4 text-sm font-bold text-slate-400">
                                             {patient.email}
                                         </td>
-                                        <td className="px-6 py-4 text-sm font-bold text-slate-500">
+                                        <td className="px-6 py-4 text-sm font-bold text-slate-400">
                                             {patient.telefono || 'No registrado'}
                                         </td>
-                                        <td className="px-6 py-4 text-sm font-bold text-slate-500">
+                                        <td className="px-6 py-4 text-sm font-bold text-slate-400">
                                             {new Date(patient.created_at).toLocaleDateString('es-CO')}
                                         </td>
                                         <td className="px-6 py-4 text-right">
                                             <Link to={`/admin/patients/${patient.id}`}>
-                                                <Button variant="ghost" size="sm" className="text-[#052c46] hover:bg-slate-100 font-bold rounded-lg transition-colors">
+                                                <Button variant="ghost" size="sm" className="text-emerald-400 hover:bg-white/10 hover:text-emerald-300 font-bold rounded-lg transition-colors">
                                                     Abrir Ficha
                                                 </Button>
                                             </Link>

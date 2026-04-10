@@ -100,22 +100,22 @@ export default function AdminDashboard() {
             {/* Elite Neural HUD Header */}
             <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-6">
                 <div className="relative">
-                    <div className="absolute -top-4 -left-4 w-24 h-24 bg-emerald-500/5 rounded-full blur-3xl animate-pulse" />
+                    <div className="absolute -top-4 -left-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
                     <div className="relative z-10">
-                        <h2 className="text-4xl font-black text-[#052c46] tracking-tighter flex items-center gap-3">
-                            Clínica <span className="text-emerald-500">Command Center</span>
+                        <h2 className="text-4xl font-black text-white tracking-tighter flex items-center gap-3">
+                            Clínica <span className="text-emerald-400">Command Center</span>
                         </h2>
                         <div className="flex items-center gap-3 mt-2">
-                            <span className="text-[10px] font-black text-white bg-[#052c46] px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">{user?.user_metadata?.rol || 'ADMINISTRADOR'}</span>
-                            <p className="text-sm font-bold text-slate-500 tracking-tight">{user?.user_metadata?.full_name || user?.email} <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-600">Sistema AURA IA Activo</span></p>
+                            <span className="text-[10px] font-black text-white bg-emerald-500/20 border border-emerald-500/30 px-3 py-1 rounded-full uppercase tracking-widest shadow-lg">{user?.user_metadata?.rol || 'ADMINISTRADOR'}</span>
+                            <p className="text-sm font-bold text-slate-400 tracking-tight">{user?.user_metadata?.full_name || user?.email} <span className="text-emerald-500/40 ml-1">|</span> <span className="text-emerald-400">Sistema AURA IA Activo</span></p>
                         </div>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 bg-white/70 backdrop-blur-xl p-2 rounded-3xl border border-white shadow-xl luxury-shadow">
+                <div className="flex items-center gap-4 bg-white/5 backdrop-blur-xl p-2 rounded-3xl border border-white/10 shadow-xl">
                     <div className="px-4 py-2 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-                        <p className="text-xs font-black text-emerald-600 uppercase tracking-widest leading-none">Global Status</p>
-                        <p className="text-sm font-bold text-emerald-700">{error ? 'System offline' : 'Real-time Data Active'}</p>
+                        <p className="text-xs font-black text-emerald-400 uppercase tracking-widest leading-none">Global Status</p>
+                        <p className="text-sm font-bold text-emerald-300">{error ? 'System offline' : 'Real-time Data Active'}</p>
                     </div>
                 </div>
             </div>
@@ -134,22 +134,22 @@ export default function AdminDashboard() {
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: idx * 0.1 }}
-                        className="group relative rounded-[2rem] border-white/50 bg-white/40 backdrop-blur-xl p-8 shadow-xl luxury-shadow border hover:border-emerald-500/30 transition-all duration-500 overflow-hidden"
+                        className="group relative rounded-[2rem] border-white/10 bg-white/5 backdrop-blur-xl p-8 shadow-xl border hover:border-emerald-500/30 hover:bg-white/[0.08] transition-all duration-500 overflow-hidden"
                     >
                         <div className="flex items-center justify-between mb-4 relative z-10">
                             <div className={`${stat.bg} ${stat.color} p-3 rounded-2xl shadow-inner`}>
                                 <stat.icon className="h-6 w-6" />
                             </div>
-                            <div className="flex items-center gap-1 text-xs font-black text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/10 shadow-sm">
+                            <div className="flex items-center gap-1 text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/20 shadow-sm">
                                 <TrendingUp className="w-3 h-3" /> {stat.trend}
                             </div>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-sm font-black text-slate-400 uppercase tracking-[0.15em] mb-1">{stat.name}</p>
+                            <p className="text-sm font-black text-slate-500 uppercase tracking-[0.15em] mb-1">{stat.name}</p>
                             {loading ? (
-                                <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
+                                <Loader2 className="w-6 h-6 animate-spin text-slate-500" />
                             ) : (
-                                <div className="text-4xl font-black text-[#052c46] tracking-tighter group-hover:translate-x-1 transition-transform">{stat.value}</div>
+                                <div className="text-4xl font-black text-white tracking-tighter group-hover:translate-x-1 transition-transform">{stat.value}</div>
                             )}
                         </div>
                     </motion.div>
@@ -162,22 +162,22 @@ export default function AdminDashboard() {
             {/* Intelligence Section */}
             <div className="grid gap-8 lg:grid-cols-3">
                 {/* AI Agenda Feed Real */}
-                <div className="lg:col-span-2 rounded-[2.5rem] bg-white/40 backdrop-blur-xl p-8 shadow-xl border border-white/40 luxury-shadow relative overflow-hidden group">
-                    <div className="flex items-center justify-between mb-10 pb-4 border-b border-slate-100/50">
+                <div className="lg:col-span-2 rounded-[2.5rem] bg-white/5 backdrop-blur-xl p-8 shadow-xl border border-white/10 relative overflow-hidden group">
+                    <div className="flex items-center justify-between mb-10 pb-4 border-b border-white/10">
                         <div className="flex items-center gap-4">
                             <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center text-white shadow-xl">
                                 <ScanLine className="w-6 h-6" />
                             </div>
                             <div>
-                                <h3 className="text-xl font-black text-slate-800 tracking-tight">Citas para Hoy</h3>
-                                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <h3 className="text-xl font-black text-white tracking-tight">Citas para Hoy</h3>
+                                <p className="text-sm font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
                                     {recentAppointments.length > 0 ? `Sincronizado: ${recentAppointments.length} citas` : 'No hay citas agendadas hoy'}
                                 </p>
                             </div>
                         </div>
                         <Button variant="ghost"
                             onClick={() => window.location.href = '/admin/agenda'}
-                            className="rounded-xl text-xs font-black uppercase tracking-widest text-[#0F4C75] hover:bg-[#0F4C75]/5 flex items-center gap-2"
+                            className="rounded-xl text-xs font-black uppercase tracking-widest text-emerald-400 hover:bg-emerald-500/10 hover:text-emerald-300 flex items-center gap-2"
                         >
                             Ver Full Calendario <ArrowUpRight className="w-4 h-4" />
                         </Button>
@@ -185,7 +185,7 @@ export default function AdminDashboard() {
 
                     <div className="space-y-4">
                         {recentAppointments.length === 0 && !loading && (
-                            <div className="text-center py-12 text-slate-400 font-bold uppercase tracking-widest text-sm">
+                            <div className="text-center py-12 text-slate-500 font-bold uppercase tracking-widest text-sm">
                                 Tranquilidad en la clínica: Sin citas hoy
                             </div>
                         )}
@@ -193,27 +193,27 @@ export default function AdminDashboard() {
                             <motion.div
                                 key={i}
                                 whileHover={{ x: 5 }}
-                                className="flex items-center justify-between p-5 bg-white/50 border border-white rounded-[1.5rem] hover:bg-emerald-50/50 hover:border-emerald-500/10 transition-all luxury-shadow group/item"
+                                className="flex items-center justify-between p-5 bg-white/5 border border-white/10 rounded-[1.5rem] hover:bg-emerald-500/5 hover:border-emerald-500/20 transition-all group/item"
                             >
                                 <div className="flex items-center gap-5">
-                                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-slate-100 to-white flex items-center justify-center font-black text-primary border border-slate-200 text-xl shadow-inner group-hover/item:rotate-6 transition-transform">
+                                    <div className="h-14 w-14 rounded-2xl bg-gradient-to-tr from-emerald-500/20 to-teal-500/10 flex items-center justify-center font-black text-emerald-300 border border-white/10 text-xl group-hover/item:rotate-6 transition-transform">
                                         {appt.paciente_nombre ? appt.paciente_nombre[0] : 'P'}
                                     </div>
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
-                                            <p className="font-black text-slate-800 tracking-tight">{appt.paciente_nombre || 'Paciente'}</p>
-                                            <span className={`text-xs px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.estado === 'pagada' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/10' : 'bg-amber-500/10 text-amber-600 border-amber-500/10'
+                                            <p className="font-black text-white tracking-tight">{appt.paciente_nombre || 'Paciente'}</p>
+                                            <span className={`text-xs px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.estado === 'pagada' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-amber-500/10 text-amber-400 border-amber-500/20'
                                                 }`}>
                                                 {appt.estado}
                                             </span>
                                         </div>
-                                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{appt.motivo || 'Teleconsulta'}</p>
+                                        <p className="text-sm font-bold text-slate-500 uppercase tracking-widest">{appt.motivo || 'Teleconsulta'}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
                                     <div className="flex items-center gap-2 justify-end mb-1">
-                                        <Zap className="w-4 h-4 text-emerald-500" />
-                                        <p className="text-lg font-black text-[#0F4C75] tracking-tight">{appt.fecha_hora ? new Date(appt.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}</p>
+                                        <Zap className="w-4 h-4 text-emerald-400" />
+                                        <p className="text-lg font-black text-emerald-300 tracking-tight">{appt.fecha_hora ? new Date(appt.fecha_hora).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}</p>
                                     </div>
                                 </div>
                             </motion.div>

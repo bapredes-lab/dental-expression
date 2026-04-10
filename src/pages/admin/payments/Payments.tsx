@@ -67,17 +67,17 @@ export default function PaymentsAdmin() {
     const statusConfig = {
         pagada: {
             label: 'Exitoso',
-            className: 'inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/10 text-emerald-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/20',
+            className: 'inline-flex items-center gap-1 px-3 py-1 bg-emerald-500/10 text-emerald-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-emerald-500/20',
             icon: <CheckCircle2 className="w-3 h-3" />
         },
         pendiente: {
             label: 'Pendiente',
-            className: 'inline-flex items-center gap-1 px-3 py-1 bg-amber-500/10 text-amber-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-500/20',
+            className: 'inline-flex items-center gap-1 px-3 py-1 bg-amber-500/10 text-amber-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-amber-500/20',
             icon: <AlertCircle className="w-3 h-3" />
         },
         cancelada: {
             label: 'Cancelada',
-            className: 'inline-flex items-center gap-1 px-3 py-1 bg-rose-500/10 text-rose-600 rounded-full text-[10px] font-black uppercase tracking-widest border border-rose-500/20',
+            className: 'inline-flex items-center gap-1 px-3 py-1 bg-rose-500/10 text-rose-400 rounded-full text-[10px] font-black uppercase tracking-widest border border-rose-500/20',
             icon: <AlertCircle className="w-3 h-3" />
         },
     }
@@ -98,8 +98,8 @@ export default function PaymentsAdmin() {
                             <Wallet className="w-8 h-8 text-emerald-400 relative z-10" />
                         </div>
                         <div>
-                            <h2 className="text-4xl font-black text-[#052c46] tracking-tighter">
-                                Pasarela <span className="text-emerald-500">de Pagos</span>
+                            <h2 className="text-4xl font-black text-white tracking-tighter">
+                                Pasarela <span className="text-emerald-400">de Pagos</span>
                             </h2>
                             <p className="text-sm font-bold text-slate-500 tracking-tight mt-1 flex items-center gap-2">
                                 <Zap className="w-4 h-4 text-emerald-500" />
@@ -109,16 +109,16 @@ export default function PaymentsAdmin() {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4 bg-white/70 backdrop-blur-xl p-3 rounded-full border border-white shadow-xl luxury-shadow">
+                <div className="flex items-center gap-4 bg-white/5 backdrop-blur-xl p-3 rounded-full border border-white/10">
                     <Button
                         onClick={() => setActiveTab('terminal')}
-                        className={`rounded-full px-6 font-bold tracking-wide transition-all ${activeTab === 'terminal' ? 'bg-[#052c46] text-white shadow-lg shadow-blue-900/20' : 'bg-transparent text-slate-500 hover:bg-slate-100'}`}
+                        className={`rounded-full px-6 font-bold tracking-wide transition-all ${activeTab === 'terminal' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/30' : 'bg-transparent text-slate-400 hover:bg-white/10 hover:text-white'}`}
                     >
                         Terminal POS
                     </Button>
                     <Button
                         onClick={() => setActiveTab('links')}
-                        className={`rounded-full px-6 font-bold tracking-wide transition-all ${activeTab === 'links' ? 'bg-[#052c46] text-white shadow-lg shadow-blue-900/20' : 'bg-transparent text-slate-500 hover:bg-slate-100'}`}
+                        className={`rounded-full px-6 font-bold tracking-wide transition-all ${activeTab === 'links' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-900/30' : 'bg-transparent text-slate-400 hover:bg-white/10 hover:text-white'}`}
                     >
                         Links de Pago
                     </Button>
@@ -168,16 +168,16 @@ export default function PaymentsAdmin() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="relative rounded-[2rem] bg-white/60 backdrop-blur-xl p-8 shadow-xl border border-white luxury-shadow overflow-hidden group"
+                    className="relative rounded-[2rem] bg-white/5 backdrop-blur-xl p-8 border border-white/10 overflow-hidden group"
                 >
-                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/5 rounded-full blur-2xl" />
+                    <div className="absolute -top-10 -right-10 w-32 h-32 bg-amber-500/10 rounded-full blur-2xl" />
                     <div className="flex items-center gap-3 mb-4 relative z-10">
-                        <div className="p-2 bg-amber-500/10 rounded-xl border border-amber-500/10">
-                            <AlertCircle className="h-6 w-6 text-amber-500" />
+                        <div className="p-2 bg-amber-500/10 rounded-xl border border-amber-500/20">
+                            <AlertCircle className="h-6 w-6 text-amber-400" />
                         </div>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Por Cobrar</p>
+                        <p className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Por Cobrar</p>
                     </div>
-                    <h4 className="text-4xl font-black text-[#052c46] tracking-tighter relative z-10">${totalPendiente.toFixed(2)}</h4>
+                    <h4 className="text-4xl font-black text-white tracking-tighter relative z-10">${totalPendiente.toFixed(2)}</h4>
                     <p className="text-xs font-bold text-slate-500 mt-4 relative z-10">
                         {pendientesCount} {pendientesCount === 1 ? 'paciente pendiente' : 'pacientes pendientes'}
                     </p>
@@ -187,16 +187,16 @@ export default function PaymentsAdmin() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.3 }}
-                    className="relative rounded-[2rem] bg-white/60 backdrop-blur-xl p-8 shadow-xl border border-white luxury-shadow overflow-hidden group"
+                    className="relative rounded-[2rem] bg-white/5 backdrop-blur-xl p-8 border border-white/10 overflow-hidden group"
                 >
-                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/5 rounded-full blur-2xl" />
+                    <div className="absolute -bottom-10 -left-10 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl" />
                     <div className="flex items-center gap-3 mb-4 relative z-10">
-                        <div className="p-2 bg-blue-500/10 rounded-xl border border-blue-500/10">
-                            <Send className="h-6 w-6 text-blue-500" />
+                        <div className="p-2 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                            <Send className="h-6 w-6 text-blue-400" />
                         </div>
-                        <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em]">Total Consultas</p>
+                        <p className="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Total Consultas</p>
                     </div>
-                    <h4 className="text-4xl font-black text-[#052c46] tracking-tighter relative z-10">{consultas.length}</h4>
+                    <h4 className="text-4xl font-black text-white tracking-tighter relative z-10">{consultas.length}</h4>
                     <p className="text-xs font-bold text-slate-500 mt-4 relative z-10">Registradas en el sistema</p>
                 </motion.div>
             </div>
@@ -206,10 +206,10 @@ export default function PaymentsAdmin() {
 
                 {/* POS / Links panel */}
                 <div className="lg:col-span-1 space-y-6">
-                    <div className="bg-white/70 backdrop-blur-2xl border border-white p-8 rounded-[2.5rem] shadow-xl luxury-shadow relative overflow-hidden group">
+                    <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-8 rounded-[2.5rem] relative overflow-hidden group">
                         <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none" />
 
-                        <h3 className="text-xl font-black text-[#052c46] mb-8 flex items-center gap-3 tracking-tight">
+                        <h3 className="text-xl font-black text-white mb-8 flex items-center gap-3 tracking-tight">
                             <ScanLine className="text-emerald-500 w-6 h-6" />
                             {activeTab === 'terminal' ? 'Procesar Cobro' : 'Generar Link de Pago'}
                         </h3>
@@ -219,7 +219,7 @@ export default function PaymentsAdmin() {
                                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Paciente</label>
                                 <div className="relative">
                                     <Users className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
-                                    <Input placeholder="Buscar paciente..." className="pl-12 h-14 bg-white/80 border-slate-200 rounded-2xl font-bold text-slate-700 shadow-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                                    <Input placeholder="Buscar paciente..." className="pl-12 h-14 bg-white/5 border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 shadow-sm focus:ring-emerald-500 focus:border-emerald-500/50" />
                                 </div>
                             </div>
 
@@ -227,15 +227,15 @@ export default function PaymentsAdmin() {
                                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Concepto / Tratamiento</label>
                                 <div className="relative">
                                     <Receipt className="absolute left-4 top-4 h-5 w-5 text-slate-400" />
-                                    <Input placeholder="Ej. Implante Dental..." className="pl-12 h-14 bg-white/80 border-slate-200 rounded-2xl font-bold text-slate-700 shadow-sm focus:ring-emerald-500 focus:border-emerald-500" />
+                                    <Input placeholder="Ej. Implante Dental..." className="pl-12 h-14 bg-white/5 border-white/10 rounded-2xl font-bold text-white placeholder:text-slate-500 shadow-sm focus:ring-emerald-500 focus:border-emerald-500/50" />
                                 </div>
                             </div>
 
                             <div className="space-y-2">
                                 <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1">Monto (USD)</label>
                                 <div className="relative">
-                                    <DollarSign className="absolute left-4 top-4 h-5 w-5 text-[#052c46]" />
-                                    <Input type="number" placeholder="0.00" className="pl-12 h-16 bg-white border-2 border-emerald-100 rounded-2xl font-black text-3xl text-[#052c46] shadow-inner focus:ring-emerald-500 focus:border-emerald-500" />
+                                    <DollarSign className="absolute left-4 top-4 h-5 w-5 text-emerald-400" />
+                                    <Input type="number" placeholder="0.00" className="pl-12 h-16 bg-white/5 border border-emerald-500/30 rounded-2xl font-black text-3xl text-white placeholder:text-slate-600 focus:ring-emerald-500 focus:border-emerald-500/50" />
                                 </div>
                             </div>
 
@@ -243,10 +243,10 @@ export default function PaymentsAdmin() {
                                 <div className="pt-4">
                                     <label className="text-xs font-black text-slate-500 uppercase tracking-widest ml-1 mb-3 block">Método de Pago</label>
                                     <div className="grid grid-cols-2 gap-3">
-                                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/50 text-emerald-700 font-bold transition-all shadow-sm">
+                                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-emerald-500/50 bg-emerald-500/10 text-emerald-400 font-bold transition-all">
                                             <CardIcon className="w-6 h-6" /> Tarjeta
                                         </button>
-                                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-slate-100 bg-white text-slate-500 font-bold hover:border-slate-300 transition-all">
+                                        <button className="flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border-2 border-white/10 bg-white/5 text-slate-400 font-bold hover:border-white/20 hover:text-white transition-all">
                                             <Wallet className="w-6 h-6" /> Efectivo
                                         </button>
                                     </div>
@@ -275,18 +275,18 @@ export default function PaymentsAdmin() {
 
                 {/* Tabla de transacciones reales */}
                 <div className="lg:col-span-2">
-                    <div className="bg-white/60 backdrop-blur-xl border border-white p-2 rounded-[2.5rem] shadow-xl luxury-shadow h-full flex flex-col">
-                        <div className="p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100/50">
+                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-2 rounded-[2.5rem] h-full flex flex-col">
+                        <div className="p-6 md:p-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-white/10">
                             <div>
-                                <h3 className="text-xl font-black text-[#052c46] tracking-tight">Historial de Transacciones</h3>
-                                <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Datos en tiempo real desde Supabase</p>
+                                <h3 className="text-xl font-black text-white tracking-tight">Historial de Transacciones</h3>
+                                <p className="text-xs font-bold text-slate-500 mt-1 uppercase tracking-widest">Datos en tiempo real desde Supabase</p>
                             </div>
                             <div className="relative w-full sm:w-64">
-                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-500" />
                                 <Input
                                     type="search"
                                     placeholder="Buscar paciente..."
-                                    className="pl-10 h-10 bg-white/80 border-white rounded-xl shadow-sm text-sm font-medium focus:ring-emerald-500"
+                                    className="pl-10 h-10 bg-white/5 border-white/10 rounded-xl text-sm font-medium text-white placeholder:text-slate-500 focus:ring-emerald-500"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                 />

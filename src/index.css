@@ -113,3 +113,14 @@
     transform: translateY(0px);
   }
 }
+
+/* Admin dark premium background */
+.admin-dark-bg {
+  background-color: #06111e;
+  background-image:
+    radial-gradient(ellipse 80% 60% at 20% 0%, rgba(5, 150, 105, 0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 50% at 80% 100%, rgba(14, 116, 144, 0.07) 0%, transparent 60%),
+    radial-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 28px 28px;
+  background-attachment: fixed;
+}

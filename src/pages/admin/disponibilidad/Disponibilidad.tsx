@@ -200,7 +200,7 @@ export default function Disponibilidad() {
                             <CalendarDays className="w-8 h-8 text-emerald-400 relative z-10" />
                         </div>
                         <div>
-                            <h2 className="text-4xl font-black text-[#052c46] tracking-tighter">
+                            <h2 className="text-4xl font-black text-white tracking-tighter">
                                 Disponibilidad <span className="text-emerald-500">& Agenda</span>
                             </h2>
                             <p className="text-sm font-bold text-slate-500 tracking-tight mt-1 flex items-center gap-2">
@@ -238,13 +238,13 @@ export default function Disponibilidad() {
             </AnimatePresence>
 
             {/* ── Horario Semanal ── */}
-            <div className="bg-white/60 backdrop-blur-xl border border-white rounded-[2.5rem] shadow-xl luxury-shadow p-8">
+            <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] p-8">
                 <div className="flex items-center gap-3 mb-8">
                     <div className="p-2 bg-[#052c46]/10 rounded-xl">
-                        <Clock className="w-5 h-5 text-[#052c46]" />
+                        <Clock className="w-5 h-5 text-white" />
                     </div>
                     <div>
-                        <h3 className="text-xl font-black text-[#052c46] tracking-tight">Horario de Atención Semanal</h3>
+                        <h3 className="text-xl font-black text-white tracking-tight">Horario de Atención Semanal</h3>
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-0.5">
                             Define tu disponibilidad regular — los pacientes solo ven estos horarios
                         </p>
@@ -280,7 +280,7 @@ export default function Disponibilidad() {
                                     </button>
                                 </div>
 
-                                <p className={`text-base font-black mb-4 ${h.activo ? 'text-[#052c46]' : 'text-slate-400'}`}>
+                                <p className={`text-base font-black mb-4 ${h.activo ? 'text-white' : 'text-slate-400'}`}>
                                     {dia.nombre}
                                 </p>
 
@@ -292,7 +292,7 @@ export default function Disponibilidad() {
                                                 type="time"
                                                 value={h.hora_inicio}
                                                 onChange={e => updateHora(dia.num, 'hora_inicio', e.target.value)}
-                                                className="w-full text-sm font-bold text-[#052c46] bg-white border border-emerald-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                                                className="w-full text-sm font-bold text-white bg-white/10 border border-white/20 rounded-xl px-3 py-2 [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                                             />
                                         </div>
                                         <div>
@@ -301,7 +301,7 @@ export default function Disponibilidad() {
                                                 type="time"
                                                 value={h.hora_fin}
                                                 onChange={e => updateHora(dia.num, 'hora_fin', e.target.value)}
-                                                className="w-full text-sm font-bold text-[#052c46] bg-white border border-emerald-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
+                                                className="w-full text-sm font-bold text-white bg-white/10 border border-white/20 rounded-xl px-3 py-2 [color-scheme:dark] focus:outline-none focus:ring-2 focus:ring-emerald-500/30"
                                             />
                                         </div>
                                         <div className="pt-2 border-t border-emerald-100">
@@ -444,13 +444,13 @@ export default function Disponibilidad() {
 
                 {/* Lista de bloqueos */}
                 <div className="lg:col-span-3">
-                    <div className="bg-white/60 backdrop-blur-xl border border-white rounded-[2rem] shadow-xl luxury-shadow p-8 h-full">
+                    <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2rem] p-8 h-full">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-2 bg-rose-500/10 rounded-xl border border-rose-500/10">
                                 <Ban className="w-5 h-5 text-rose-500" />
                             </div>
                             <div>
-                                <h3 className="text-lg font-black text-[#052c46] tracking-tight">Períodos Bloqueados</h3>
+                                <h3 className="text-lg font-black text-white tracking-tight">Períodos Bloqueados</h3>
                                 <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">
                                     {bloqueos.length === 0 ? 'Sin bloqueos próximos' : `${bloqueos.length} bloqueo${bloqueos.length > 1 ? 's' : ''} activo${bloqueos.length > 1 ? 's' : ''}`}
                                 </p>
@@ -486,7 +486,7 @@ export default function Disponibilidad() {
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="flex items-center gap-2">
-                                                        <p className="font-black text-[#052c46] text-sm">{b.motivo}</p>
+                                                        <p className="font-black text-white text-sm">{b.motivo}</p>
                                                         {!b.todo_el_dia && (
                                                             <span className="text-[9px] font-black bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full uppercase tracking-widest shrink-0">
                                                                 {b.hora_inicio?.slice(0,5)} – {b.hora_fin?.slice(0,5)}
@@ -532,13 +532,13 @@ export default function Disponibilidad() {
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.3 + i * 0.1 }}
-                        className="flex items-start gap-3 p-5 bg-white/40 backdrop-blur-sm border border-white rounded-2xl"
+                        className="flex items-start gap-3 p-5 bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl"
                     >
                         <div className="p-2 bg-emerald-500/10 rounded-xl shrink-0">
                             <item.icon className="w-4 h-4 text-emerald-600" />
                         </div>
                         <div>
-                            <p className="text-xs font-black text-[#052c46] uppercase tracking-widest">{item.title}</p>
+                            <p className="text-xs font-black text-white uppercase tracking-widest">{item.title}</p>
                             <p className="text-xs text-slate-500 font-medium mt-1 leading-relaxed">{item.desc}</p>
                         </div>
                     </motion.div>

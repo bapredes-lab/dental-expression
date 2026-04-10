@@ -108,7 +108,7 @@ export default function BeforeAfterTool() {
                 <div className="relative">
                     <div className="absolute -top-4 -left-4 w-20 h-20 bg-emerald-500/10 rounded-full blur-3xl animate-pulse" />
                     <div className="relative z-10">
-                        <h2 className="text-4xl font-black text-[#052c46] tracking-tighter flex items-center gap-3">
+                        <h2 className="text-4xl font-black text-white tracking-tighter flex items-center gap-3">
                             Neural <span className="text-emerald-500">Smile Designer</span>
                         </h2>
                         <div className="flex items-center gap-3 mt-2">
@@ -203,10 +203,10 @@ export default function BeforeAfterTool() {
             <div className="grid lg:grid-cols-4 gap-8 items-start">
                 {/* Main Canvas */}
                 <div className="lg:col-span-3">
-                    <div className="glass-card bg-white/40 backdrop-blur-xl rounded-[3rem] p-4 md:p-10 border border-white/50 luxury-shadow min-h-[600px] flex flex-col items-center justify-center relative overflow-hidden">
+                    <div className="bg-white/5 backdrop-blur-xl rounded-[3rem] p-4 md:p-10 border border-white/10 min-h-[600px] flex flex-col items-center justify-center relative overflow-hidden">
                         <div className="absolute top-8 left-8 flex items-center gap-2 opacity-30">
                             <Activity className="w-4 h-4 text-emerald-500" />
-                            <span className="text-[10px] font-black tracking-widest text-[#052c46] uppercase">Real-Time Processing</span>
+                            <span className="text-[10px] font-black tracking-widest text-white uppercase">Real-Time Processing</span>
                         </div>
 
                         <AnimatePresence mode="wait">
@@ -223,7 +223,7 @@ export default function BeforeAfterTool() {
                                         <Upload className="h-16 w-16 text-emerald-400 group-hover:scale-110 transition-transform" />
                                     </div>
                                     <div>
-                                        <h3 className="text-2xl font-black text-[#052c46] mb-2">Diseño Empezando Aquí</h3>
+                                        <h3 className="text-2xl font-black text-white mb-2">Diseño Empezando Aquí</h3>
                                         <p className="text-slate-500 font-medium max-w-sm mx-auto mb-8">
                                             Sube la fotografía intraoral frontal del paciente para que DALL-E 3 empiece el análisis creativo.
                                         </p>
@@ -263,7 +263,7 @@ export default function BeforeAfterTool() {
                                         )}
                                         <div className="absolute bottom-6 left-6 bg-white/90 backdrop-blur px-4 py-2 rounded-2xl shadow-lg border border-white/50 z-30">
                                             <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-0.5">Estado</p>
-                                            <p className="text-xs font-black text-[#052c46]">
+                                            <p className="text-xs font-black text-white">
                                                 {afterImage ? 'SIMULACIÓN COMPLETADA' : isGenerating ? 'PROCESANDO RED NEURAL DALL-E...' : 'LISTO PARA ESCANEO'}
                                             </p>
                                         </div>
