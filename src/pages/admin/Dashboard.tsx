@@ -114,8 +114,8 @@ export default function AdminDashboard() {
 
                 <div className="flex items-center gap-4 bg-white/70 backdrop-blur-xl p-2 rounded-3xl border border-white shadow-xl luxury-shadow">
                     <div className="px-4 py-2 bg-emerald-500/10 rounded-2xl border border-emerald-500/20">
-                        <p className="text-[10px] font-black text-emerald-600 uppercase tracking-widest leading-none">Global Status</p>
-                        <p className="text-xs font-bold text-emerald-700">{error ? 'System offline' : 'Real-time Data Active'}</p>
+                        <p className="text-xs font-black text-emerald-600 uppercase tracking-widest leading-none">Global Status</p>
+                        <p className="text-sm font-bold text-emerald-700">{error ? 'System offline' : 'Real-time Data Active'}</p>
                     </div>
                 </div>
             </div>
@@ -140,12 +140,12 @@ export default function AdminDashboard() {
                             <div className={`${stat.bg} ${stat.color} p-3 rounded-2xl shadow-inner`}>
                                 <stat.icon className="h-6 w-6" />
                             </div>
-                            <div className="flex items-center gap-1 text-[10px] font-black text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/10 shadow-sm">
+                            <div className="flex items-center gap-1 text-xs font-black text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded-md border border-emerald-500/10 shadow-sm">
                                 <TrendingUp className="w-3 h-3" /> {stat.trend}
                             </div>
                         </div>
                         <div className="relative z-10">
-                            <p className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-1">{stat.name}</p>
+                            <p className="text-sm font-black text-slate-400 uppercase tracking-[0.15em] mb-1">{stat.name}</p>
                             {loading ? (
                                 <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
                             ) : (
@@ -170,7 +170,7 @@ export default function AdminDashboard() {
                             </div>
                             <div>
                                 <h3 className="text-xl font-black text-slate-800 tracking-tight">Citas para Hoy</h3>
-                                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
+                                <p className="text-sm font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                     {recentAppointments.length > 0 ? `Sincronizado: ${recentAppointments.length} citas` : 'No hay citas agendadas hoy'}
                                 </p>
                             </div>
@@ -202,12 +202,12 @@ export default function AdminDashboard() {
                                     <div>
                                         <div className="flex items-center gap-2 mb-1">
                                             <p className="font-black text-slate-800 tracking-tight">{appt.paciente_nombre || 'Paciente'}</p>
-                                            <span className={`text-[8px] px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.estado === 'pagada' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/10' : 'bg-amber-500/10 text-amber-600 border-amber-500/10'
+                                            <span className={`text-xs px-2 py-0.5 rounded-md font-black uppercase tracking-widest border shadow-sm ${appt.estado === 'pagada' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/10' : 'bg-amber-500/10 text-amber-600 border-amber-500/10'
                                                 }`}>
                                                 {appt.estado}
                                             </span>
                                         </div>
-                                        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">{appt.motivo || 'Teleconsulta'}</p>
+                                        <p className="text-sm font-bold text-slate-400 uppercase tracking-widest">{appt.motivo || 'Teleconsulta'}</p>
                                     </div>
                                 </div>
                                 <div className="text-right">
@@ -247,19 +247,19 @@ export default function AdminDashboard() {
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="h-2 w-2 bg-emerald-500 rounded-full animate-ping" />
-                                <p className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">SaaS Platform Active</p>
+                                <p className="text-xs font-black text-emerald-400 uppercase tracking-[0.2em]">SaaS Platform Active</p>
                             </div>
                             <h4 className="text-xl font-black mb-4 tracking-tighter">Preparado para Escalar</h4>
                             <div className="space-y-3 mb-6">
-                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 border-b border-white/5 pb-2">
+                                <div className="flex justify-between items-center text-xs font-bold text-slate-400 border-b border-white/5 pb-2">
                                     <span>MULTI-TENANCY</span>
                                     <span className="text-emerald-400">READY</span>
                                 </div>
-                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 border-b border-white/5 pb-2">
+                                <div className="flex justify-between items-center text-xs font-bold text-slate-400 border-b border-white/5 pb-2">
                                     <span>AI NODES (CLAUDE 3.5)</span>
                                     <span className="text-emerald-400">STABLE</span>
                                 </div>
-                                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                                <div className="flex justify-between items-center text-xs font-bold text-slate-400">
                                     <span>DATABASE LATENCY</span>
                                     <span className="text-emerald-400">24ms</span>
                                 </div>

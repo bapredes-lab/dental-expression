@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import {
     Calendar, Video, ShieldCheck, ArrowRight, Star, Quote,
     CheckCircle2, Briefcase, FileText, Activity,
-    Sparkles, HeartPulse, ChevronDown, Instagram, Linkedin, Loader2
+    Sparkles, HeartPulse, ChevronDown, Instagram, Linkedin, Loader2, Menu, X
 } from 'lucide-react'
 
 import { supabase } from '@/lib/supabase'
@@ -38,6 +38,7 @@ export default function Landing() {
     const [openFaq, setOpenFaq] = useState<number | null>(0);
     const [reviews, setReviews] = useState<Resena[]>([]);
     const [loadingReviews, setLoadingReviews] = useState(true);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     useEffect(() => {
         const fetchReviews = async () => {
@@ -56,6 +57,15 @@ export default function Landing() {
         fetchReviews();
     }, []);
 
+    // Close mobile menu on resize to desktop
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1024) setMobileMenuOpen(false);
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     return (
         <div className="min-h-screen bg-[#052c46] text-white selection:bg-emerald-500/30 font-sans overflow-x-hidden">
             {/* Ambient Background */}
@@ -65,20 +75,81 @@ export default function Landing() {
                 <div className="absolute top-[20%] right-[-5%] w-[30%] h-[30%] bg-teal-400/5 rounded-full blur-[100px]" />
             </div>
 
+            {/* Mobile Menu Overlay */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm lg:hidden"
+                        onClick={() => setMobileMenuOpen(false)}
+                    />
+                )}
+            </AnimatePresence>
+
+            {/* Mobile Drawer Menu */}
+            <AnimatePresence>
+                {mobileMenuOpen && (
+                    <motion.div
+                        initial={{ x: '100%' }}
+                        animate={{ x: 0 }}
+                        exit={{ x: '100%' }}
+                        transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                        className="fixed top-0 right-0 bottom-0 z-50 w-72 bg-[#052c46] border-l border-emerald-500/20 shadow-2xl flex flex-col lg:hidden"
+                    >
+                        <div className="flex items-center justify-between p-6 border-b border-white/10">
+                            <LogoBrand size="sm" />
+                            <button
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="p-2 rounded-xl hover:bg-white/10 text-slate-300 hover:text-white transition-colors"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                        </div>
+                        <nav className="flex-1 flex flex-col gap-2 p-6">
+                            {[
+                                { href: '#servicios', label: 'Servicios' },
+                                { href: '#proceso', label: 'Cómo Funciona' },
+                                { href: '#diagnostico-ia', label: 'Diagnóstico IA' },
+                                { href: '#experta', label: 'La Experta' },
+                                { href: '#faq', label: 'FAQ' },
+                            ].map((item) => (
+                                <a
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                    className="text-lg font-semibold text-white py-3 px-4 rounded-xl hover:bg-white/10 hover:text-emerald-400 transition-all"
+                                >
+                                    {item.label}
+                                </a>
+                            ))}
+                        </nav>
+                        <div className="p-6 border-t border-white/10">
+                            <Link
+                                to="/login"
+                                onClick={() => setMobileMenuOpen(false)}
+                                className="flex items-center justify-center gap-2 w-full px-6 py-4 bg-emerald-500 rounded-xl text-base font-bold text-white hover:bg-emerald-400 transition-all"
+                            >
+                                <Briefcase className="w-5 h-5" />
+                                Acceso Equipo
+                            </Link>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             {/* Navbar */}
-            <nav className="fixed top-0 left-0 right-0 z-50 bg-[#052c46] border-b-2 border-emerald-500/20">
-                <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-lg shadow-lg shadow-emerald-900/40 border border-emerald-400/30 shrink-0">
-                            DE
-                        </div>
-                        <div className="flex flex-col">
-                            <span className="text-xl font-black text-white leading-none">DENTAL EXPRESSION</span>
-                            <span className="text-sm font-bold text-emerald-400 mt-0.5">Dra. Nataly Vargas</span>
-                        </div>
+            <nav className="fixed top-0 left-0 right-0 z-40 bg-[#052c46]/95 backdrop-blur-md border-b border-emerald-500/20">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center justify-between">
+                    {/* Logo */}
+                    <div className="flex items-center">
+                        <LogoBrand size="md" />
                     </div>
-                    <div className="flex items-center gap-10">
-                        <div className="hidden lg:flex gap-8 text-lg font-semibold text-white">
+
+                    {/* Desktop Nav */}
+                    <div className="hidden lg:flex items-center gap-10">
+                        <div className="flex gap-8 text-base font-semibold text-white">
                             <a href="#servicios" className="hover:text-emerald-400 transition-colors">Servicios</a>
                             <a href="#proceso" className="hover:text-emerald-400 transition-colors">Cómo Funciona</a>
                             <a href="#diagnostico-ia" className="hover:text-emerald-400 transition-colors">Diagnóstico IA</a>
@@ -90,18 +161,27 @@ export default function Landing() {
                             Acceso Equipo
                         </Link>
                     </div>
+
+                    {/* Mobile Hamburger */}
+                    <button
+                        onClick={() => setMobileMenuOpen(true)}
+                        className="lg:hidden p-2 rounded-xl hover:bg-white/10 text-white transition-colors"
+                        aria-label="Abrir menú"
+                    >
+                        <Menu className="w-6 h-6" />
+                    </button>
                 </div>
             </nav>
 
-            {/* Hero Section (2 Columns) */}
-            <section className="relative pt-32 pb-16 px-6 max-w-7xl mx-auto min-h-screen flex items-center justify-center">
+            {/* Hero Section */}
+            <section className="relative pt-28 pb-12 px-4 sm:px-6 max-w-7xl mx-auto min-h-screen flex items-center justify-center">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center w-full relative z-10">
                     {/* Left content */}
                     <div className="flex flex-col text-left">
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/40 px-5 py-2.5 rounded-full mb-8 backdrop-blur-md w-fit"
+                            className="inline-flex items-center gap-2 bg-emerald-500/15 border border-emerald-400/40 px-5 py-2.5 rounded-full mb-6 backdrop-blur-md w-fit"
                         >
                             <div className="relative flex h-2.5 w-2.5">
                                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -116,7 +196,7 @@ export default function Landing() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.1 }}
-                            className="text-5xl md:text-7xl font-black tracking-tighter leading-[1.05] mb-6 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
+                            className="text-4xl sm:text-5xl md:text-7xl font-black tracking-tighter leading-[1.05] mb-6 drop-shadow-[0_10px_30px_rgba(0,0,0,0.5)]"
                         >
                             Reinventando tu <br />
                             <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-teal-200 to-emerald-400 animate-gradient-x pb-2 inline-block">
@@ -128,7 +208,7 @@ export default function Landing() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="text-lg text-slate-300 font-medium max-w-xl mb-10 leading-relaxed drop-shadow-md"
+                            className="text-lg sm:text-xl text-slate-300 font-medium max-w-xl mb-8 leading-relaxed drop-shadow-md"
                         >
                             Experimenta el futuro de la odontología. Una suite virtual de alta gama diseñada para ofrecerte una valoración precisa, diagnóstico con IA y plan de tratamiento profesional sin salir de la comodidad de tu hogar.
                         </motion.p>
@@ -137,18 +217,18 @@ export default function Landing() {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.3 }}
-                            className="flex flex-col sm:flex-row items-center gap-6"
+                            className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4"
                         >
                             <Link
                                 to="/agendar"
-                                className="group whitespace-nowrap w-full sm:w-auto px-12 py-5 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(16,185,129,0.4)]"
+                                className="group whitespace-nowrap w-full sm:w-auto px-8 sm:px-12 py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-lg sm:text-xl rounded-2xl transition-all hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_50px_rgba(16,185,129,0.4)]"
                             >
                                 Agendar mi valoración
-                                <ArrowRight className="w-7 h-7 group-hover:translate-x-1 transition-transform" />
+                                <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
                             </Link>
 
                             {/* Price Card */}
-                            <div className="flex items-center gap-4 bg-white/20 border border-white/30 rounded-2xl px-7 py-4 backdrop-blur-sm w-full sm:w-auto justify-center">
+                            <div className="flex items-center gap-4 bg-white/20 border border-white/30 rounded-2xl px-6 py-4 backdrop-blur-sm w-full sm:w-auto justify-center">
                                 <div className="flex flex-col items-start leading-none">
                                     <span className="text-sm font-bold text-emerald-300 mb-1">Inversión Profesional</span>
                                     <div className="flex items-baseline gap-1.5">
@@ -163,7 +243,7 @@ export default function Landing() {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.5 }}
-                            className="flex items-center gap-4 mt-8 opacity-90"
+                            className="flex items-center gap-4 mt-6 opacity-90"
                         >
                             <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
                             <span className="text-sm font-medium text-slate-300">Pago 100% seguro · Plataforma cifrada HIPAA</span>
@@ -187,7 +267,7 @@ export default function Landing() {
                                 alt="Dra. Nataly Vargas"
                                 className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-700"
                             />
-                            {/* Gradient Overlay for blending */}
+                            {/* Gradient Overlay */}
                             <div className="absolute inset-0 bg-gradient-to-t from-[#052c46] via-transparent to-transparent opacity-80" />
                         </div>
 
@@ -213,7 +293,7 @@ export default function Landing() {
 
             {/* Trust Bar */}
             <section className="border-y border-white/5 bg-white/[0.02] py-8">
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="max-w-7xl mx-auto px-6 grid grid-cols-2 lg:grid-cols-4 gap-6">
                     {[
                         { label: 'Pacientes Satisfechos', value: '5,000+' },
                         { label: 'Años de Experiencia', value: '12+' },
@@ -222,23 +302,23 @@ export default function Landing() {
                     ].map((stat, i) => (
                         <div key={i} className="flex flex-col items-center justify-center text-center">
                             <span className="text-3xl md:text-4xl font-black text-white mb-1 drop-shadow-sm">{stat.value}</span>
-                            <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-400/80 font-bold">{stat.label}</span>
+                            <span className="text-xs uppercase tracking-[0.15em] text-emerald-400/80 font-bold">{stat.label}</span>
                         </div>
                     ))}
                 </div>
             </section>
 
             {/* Services Section */}
-            <section id="servicios" className="py-32 px-6 max-w-7xl mx-auto">
-                <div className="text-center mb-20">
-                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-4 block">En qué te puedo ayudar</span>
+            <section id="servicios" className="py-16 md:py-32 px-4 sm:px-6 max-w-7xl mx-auto">
+                <div className="text-center mb-14 md:mb-20">
+                    <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.25em] mb-4 block">En qué te puedo ayudar</span>
                     <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">Servicios por Teleconsulta</h2>
-                    <p className="text-slate-400 font-medium max-w-2xl mx-auto text-lg leading-relaxed">
+                    <p className="text-slate-400 font-medium max-w-2xl mx-auto text-base sm:text-lg leading-relaxed">
                         Evaluamos tu caso con la última tecnología y te damos las directrices claras para lograr la sonrisa que mereces, sin tener que viajar o salir de casa.
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {services.map((service, i) => (
                         <motion.div
                             key={i}
@@ -246,26 +326,26 @@ export default function Landing() {
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ delay: i * 0.1 }}
-                            className="bg-white/[0.03] border border-white/5 hover:border-emerald-500/30 p-8 rounded-[2rem] transition-all hover:-translate-y-1 group"
+                            className="bg-white/[0.03] border border-white/5 hover:border-emerald-500/30 p-7 sm:p-8 rounded-[2rem] transition-all hover:-translate-y-1 group"
                         >
-                            <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300">
+                            <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-emerald-500/20 transition-all duration-300">
                                 <service.icon className="w-6 h-6" />
                             </div>
                             <h3 className="text-xl font-black mb-3 text-white">{service.title}</h3>
-                            <p className="text-slate-400 font-medium text-sm leading-relaxed">{service.desc}</p>
+                            <p className="text-slate-400 font-medium text-base leading-relaxed">{service.desc}</p>
                         </motion.div>
                     ))}
                 </div>
             </section>
 
             {/* Steps Section */}
-            <section id="proceso" className="py-32 px-6 max-w-7xl mx-auto border-t border-white/5">
-                <div className="text-center mb-20">
-                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-4 block">Fácil y Rápido</span>
+            <section id="proceso" className="py-16 md:py-32 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/5">
+                <div className="text-center mb-14 md:mb-20">
+                    <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.25em] mb-4 block">Fácil y Rápido</span>
                     <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">¿Cómo funciona?</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 relative">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-12 relative">
                     {/* Visual Connector for Desktop */}
                     <div className="hidden md:block absolute top-12 left-[15%] right-[15%] h-[2px] bg-gradient-to-r from-emerald-500/0 via-emerald-500/30 to-emerald-500/0 z-0"></div>
 
@@ -286,22 +366,22 @@ export default function Landing() {
                                 <step.icon className="w-10 h-10 text-emerald-400" />
                             </div>
                             <h3 className="text-2xl font-black mb-4 tracking-tight">{step.title}</h3>
-                            <p className="text-slate-400 leading-relaxed font-medium text-sm px-4">{step.desc}</p>
+                            <p className="text-slate-400 leading-relaxed font-medium text-base px-4">{step.desc}</p>
                         </motion.div>
                     ))}
                 </div>
             </section>
 
             {/* AI Diagnostics Highlight Section */}
-            <section id="diagnostico-ia" className="py-24 bg-gradient-to-br from-emerald-900/20 to-teal-900/10 border-y border-white/5 relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <section id="diagnostico-ia" className="py-16 md:py-24 bg-gradient-to-br from-emerald-900/20 to-teal-900/10 border-y border-white/5 relative overflow-hidden">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-16 items-center">
                     <div>
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-4 block">Tecnología de Vanguardia</span>
-                        <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-6 leading-tight">
+                        <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.25em] mb-4 block">Tecnología de Vanguardia</span>
+                        <h2 className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tighter mb-6 leading-tight">
                             Odontograma Inteligente y Simulador de Sonrisa IA
                         </h2>
-                        <p className="text-lg text-slate-300 font-medium mb-8 leading-relaxed">
-                            Vamos más allá de la telemedicina tradicional. En tu consulta utilizamos nuestro simulador avanzado y el <strong>Odontograma Inteligente</strong> desarrollado exclusivamente para nuestra plataforma, trazando proyecciones de antes/después con inteligencia artificial para que visualices tu objetivo final con claridad antes de empezar cualquier tratamiento presencial.
+                        <p className="text-base sm:text-lg text-slate-300 font-medium mb-8 leading-relaxed">
+                            Vamos más allá de la telemedicina tradicional. En tu consulta utilizamos nuestro simulador avanzado y el <strong>Odontograma Inteligente</strong> desarrollado exclusivamente para nuestra plataforma, trazando proyecciones de antes/después con inteligencia artificial.
                         </p>
                         <ul className="space-y-4 mb-10">
                             {['Proyecciones estéticas fotorrealistas', 'Mapeo detallado de tu salud dental actual', 'Identificación interactiva de necesidades', 'Plan visual muy fácil de entender'].map((item, i) => (
@@ -309,7 +389,7 @@ export default function Landing() {
                                     <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center flex-shrink-0">
                                         <CheckCircle2 className="w-4 h-4 text-emerald-400" />
                                     </div>
-                                    <span className="text-slate-200 font-medium">{item}</span>
+                                    <span className="text-slate-200 font-medium text-base">{item}</span>
                                 </li>
                             ))}
                         </ul>
@@ -317,7 +397,6 @@ export default function Landing() {
                     <div className="relative">
                         <div className="absolute inset-[-5%] bg-blue-500/20 blur-[80px] rounded-full animate-pulse" />
                         <div className="relative bg-white/5 border border-white/10 rounded-3xl p-2 md:p-4 backdrop-blur-md shadow-2xl">
-                            {/* Abstract representation of the UI / Odontogram visual placeholder */}
                             <div className="aspect-[16/10] bg-[#0A1A2F] rounded-2xl border border-white/5 flex flex-col overflow-hidden">
                                 <div className="h-10 border-b border-white/5 flex items-center px-4 gap-2">
                                     <div className="w-3 h-3 rounded-full bg-red-400/80"></div>
@@ -343,8 +422,8 @@ export default function Landing() {
             </section>
 
             {/* Expert Profile Section */}
-            <section id="experta" className="py-32 px-6 max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <section id="experta" className="py-16 md:py-32 px-4 sm:px-6 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 md:gap-20 items-center">
                     <motion.div
                         initial={{ opacity: 0, x: -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
@@ -358,22 +437,22 @@ export default function Landing() {
                         <div className="absolute bottom-8 -right-8 bg-[#052c46] border border-white/10 px-8 py-6 rounded-3xl shadow-2xl hidden md:block">
                             <Star className="w-8 h-8 text-emerald-400 mb-2 fill-emerald-400" />
                             <div className="text-3xl font-black text-white">12+</div>
-                            <div className="text-[10px] font-black text-emerald-400/60 uppercase tracking-widest whitespace-nowrap">Años de Excelencia</div>
+                            <div className="text-xs font-black text-emerald-400/60 uppercase tracking-widest whitespace-nowrap">Años de Excelencia</div>
                         </div>
                     </motion.div>
 
-                    <div className="space-y-10">
+                    <div className="space-y-8 md:space-y-10">
                         <div>
-                            <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-4 block">La Experta Detrás de la Pantalla</span>
-                            <h2 className="text-5xl md:text-6xl font-black tracking-tighter leading-tight mb-6">
+                            <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.25em] mb-4 block">La Experta Detrás de la Pantalla</span>
+                            <h2 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tighter leading-tight mb-6">
                                 Dra. Nataly Vargas
                             </h2>
-                            <p className="text-xl text-slate-300 font-medium leading-relaxed italic border-l-4 border-emerald-500 pl-6 py-2">
+                            <p className="text-lg sm:text-xl text-slate-300 font-medium leading-relaxed italic border-l-4 border-emerald-500 pl-6 py-2">
                                 "Mi misión es democratizar el acceso al mejor diagnóstico dental, combinando tecnología de vanguardia visual con un trato profundamente humano."
                             </p>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                             {[
                                 "Especialista en Rehabilitación Oral",
                                 "Experta en Odontología Estética",
@@ -382,7 +461,7 @@ export default function Landing() {
                             ].map((item, i) => (
                                 <div key={i} className="flex items-center gap-3">
                                     <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                                    <span className="text-sm font-bold text-slate-200">{item}</span>
+                                    <span className="text-base font-bold text-slate-200">{item}</span>
                                 </div>
                             ))}
                         </div>
@@ -391,14 +470,14 @@ export default function Landing() {
             </section>
 
             {/* Reviews Section */}
-            <section id="reseñas" className="py-24 px-6 bg-white/[0.02] border-y border-white/5">
+            <section id="reseñas" className="py-16 md:py-24 px-4 sm:px-6 bg-white/[0.02] border-y border-white/5">
                 <div className="max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
-                        <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-4 block">Casos de Éxito Reales</span>
+                    <div className="text-center mb-14 md:mb-16">
+                        <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.25em] mb-4 block">Casos de Éxito Reales</span>
                         <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">Lo que dicen mis pacientes</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
                         {loadingReviews ? (
                             <div className="col-span-full flex justify-center py-10">
                                 <Loader2 className="w-8 h-8 animate-spin text-emerald-500" />
@@ -411,15 +490,15 @@ export default function Landing() {
                                     whileInView={{ opacity: 1, scale: 1 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.1 }}
-                                    className="bg-white/[0.04] border border-white/10 hover:border-emerald-500/30 p-10 rounded-[2.5rem] backdrop-blur-xl relative group transition-colors"
+                                    className="bg-white/[0.04] border border-white/10 hover:border-emerald-500/30 p-8 sm:p-10 rounded-[2.5rem] backdrop-blur-xl relative group transition-colors"
                                 >
-                                    <Quote className="absolute top-10 right-10 w-12 h-12 text-white/5 group-hover:text-emerald-500/10 transition-colors" />
-                                    <div className="flex gap-1 mb-6">
+                                    <Quote className="absolute top-8 right-8 w-10 h-10 text-white/5 group-hover:text-emerald-500/10 transition-colors" />
+                                    <div className="flex gap-1 mb-5">
                                         {[...Array(5)].map((_, star) => (
-                                            <Star key={star} className={`w-4 h-4 ${star < review.calificacion ? 'text-emerald-400 fill-emerald-400' : 'text-white/10'}`} />
+                                            <Star key={star} className={`w-5 h-5 ${star < review.calificacion ? 'text-emerald-400 fill-emerald-400' : 'text-white/10'}`} />
                                         ))}
                                     </div>
-                                    <p className="text-slate-300 font-medium italic mb-8 leading-relaxed h-[120px] overflow-hidden">
+                                    <p className="text-slate-300 font-medium italic mb-8 leading-relaxed text-base h-[120px] overflow-hidden">
                                         "{review.comentario}"
                                     </p>
                                     <div className="flex items-center gap-4">
@@ -427,8 +506,8 @@ export default function Landing() {
                                             {review.nombre_paciente[0]}
                                         </div>
                                         <div>
-                                            <h4 className="font-black text-white tracking-tight leading-none mb-1 text-sm">{review.nombre_paciente}</h4>
-                                            <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">
+                                            <h4 className="font-black text-white tracking-tight leading-none mb-1">{review.nombre_paciente}</h4>
+                                            <p className="text-xs font-black text-slate-500 uppercase tracking-widest">
                                                 {new Date(review.created_at).toLocaleDateString('es-CO', { day: 'numeric', month: 'short', year: 'numeric' })}
                                             </p>
                                         </div>
@@ -437,7 +516,7 @@ export default function Landing() {
                             ))
                         ) : (
                             <div className="col-span-full text-center py-10 text-slate-500">
-                                <p className="text-sm font-bold uppercase tracking-widest">No hay reseñas publicadas aún.</p>
+                                <p className="text-base font-bold uppercase tracking-widest">No hay reseñas publicadas aún.</p>
                             </div>
                         )}
                     </div>
@@ -445,11 +524,11 @@ export default function Landing() {
             </section>
 
             {/* FAQ Section */}
-            <section id="faq" className="py-32 px-6 max-w-3xl mx-auto">
-                <div className="text-center mb-16">
-                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.3em] mb-4 block">Despejando Dudas</span>
+            <section id="faq" className="py-16 md:py-32 px-4 sm:px-6 max-w-3xl mx-auto">
+                <div className="text-center mb-14 md:mb-16">
+                    <span className="text-xs font-black text-emerald-400 uppercase tracking-[0.25em] mb-4 block">Despejando Dudas</span>
                     <h2 className="text-4xl md:text-5xl font-black tracking-tighter mb-4">Preguntas Frecuentes</h2>
-                    <p className="text-slate-400 font-medium text-lg">Todo lo que necesitas saber sobre la teleconsulta premium.</p>
+                    <p className="text-slate-400 font-medium text-base sm:text-lg">Todo lo que necesitas saber sobre la teleconsulta premium.</p>
                 </div>
 
                 <div className="space-y-4">
@@ -459,10 +538,10 @@ export default function Landing() {
                             className={`border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 ${openFaq === index ? 'bg-white/5 border-emerald-500/30' : 'bg-transparent hover:border-white/20'}`}
                         >
                             <button
-                                className="w-full flex items-center justify-between p-6 text-left"
+                                className="w-full flex items-center justify-between p-5 sm:p-6 text-left"
                                 onClick={() => setOpenFaq(openFaq === index ? null : index)}
                             >
-                                <span className="font-bold text-slate-200 text-lg pr-8">{faq.q}</span>
+                                <span className="font-bold text-slate-200 text-base sm:text-lg pr-8">{faq.q}</span>
                                 <ChevronDown className={`w-5 h-5 text-emerald-400 transition-transform duration-300 flex-shrink-0 ${openFaq === index ? 'rotate-180' : ''}`} />
                             </button>
                             <AnimatePresence>
@@ -473,7 +552,7 @@ export default function Landing() {
                                         exit={{ height: 0, opacity: 0 }}
                                         className="overflow-hidden"
                                     >
-                                        <div className="p-6 pt-0 text-slate-400 font-medium leading-relaxed border-t border-white/5 mx-6">
+                                        <div className="p-5 sm:p-6 pt-0 text-slate-300 font-medium leading-relaxed border-t border-white/5 mx-5 sm:mx-6 text-base">
                                             {faq.a}
                                         </div>
                                     </motion.div>
@@ -485,33 +564,33 @@ export default function Landing() {
             </section>
 
             {/* Final CTA */}
-            <section className="py-32 px-6">
-                <div className="max-w-5xl mx-auto bg-gradient-to-br from-[#0a3f63] to-[#041a2a] border border-white/10 rounded-[3rem] p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
+            <section className="py-16 md:py-32 px-4 sm:px-6">
+                <div className="max-w-5xl mx-auto bg-gradient-to-br from-[#0a3f63] to-[#041a2a] border border-white/10 rounded-[2rem] sm:rounded-[3rem] p-8 sm:p-12 md:p-20 text-center relative overflow-hidden shadow-2xl">
                     <div className="absolute top-0 right-0 w-[50%] h-[50%] bg-emerald-500/20 blur-[100px] rounded-full" />
                     <div className="absolute bottom-0 left-0 w-[50%] h-[50%] bg-teal-500/10 blur-[100px] rounded-full" />
 
                     <div className="relative z-10">
-                        <span className="inline-block py-1.5 px-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-[10px] font-black uppercase tracking-widest mb-8">
+                        <span className="inline-block py-1.5 px-4 rounded-full bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-black uppercase tracking-widest mb-8">
                             Disponibilidad Limitada Esta Semana
                         </span>
-                        <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-6 text-white leading-tight">
+                        <h2 className="text-3xl sm:text-4xl md:text-6xl font-black tracking-tighter mb-6 text-white leading-tight">
                             Da el primer paso hacia la <br />
                             <span className="text-emerald-400">sonrisa de tus sueños</span>
                         </h2>
-                        <p className="text-xl text-slate-300 font-medium mb-12 max-w-2xl mx-auto">
+                        <p className="text-base sm:text-xl text-slate-300 font-medium mb-10 sm:mb-12 max-w-2xl mx-auto">
                             Únete a las miles de personas que ya transformaron su salud bucal empezando con una simple videollamada desde casa.
                         </p>
 
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             <Link
                                 to="/agendar"
-                                className="w-full sm:w-auto px-10 py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-lg rounded-full transition-all hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(16,185,129,0.3)]"
+                                className="w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-black text-base sm:text-lg rounded-full transition-all hover:scale-[1.05] active:scale-95 flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(16,185,129,0.3)]"
                             >
                                 Iniciar Proceso Ahora
                                 <ArrowRight className="w-6 h-6" />
                             </Link>
                             <div className="flex flex-col text-left">
-                                <span className="text-[10px] font-black text-emerald-400/80 uppercase tracking-widest">Valoración Inicial</span>
+                                <span className="text-xs font-black text-emerald-400/80 uppercase tracking-widest">Valoración Inicial</span>
                                 <div className="flex items-baseline gap-2">
                                     <span className="text-3xl font-black text-white">$50.00</span>
                                     <span className="text-sm font-bold text-slate-400 uppercase">USD</span>
@@ -523,24 +602,19 @@ export default function Landing() {
             </section>
 
             {/* Footer */}
-            <footer className="py-20 px-6 max-w-7xl mx-auto border-t border-white/5">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
-                    <div className="col-span-1 md:col-span-2">
-                        <div className="flex items-center gap-3 mb-6">
-                            <div className="bg-white p-1.5 rounded-xl">
-                                <img src="/logo.jpg" alt="Logo" className="h-6 w-auto object-contain rounded-md" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="text-sm font-black tracking-widest text-white leading-none">DENTAL EXPRESSION</span>
-                            </div>
+            <footer className="py-14 md:py-20 px-4 sm:px-6 max-w-7xl mx-auto border-t border-white/5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-12">
+                    <div className="col-span-1 sm:col-span-2">
+                        <div className="mb-6">
+                            <LogoBrand size="lg" />
                         </div>
-                        <p className="text-slate-400 font-medium max-w-sm mb-8 leading-relaxed">
+                        <p className="text-slate-400 font-medium max-w-sm mb-8 leading-relaxed text-base">
                             Transformando la experiencia dental a través de diagnósticos por inteligencia artificial y atención verdaderamente premium, adaptada a tu estilo de vida.
                         </p>
                     </div>
                     <div>
-                        <h4 className="text-xs font-black uppercase tracking-[0.2em] mb-6 text-white">Navegación</h4>
-                        <ul className="space-y-4 text-sm font-bold text-slate-400">
+                        <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-5 text-white">Navegación</h4>
+                        <ul className="space-y-3 text-base font-semibold text-slate-400">
                             <li><a href="#servicios" className="hover:text-emerald-400 transition-colors">Servicios</a></li>
                             <li><a href="#proceso" className="hover:text-emerald-400 transition-colors">Cómo Funciona</a></li>
                             <li><a href="#experta" className="hover:text-emerald-400 transition-colors">La Dra. Nataly Vargas</a></li>
@@ -548,33 +622,84 @@ export default function Landing() {
                         </ul>
                     </div>
                     <div>
-                        <h4 className="text-xs font-black uppercase tracking-[0.2em] mb-6 text-white">Conecta</h4>
+                        <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-5 text-white">Conecta</h4>
                         <div className="flex gap-4 mb-8">
-                            <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all text-slate-400 hover:-translate-y-1">
+                            <a href="#" className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all text-slate-400 hover:-translate-y-1">
                                 <Instagram className="w-5 h-5" />
                             </a>
-                            <a href="#" className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all text-slate-400 hover:-translate-y-1">
+                            <a href="#" className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all text-slate-400 hover:-translate-y-1">
                                 <Linkedin className="w-5 h-5" />
                             </a>
                         </div>
-                        <Link to="/login" className="inline-flex items-center gap-2 text-xs font-bold text-slate-500 hover:text-emerald-400 transition-colors uppercase tracking-widest">
+                        <Link to="/login" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-emerald-400 transition-colors uppercase tracking-widest">
                             <Briefcase className="w-4 h-4" />
                             Portal Administrativo
                         </Link>
                     </div>
                 </div>
-                <div className="mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-                    <p className="text-[10px] font-black text-slate-500 uppercase tracking-widest">© 2026 Dental Expression. Plataforma Segura HIPAA Compliant.</p>
-                    <div className="flex gap-8 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <div className="mt-14 md:mt-20 pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <p className="text-xs font-black text-slate-500 uppercase tracking-widest">© 2026 Dental Expression. Plataforma Segura HIPAA Compliant.</p>
+                    <div className="flex gap-6 sm:gap-8 text-xs font-black text-slate-400 uppercase tracking-widest">
                         <a href="#" className="hover:text-emerald-400 transition-colors">Políticas de Privacidad</a>
                         <a href="#" className="hover:text-emerald-400 transition-colors">Términos de Servicio</a>
                     </div>
                 </div>
             </footer>
 
-            {/* ── Botón flotante de WhatsApp ── */}
-            {/* TODO: reemplazar XXXXXXXXXX con el número de la doctora (ej: 3001234567) */}
+            {/* WhatsApp Button */}
             <WhatsAppButton numero="XXXXXXXXXX" mensaje="Hola, me gustaría agendar una teleconsulta con la Dra. Nataly." />
+        </div>
+    )
+}
+
+// ── Componente Logo Brand (JSX) ─────────────────────────────────────────────
+
+type LogoBrandSize = 'sm' | 'md' | 'lg'
+function LogoBrand({ size = 'md' }: { size?: LogoBrandSize }) {
+    const cfg = {
+        sm: { main: '1.25rem', sub: '0.6rem', icon: 26 },
+        md: { main: '1.55rem', sub: '0.65rem', icon: 30 },
+        lg: { main: '1.85rem', sub: '0.7rem', icon: 36 },
+    }[size]
+
+    return (
+        <div className="flex items-center gap-2.5">
+            {/* Tooth SVG */}
+            <svg width={cfg.icon} height={cfg.icon} viewBox="0 0 32 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                    d="M16 1C9.5 1 4 5.8 4 12c0 3.2 1.2 5.8 2.5 8L9 30c.6 3 1.8 5 3.5 5s2.5-1.5 3.5-5l.3-1.5.2 1.5c1 3.5 1.8 5 3.5 5s2.9-2 3.5-5l2.5-10C27 17.8 28 15.2 28 12c0-6.2-5.5-11-12-11z"
+                    fill="#3ABDE0"
+                    style={{ filter: 'drop-shadow(0 0 4px rgba(58,189,224,0.8))' }}
+                />
+            </svg>
+            {/* Text */}
+            <div className="flex flex-col leading-none">
+                <span
+                    style={{
+                        fontFamily: '"Dancing Script", cursive',
+                        fontSize: cfg.main,
+                        fontWeight: 700,
+                        color: '#ffffff',
+                        textShadow: '0 0 14px rgba(58,189,224,0.65), 0 0 30px rgba(58,189,224,0.25)',
+                        lineHeight: 1.1,
+                    }}
+                >
+                    Dental Expression
+                </span>
+                <span
+                    style={{
+                        fontFamily: 'inherit',
+                        fontSize: cfg.sub,
+                        fontWeight: 700,
+                        color: '#3ABDE0',
+                        letterSpacing: '0.28em',
+                        textTransform: 'uppercase',
+                        marginTop: '3px',
+                    }}
+                >
+                    Nataly · Vargas
+                </span>
+            </div>
         </div>
     )
 }
@@ -595,10 +720,9 @@ function WhatsAppButton({ numero, mensaje }: { numero: string; mensaje: string }
             transition={{ delay: 1.5, type: 'spring', stiffness: 200 }}
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
-            className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 bg-[#25D366] text-white font-black rounded-full shadow-2xl shadow-green-500/40 transition-all group ${esPlaceholder ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-green-500/60'}`}
+            className={`fixed bottom-4 sm:bottom-6 right-4 sm:right-6 z-50 flex items-center gap-3 bg-[#25D366] text-white font-black rounded-full shadow-2xl shadow-green-500/40 transition-all group ${esPlaceholder ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer hover:shadow-green-500/60'}`}
             title={esPlaceholder ? 'Número pendiente de configurar' : 'Escríbenos por WhatsApp'}
         >
-            {/* Ping animado */}
             {!esPlaceholder && (
                 <span className="absolute top-0 right-0 flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
@@ -606,18 +730,15 @@ function WhatsAppButton({ numero, mensaje }: { numero: string; mensaje: string }
                 </span>
             )}
 
-            {/* Ícono WhatsApp SVG */}
-            <div className="w-20 h-20 flex items-center justify-center shrink-0">
-                <svg viewBox="0 0 32 32" className="w-10 h-10 fill-white" xmlns="http://www.w3.org/2000/svg">
+            <div className="w-14 sm:w-16 h-14 sm:h-16 flex items-center justify-center shrink-0">
+                <svg viewBox="0 0 32 32" className="w-8 sm:w-9 h-8 sm:h-9 fill-white" xmlns="http://www.w3.org/2000/svg">
                     <path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.485 2.027 7.788L0 32l8.418-2.009A15.928 15.928 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0zm0 29.333a13.28 13.28 0 01-6.757-1.847l-.484-.287-5.001 1.194 1.216-4.87-.317-.5A13.253 13.253 0 012.667 16C2.667 8.636 8.636 2.667 16 2.667S29.333 8.636 29.333 16 23.364 29.333 16 29.333zm7.27-9.862c-.398-.199-2.354-1.162-2.718-1.295-.365-.133-.631-.199-.897.199-.265.398-1.03 1.295-1.262 1.56-.232.266-.465.299-.863.1-.398-.2-1.681-.62-3.202-1.976-1.183-1.055-1.982-2.358-2.214-2.756-.232-.398-.025-.613.174-.812.179-.178.398-.465.597-.697.2-.232.266-.398.398-.664.133-.265.067-.498-.033-.697-.1-.199-.897-2.162-1.229-2.96-.324-.778-.652-.672-.897-.684l-.764-.013c-.265 0-.697.1-1.063.498-.365.398-1.394 1.362-1.394 3.323 0 1.96 1.427 3.855 1.626 4.12.199.266 2.808 4.287 6.806 6.013.951.41 1.693.655 2.272.838.955.303 1.824.26 2.511.158.766-.114 2.354-.963 2.686-1.893.332-.93.332-1.727.232-1.893-.1-.166-.365-.266-.763-.465z"/>
                 </svg>
             </div>
 
-            {/* Texto — aparece al hover */}
             <span className="max-w-0 overflow-hidden group-hover:max-w-xs transition-all duration-500 ease-in-out whitespace-nowrap pr-0 group-hover:pr-5 text-sm">
                 Escríbenos
             </span>
         </motion.a>
     )
 }
-

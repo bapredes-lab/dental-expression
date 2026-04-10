@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate, Outlet } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
@@ -34,10 +34,17 @@ const navigation = [
 ]
 
 export default function AdminLayout() {
-    const [sidebarOpen, setSidebarOpen] = useState(true)
+    const [sidebarOpen, setSidebarOpen] = useState(window.innerWidth >= 1024)
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 1024)
     const location = useLocation()
     const { user, signOut } = useAuth()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 1024)
+        window.addEventListener('resize', handleResize)
+        return () => window.removeEventListener('resize', handleResize)
+    }, [])
 
     const handleSignOut = async () => {
         await signOut()
@@ -46,18 +53,34 @@ export default function AdminLayout() {
 
     return (
         <div className="min-h-screen bg-[#f1f5f9]">
+            {/* Mobile Overlay */}
+            <AnimatePresence>
+                {isMobile && sidebarOpen && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSidebarOpen(false)}
+                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+                    />
+                )}
+            </AnimatePresence>
+
             {/* Sidebar Elite */}
             <motion.aside
                 initial={false}
-                animate={{ width: sidebarOpen ? 280 : 80 }}
-                className="fixed inset-y-0 left-0 z-50 bg-[#052c46] text-white shadow-2xl transition-all duration-300"
+                animate={{ 
+                    width: isMobile ? 280 : (sidebarOpen ? 280 : 80),
+                    x: isMobile ? (sidebarOpen ? 0 : -280) : 0
+                }}
+                className={`fixed inset-y-0 left-0 ${isMobile ? 'z-50' : 'z-40'} bg-[#052c46] text-white shadow-2xl transition-all duration-300`}
             >
                 <div className="flex flex-col h-full overflow-hidden">
                     {/* Brand Pill */}
                     <div className="p-6">
                         <div className={`flex items-center gap-3 ${sidebarOpen ? '' : 'justify-center'}`}>
-                            <div className="h-11 w-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-700 flex items-center justify-center font-black text-white text-base shadow-lg border border-emerald-400/30 shrink-0">
-                                DE
+                            <div className="h-11 w-11 rounded-2xl bg-white/5 flex items-center justify-center shrink-0 border border-white/10 overflow-hidden">
+                                <img src="/logo.png" alt="DE" className="h-full w-full object-contain p-1" />
                             </div>
                             <AnimatePresence>
                                 {sidebarOpen && (
@@ -83,6 +106,7 @@ export default function AdminLayout() {
                                 <Link
                                     key={item.name}
                                     to={item.href}
+                                    onClick={() => isMobile && setSidebarOpen(false)}
                                     className={`
                                         flex items-center gap-3 px-3 py-3 rounded-2xl transition-all duration-300 group
                                         ${isActive
@@ -92,7 +116,7 @@ export default function AdminLayout() {
                                     title={!sidebarOpen ? item.name : ''}
                                 >
                                     <item.icon className={`h-5 w-5 shrink-0 ${isActive ? 'text-emerald-300' : 'text-slate-300 group-hover:scale-110 transition-transform'}`} />
-                                    {sidebarOpen && <span className="font-semibold text-sm truncate">{item.name}</span>}
+                                    {sidebarOpen && <span className="font-semibold text-base truncate">{item.name}</span>}
                                 </Link>
                             )
                         })}
@@ -106,8 +130,8 @@ export default function AdminLayout() {
                             </div>
                             {sidebarOpen && (
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-xs font-bold text-white truncate">{user?.user_metadata?.full_name || user?.email}</p>
-                                    <p className="text-[9px] font-black text-emerald-400 uppercase tracking-tighter">{user?.user_metadata?.rol || 'Administrador'}</p>
+                                    <p className="text-sm font-bold text-white truncate">{user?.user_metadata?.full_name || user?.email}</p>
+                                    <p className="text-xs font-black text-emerald-400 uppercase tracking-tighter">{user?.user_metadata?.rol || 'Administrador'}</p>
                                 </div>
                             )}
                             {sidebarOpen && (
@@ -126,7 +150,7 @@ export default function AdminLayout() {
             {/* Main Content Area */}
             <main
                 className={`transition-all duration-300 min-h-screen py-6 px-4 md:px-8`}
-                style={{ marginLeft: sidebarOpen ? 280 : 80 }}
+                style={{ marginLeft: isMobile ? 0 : (sidebarOpen ? 280 : 80) }}
             >
                 {/* Global Header */}
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-200">
