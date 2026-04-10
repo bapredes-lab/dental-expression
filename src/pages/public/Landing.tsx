@@ -623,12 +623,36 @@ export default function Landing() {
                     </div>
                     <div>
                         <h4 className="text-sm font-black uppercase tracking-[0.2em] mb-5 text-white">Conecta</h4>
-                        <div className="flex gap-4 mb-8">
+                        <div className="flex gap-4 mb-6">
                             <a href="#" className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all text-slate-400 hover:-translate-y-1">
                                 <Instagram className="w-5 h-5" />
                             </a>
                             <a href="#" className="w-11 h-11 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center hover:bg-emerald-500 hover:text-white transition-all text-slate-400 hover:-translate-y-1">
                                 <Linkedin className="w-5 h-5" />
+                            </a>
+                        </div>
+                        <div className="space-y-3 mb-6">
+                            <a
+                                href="https://wa.me/573015105865"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-center gap-3 text-slate-300 hover:text-emerald-400 transition-colors group"
+                            >
+                                <span className="w-8 h-8 rounded-xl bg-[#25D366]/10 border border-[#25D366]/20 flex items-center justify-center group-hover:bg-[#25D366]/20 transition-colors">
+                                    <svg viewBox="0 0 32 32" className="w-4 h-4 fill-[#25D366]" xmlns="http://www.w3.org/2000/svg"><path d="M16 0C7.163 0 0 7.163 0 16c0 2.833.738 5.485 2.027 7.788L0 32l8.418-2.009A15.928 15.928 0 0016 32c8.837 0 16-7.163 16-16S24.837 0 16 0z"/></svg>
+                                </span>
+                                <span className="text-sm font-semibold">+57 301 510 5865</span>
+                            </a>
+                            <a
+                                href="mailto:dentalexpression18@gmail.com"
+                                className="flex items-center gap-3 text-slate-300 hover:text-emerald-400 transition-colors group"
+                            >
+                                <span className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center group-hover:bg-emerald-500/20 transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" className="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </span>
+                                <span className="text-sm font-semibold">dentalexpression18@gmail.com</span>
                             </a>
                         </div>
                         <Link to="/login" className="inline-flex items-center gap-2 text-sm font-bold text-slate-500 hover:text-emerald-400 transition-colors uppercase tracking-widest">
@@ -647,7 +671,7 @@ export default function Landing() {
             </footer>
 
             {/* WhatsApp Button */}
-            <WhatsAppButton numero="XXXXXXXXXX" mensaje="Hola, me gustaría agendar una teleconsulta con la Dra. Nataly." />
+            <WhatsAppButton numero="3015105865" mensaje="Hola, me gustaría agendar una teleconsulta con la Dra. Nataly." />
         </div>
     )
 }
