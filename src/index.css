@@ -114,6 +114,113 @@
   }
 }
 
+/* FullCalendar dark theme overrides */
+.fc {
+  --fc-border-color: rgba(255, 255, 255, 0.08);
+  --fc-page-bg-color: transparent;
+  --fc-neutral-bg-color: rgba(255, 255, 255, 0.03);
+  --fc-list-event-hover-bg-color: rgba(255, 255, 255, 0.05);
+  --fc-today-bg-color: rgba(16, 185, 129, 0.08);
+  --fc-highlight-color: rgba(16, 185, 129, 0.12);
+  --fc-non-business-color: rgba(0, 0, 0, 0.15);
+  color: #e2e8f0;
+}
+
+.fc .fc-toolbar-title {
+  color: #ffffff;
+  font-weight: 900;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
+}
+
+.fc .fc-button {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: #94a3b8 !important;
+  font-weight: 700;
+  font-size: 0.75rem;
+  border-radius: 0.75rem !important;
+  padding: 0.35rem 0.85rem !important;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.fc .fc-button:hover {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+}
+
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background: rgba(16, 185, 129, 0.25) !important;
+  border-color: rgba(16, 185, 129, 0.4) !important;
+  color: #6ee7b7 !important;
+}
+
+.fc .fc-col-header-cell {
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0.5rem 0;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: #64748b;
+  font-weight: 800;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  text-decoration: none !important;
+}
+
+.fc .fc-daygrid-day-number {
+  color: #94a3b8;
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-decoration: none !important;
+}
+
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: #6ee7b7;
+  font-weight: 900;
+}
+
+.fc .fc-daygrid-day:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.fc td, .fc th {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+.fc .fc-scrollgrid {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.fc .fc-timegrid-slot {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.fc .fc-timegrid-slot-label-cushion {
+  color: #64748b;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.fc .fc-event {
+  border-radius: 0.5rem !important;
+  border: none !important;
+  font-weight: 700;
+  font-size: 0.72rem;
+}
+
+.fc .fc-more-link {
+  color: #6ee7b7;
+  font-weight: 800;
+  font-size: 0.7rem;
+}
+
 /* Admin dark premium background */
 .admin-dark-bg {
   background-color: #06111e;
